@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.onestopshopreturnsstub.controllers
+package uk.gov.hmrc.onestopshopreturnsstub.models
 
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import play.api.libs.json.{Format, Json}
 
-@Singleton()
-class MicroserviceHelloWorldController @Inject()(cc: ControllerComponents)
-    extends BackendController(cc) {
+case class Item(
+                 amount: Option[BigDecimal],
+                 clearingReason: Option[String],
+                 paymentReference: Option[String],
+                 paymentAmount: Option[BigDecimal],
+                 paymentMethod: Option[String]
+               )
 
-  def hello(): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok("Hello world"))
-  }
+object Item {
+  implicit val format: Format[Item] = Json.format[Item]
 }
