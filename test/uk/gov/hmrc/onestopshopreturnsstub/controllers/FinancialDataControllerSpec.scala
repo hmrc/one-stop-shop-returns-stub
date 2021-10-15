@@ -85,11 +85,93 @@ class FinancialDataControllerSpec extends AnyWordSpec with Matchers {
     financialTransactions = Some(financialTransactions)
   )
 
-  "GET /" should {
-    "return 200" in {
-      val result = controller.hello()(fakeRequest)
+  "GET /financial-data" should {
+    "return a successful FinancialDataResponse" in {
+      val result = controller.getFinancialData(idType = "", idNumber = "012345678", regimeType = "")(fakeRequest)
       status(result) shouldBe Status.OK
       contentAsJson(result).validate[FinancialDataResponse] shouldBe JsSuccess(successfulResponse)
+    }
+
+    "return a all paid when vat number starts with 1" in {
+      val allPaidItems = Seq(
+        Item(
+          amount = Some(BigDecimal(1500)),
+          clearingReason = Some("01"),
+          paymentReference = Some("a"),
+          paymentAmount = Some(BigDecimal(1500)),
+          paymentMethod = Some("A")
+        )
+      )
+      val allPaidFinancialTransactions = Seq(
+        FinancialTransaction(
+          chargeType = Some("G Ret FR EU-OMS"),
+          mainType = None,
+          taxPeriodFrom = Some(period.firstDay),
+          taxPeriodTo = Some(period.lastDay),
+          originalAmount = Some(BigDecimal(1500)),
+          outstandingAmount = Some(BigDecimal(0)),
+          clearedAmount = Some(BigDecimal(1500)),
+          items = Some(allPaidItems)
+        )
+      )
+
+      val result = controller.getFinancialData(idType = "", idNumber = "123456789", regimeType = "")(fakeRequest)
+      status(result) shouldBe Status.OK
+      contentAsJson(result).validate[FinancialDataResponse] shouldBe
+        JsSuccess(successfulResponse.copy(
+          financialTransactions = Some(allPaidFinancialTransactions)))
+    }
+
+    "return a all paid when vat number starts with 2" in {
+      val allPaidItems = Seq(
+        Item(
+          amount = Some(BigDecimal(1500)),
+          clearingReason = Some("01"),
+          paymentReference = Some("a"),
+          paymentAmount = Some(BigDecimal(1500)),
+          paymentMethod = Some("A")
+        )
+      )
+      val allPaidFinancialTransactions = Seq(
+        FinancialTransaction(
+          chargeType = Some("G Ret FR EU-OMS"),
+          mainType = None,
+          taxPeriodFrom = Some(period.firstDay),
+          taxPeriodTo = Some(period.lastDay),
+          originalAmount = Some(BigDecimal(1500)),
+          outstandingAmount = Some(BigDecimal(0)),
+          clearedAmount = Some(BigDecimal(1500)),
+          items = Some(allPaidItems)
+        )
+      )
+
+      val result = controller.getFinancialData(idType = "", idNumber = "234567890", regimeType = "")(fakeRequest)
+      status(result) shouldBe Status.OK
+      contentAsJson(result).validate[FinancialDataResponse] shouldBe
+        JsSuccess(successfulResponse.copy(
+          financialTransactions = Some(somePaidFinancialTransactions)))
+    }
+
+    "return a not paid when vat number starts with 3" in {
+
+      val notPaidFinancialTransactions = Seq(
+        FinancialTransaction(
+          chargeType = Some("G Ret FR EU-OMS"),
+          mainType = None,
+          taxPeriodFrom = Some(period.firstDay),
+          taxPeriodTo = Some(period.lastDay),
+          originalAmount = Some(BigDecimal(1500)),
+          outstandingAmount = Some(BigDecimal(1500)),
+          clearedAmount = Some(BigDecimal(0)),
+          items = None
+        )
+      )
+
+      val result = controller.getFinancialData(idType = "", idNumber = "345678900", regimeType = "")(fakeRequest)
+      status(result) shouldBe Status.OK
+      contentAsJson(result).validate[FinancialDataResponse] shouldBe
+        JsSuccess(successfulResponse.copy(
+          financialTransactions = Some(notPaidFinancialTransactions)))
     }
   }
 }
