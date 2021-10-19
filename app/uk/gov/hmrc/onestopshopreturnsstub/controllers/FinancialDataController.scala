@@ -19,7 +19,7 @@ package uk.gov.hmrc.onestopshopreturnsstub.controllers
 import play.api.libs.json.Json
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.onestopshopreturnsstub.models.Quarter.Q3
+import uk.gov.hmrc.onestopshopreturnsstub.models.Quarter._
 import uk.gov.hmrc.onestopshopreturnsstub.models.{FinancialDataResponse, FinancialTransaction, Item, Period}
 
 import java.time.{Clock, LocalDate, ZonedDateTime}
@@ -34,6 +34,11 @@ class FinancialDataController @Inject()(
   extends BackendController(cc) {
 
   val period = Period(2021, Q3)
+  val period2 = Period(2021, Q4)
+  val period3 = Period(2022, Q1)
+  val period4 = Period(2022, Q2)
+  val period5 = Period(2022, Q3)
+  val period6 = Period(2022, Q4)
   val items = Seq(
     Item(
       amount = Some(BigDecimal(1000)),
@@ -100,6 +105,48 @@ class FinancialDataController @Inject()(
     )
   )
 
+  val multipleItemsNotPaidItems = Seq(
+    Item(
+      amount = Some(BigDecimal(1000)),
+      clearingReason = Some("01"),
+      paymentReference = Some("a"),
+      paymentAmount = Some(BigDecimal(1000)),
+      paymentMethod = Some("A")
+    )
+  )
+  val multipleItemsNotPaidFinancialTransactions = Seq(
+    FinancialTransaction(
+      chargeType = Some("G Ret FR EU-OMS"),
+      mainType = None,
+      taxPeriodFrom = Some(period.firstDay),
+      taxPeriodTo = Some(period.lastDay),
+      originalAmount = Some(BigDecimal(1500)),
+      outstandingAmount = Some(BigDecimal(1000)),
+      clearedAmount = Some(BigDecimal(500)),
+      items = Some(somePaidItems)
+    ),
+    FinancialTransaction(
+      chargeType = Some("G Ret AT EU-OMS"),
+      mainType = None,
+      taxPeriodFrom = Some(period2.firstDay),
+      taxPeriodTo = Some(period2.lastDay),
+      originalAmount = Some(BigDecimal(1500)),
+      outstandingAmount = Some(BigDecimal(1500)),
+      clearedAmount = Some(BigDecimal(0)),
+      items = None
+    ),
+    FinancialTransaction(
+      chargeType = Some("G Ret ES EU-OMS"),
+      mainType = None,
+      taxPeriodFrom = Some(period5.firstDay),
+      taxPeriodTo = Some(period5.lastDay),
+      originalAmount = Some(BigDecimal(2500.99)),
+      outstandingAmount = Some(BigDecimal(2500.99)),
+      clearedAmount = Some(BigDecimal(0)),
+      items = None
+    )
+  )
+
   val notPaidFinancialTransactions = Seq(
     FinancialTransaction(
       chargeType = Some("G Ret FR EU-OMS"),
@@ -126,6 +173,7 @@ class FinancialDataController @Inject()(
       case '1' => successfulResponse.copy(financialTransactions = Some(allPaidFinancialTransactions))
       case '2' => successfulResponse.copy(financialTransactions = Some(somePaidFinancialTransactions))
       case '3' => successfulResponse.copy(financialTransactions = Some(notPaidFinancialTransactions))
+      case '4' => successfulResponse.copy(financialTransactions = Some(multipleItemsNotPaidFinancialTransactions))
       case _ => successfulResponse
     }
     Future.successful(Ok(Json.toJson(response)))
