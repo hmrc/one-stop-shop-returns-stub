@@ -57,10 +57,10 @@ class FinancialDataControllerSpec extends AnyWordSpec with Matchers {
 
   val somePaidItems = Seq(
     Item(
-      amount = Some(BigDecimal(1000)),
+      amount = Some(BigDecimal(500)),
       clearingReason = Some("01"),
       paymentReference = Some("a"),
-      paymentAmount = Some(BigDecimal(1000)),
+      paymentAmount = Some(BigDecimal(500)),
       paymentMethod = Some("A")
     )
   )
@@ -123,27 +123,6 @@ class FinancialDataControllerSpec extends AnyWordSpec with Matchers {
     }
 
     "return a all paid when vat number starts with 2" in {
-      val allPaidItems = Seq(
-        Item(
-          amount = Some(BigDecimal(1500)),
-          clearingReason = Some("01"),
-          paymentReference = Some("a"),
-          paymentAmount = Some(BigDecimal(1500)),
-          paymentMethod = Some("A")
-        )
-      )
-      val allPaidFinancialTransactions = Seq(
-        FinancialTransaction(
-          chargeType = Some("G Ret FR EU-OMS"),
-          mainType = None,
-          taxPeriodFrom = Some(period.firstDay),
-          taxPeriodTo = Some(period.lastDay),
-          originalAmount = Some(BigDecimal(1500)),
-          outstandingAmount = Some(BigDecimal(0)),
-          clearedAmount = Some(BigDecimal(1500)),
-          items = Some(allPaidItems)
-        )
-      )
 
       val result = controller.getFinancialData(idType = "", idNumber = "234567890", regimeType = "")(fakeRequest)
       status(result) shouldBe Status.OK
