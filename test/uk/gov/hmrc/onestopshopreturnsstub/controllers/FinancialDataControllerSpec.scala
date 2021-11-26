@@ -19,13 +19,13 @@ package uk.gov.hmrc.onestopshopreturnsstub.controllers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.http.Status
-import play.api.libs.json.{Json, JsSuccess}
+import play.api.libs.json.JsSuccess
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
-import uk.gov.hmrc.onestopshopreturnsstub.models.{FinancialDataResponse, FinancialTransaction, Item, Period}
 import uk.gov.hmrc.onestopshopreturnsstub.models.Quarter.Q3
+import uk.gov.hmrc.onestopshopreturnsstub.models.{FinancialDataResponse, FinancialTransaction, Item, Period}
 
-import java.time.{Clock, LocalDate, ZonedDateTime, ZoneId}
+import java.time.{Clock, LocalDate, ZoneId, ZonedDateTime}
 
 class FinancialDataControllerSpec extends AnyWordSpec with Matchers {
 
@@ -151,6 +151,17 @@ class FinancialDataControllerSpec extends AnyWordSpec with Matchers {
       contentAsJson(result).validate[FinancialDataResponse] shouldBe
         JsSuccess(successfulResponse.copy(
           financialTransactions = Some(notPaidFinancialTransactions)))
+    }
+
+    "return a no vat owed when vat number starts with 5" in {
+
+      val nothingOwedFinancialTransactions = None
+
+      val result = controller.getFinancialData(idType = "", idNumber = "545678900", regimeType = "")(fakeRequest)
+      status(result) shouldBe Status.OK
+      contentAsJson(result).validate[FinancialDataResponse] shouldBe
+        JsSuccess(successfulResponse.copy(
+          financialTransactions = nothingOwedFinancialTransactions))
     }
   }
 }

@@ -47,6 +47,7 @@ class FinancialDataController @Inject()(
       case '2' => successfulResponse.copy(financialTransactions = Some(TestData.somePaidFinancialTransactions))
       case '3' => successfulResponse.copy(financialTransactions = Some(TestData.notPaidFinancialTransactions))
       case '4' => successfulResponse.copy(financialTransactions = Some(TestData.multipleItemsNotPaidFinancialTransactions))
+      case '5' => successfulResponse.copy(financialTransactions = None)
       case _ => successfulResponse
     }
     Future.successful(Ok(Json.toJson(response)))
