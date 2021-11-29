@@ -18,7 +18,7 @@ package uk.gov.hmrc.onestopshopreturnsstub.controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.onestopshopreturnsstub.models.FinancialDataResponse
+import uk.gov.hmrc.onestopshopreturnsstub.models.{DateRange, FinancialDataResponse}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import java.time.{Clock, ZonedDateTime}
@@ -41,15 +41,30 @@ class FinancialDataController @Inject()(
     financialTransactions = Some(TestData.financialTransactions)
   )
 
-  def getFinancialData(idType: String, idNumber: String, regimeType: String): Action[AnyContent] = Action.async { implicit request =>
-    val response = idNumber.head match {
-      case '1' => successfulResponse.copy(financialTransactions = Some(TestData.allPaidFinancialTransactions))
-      case '2' => successfulResponse.copy(financialTransactions = Some(TestData.somePaidFinancialTransactions))
-      case '3' => successfulResponse.copy(financialTransactions = Some(TestData.notPaidFinancialTransactions))
-      case '4' => successfulResponse.copy(financialTransactions = Some(TestData.multipleItemsNotPaidFinancialTransactions))
-      case '5' => successfulResponse.copy(financialTransactions = None)
-      case _ => successfulResponse
+  def getFinancialData(idType: String, idNumber: String, regimeType: String, dateRange: DateRange): Action[AnyContent] = Action.async { implicit request =>
+
+    val (responseStatus, maybeFinancialTransactions) = idNumber.head match {
+      case '1' => (Ok, Some(TestData.allPaidFinancialTransactions))
+      case '2' => (Ok, Some(TestData.somePaidFinancialTransactions))
+      case '3' => (Ok, Some(TestData.notPaidFinancialTransactions))
+      case '4' => (Ok, Some(TestData.multipleItemsNotPaidFinancialTransactions))
+      case '5' => (NotFound, None)
+      case _ => (Ok, successfulResponse.financialTransactions)
     }
-    Future.successful(Ok(Json.toJson(response)))
+
+    val filteredFinancialTransactions = maybeFinancialTransactions.map { financialTransactions =>
+      val requestedYear = dateRange.toDate.getYear
+
+      financialTransactions.filter { financialTransaction =>
+        financialTransaction.taxPeriodTo.map(_.getYear).contains(requestedYear)
+      }
+    }
+
+    val response = successfulResponse.copy(financialTransactions = filteredFinancialTransactions)
+
+    Future.successful(responseStatus match {
+      case Ok => Ok(Json.toJson(response))
+      case NotFound => NotFound
+    })
   }
 }
