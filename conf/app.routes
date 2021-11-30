@@ -1,3 +1,3 @@
 # microservice specific routes
 
-GET        /enterprise/financial-data/:idType/:idNumber/:regimeType             uk.gov.hmrc.onestopshopreturnsstub.controllers.FinancialDataController.getFinancialData(idType: String, idNumber: String, regimeType: String)
+GET        /enterprise/financial-data/:idType/:idNumber/:regimeType             uk.gov.hmrc.onestopshopreturnsstub.controllers.FinancialDataController.getFinancialData(idType: String, idNumber: String, regimeType: String, dateRange: DateRange)

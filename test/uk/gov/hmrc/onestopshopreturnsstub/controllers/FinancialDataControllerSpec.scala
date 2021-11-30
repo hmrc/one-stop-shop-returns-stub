@@ -19,21 +19,24 @@ package uk.gov.hmrc.onestopshopreturnsstub.controllers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.http.Status
-import play.api.libs.json.{Json, JsSuccess}
+import play.api.libs.json.JsSuccess
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
-import uk.gov.hmrc.onestopshopreturnsstub.models.{FinancialDataResponse, FinancialTransaction, Item, Period}
 import uk.gov.hmrc.onestopshopreturnsstub.models.Quarter.Q3
+import uk.gov.hmrc.onestopshopreturnsstub.models.{DateRange, FinancialDataResponse, FinancialTransaction, Item, Period}
 
 import java.time.{Clock, LocalDate, ZonedDateTime, ZoneId}
 
 class FinancialDataControllerSpec extends AnyWordSpec with Matchers {
 
-  private val fakeRequest = FakeRequest("GET", routes.FinancialDataController.getFinancialData("", "0", "").url)
+  private val firstDateOfYear = LocalDate.of(2021, 1, 1)
+  private val lastDateOfYear = LocalDate.of(2021, 12, 31)
+  private val dateRange = DateRange(firstDateOfYear, lastDateOfYear)
+  private val fakeRequest = FakeRequest("GET", routes.FinancialDataController.getFinancialData("", "0", "", dateRange).url)
   private val stubClock: Clock = Clock.fixed(LocalDate.now.atStartOfDay(ZoneId.systemDefault).toInstant, ZoneId.systemDefault)
   private val controller = new FinancialDataController(Helpers.stubControllerComponents(), stubClock)
-  val period = Period(2021, Q3)
-  val items = Seq(
+  private val period = Period(2021, Q3)
+  private val items = Seq(
     Item(
       amount = Some(BigDecimal(1000)),
       clearingReason = Some("01"),
@@ -43,7 +46,7 @@ class FinancialDataControllerSpec extends AnyWordSpec with Matchers {
     )
   )
 
-  val financialTransactions = Seq(
+  private val financialTransactions = Seq(
     FinancialTransaction(
       chargeType = Some("G Ret FR EU-OMS"),
       mainType = None,
@@ -55,7 +58,7 @@ class FinancialDataControllerSpec extends AnyWordSpec with Matchers {
       items = Some(items)
     ))
 
-  val somePaidItems = Seq(
+  private val somePaidItems = Seq(
     Item(
       amount = Some(BigDecimal(500)),
       clearingReason = Some("01"),
@@ -64,7 +67,7 @@ class FinancialDataControllerSpec extends AnyWordSpec with Matchers {
       paymentMethod = Some("A")
     )
   )
-  val somePaidFinancialTransactions = Seq(
+  private val somePaidFinancialTransactions = Seq(
     FinancialTransaction(
       chargeType = Some("G Ret FR EU-OMS"),
       mainType = None,
@@ -77,7 +80,7 @@ class FinancialDataControllerSpec extends AnyWordSpec with Matchers {
     )
   )
 
-  val successfulResponse = FinancialDataResponse(
+  private val successfulResponse = FinancialDataResponse(
     idType = None,
     idNumber = None,
     regimeType = None,
@@ -87,7 +90,7 @@ class FinancialDataControllerSpec extends AnyWordSpec with Matchers {
 
   "GET /financial-data" should {
     "return a successful FinancialDataResponse" in {
-      val result = controller.getFinancialData(idType = "", idNumber = "012345678", regimeType = "")(fakeRequest)
+      val result = controller.getFinancialData(idType = "", idNumber = "012345678", regimeType = "", dateRange = dateRange)(fakeRequest)
       status(result) shouldBe Status.OK
       contentAsJson(result).validate[FinancialDataResponse] shouldBe JsSuccess(successfulResponse)
     }
@@ -115,7 +118,7 @@ class FinancialDataControllerSpec extends AnyWordSpec with Matchers {
         )
       )
 
-      val result = controller.getFinancialData(idType = "", idNumber = "123456789", regimeType = "")(fakeRequest)
+      val result = controller.getFinancialData(idType = "", idNumber = "123456789", regimeType = "", dateRange = dateRange)(fakeRequest)
       status(result) shouldBe Status.OK
       contentAsJson(result).validate[FinancialDataResponse] shouldBe
         JsSuccess(successfulResponse.copy(
@@ -124,7 +127,7 @@ class FinancialDataControllerSpec extends AnyWordSpec with Matchers {
 
     "return a all paid when vat number starts with 2" in {
 
-      val result = controller.getFinancialData(idType = "", idNumber = "234567890", regimeType = "")(fakeRequest)
+      val result = controller.getFinancialData(idType = "", idNumber = "234567890", regimeType = "", dateRange = dateRange)(fakeRequest)
       status(result) shouldBe Status.OK
       contentAsJson(result).validate[FinancialDataResponse] shouldBe
         JsSuccess(successfulResponse.copy(
@@ -146,11 +149,26 @@ class FinancialDataControllerSpec extends AnyWordSpec with Matchers {
         )
       )
 
-      val result = controller.getFinancialData(idType = "", idNumber = "345678900", regimeType = "")(fakeRequest)
+      val result = controller.getFinancialData(idType = "", idNumber = "345678900", regimeType = "", dateRange = dateRange)(fakeRequest)
       status(result) shouldBe Status.OK
       contentAsJson(result).validate[FinancialDataResponse] shouldBe
         JsSuccess(successfulResponse.copy(
           financialTransactions = Some(notPaidFinancialTransactions)))
+    }
+
+    "return empty for wrong year" in {
+
+      val result = controller.getFinancialData(idType = "", idNumber = "345678900", regimeType = "", dateRange = DateRange(LocalDate.of(2022, 1, 1), LocalDate.of(2022, 12, 31)))(fakeRequest)
+      status(result) shouldBe Status.OK
+      contentAsJson(result).validate[FinancialDataResponse] shouldBe
+        JsSuccess(successfulResponse.copy(
+          financialTransactions = Some(Seq.empty)))
+    }
+
+    "return a no vat owed when vat number starts with 5" in {
+
+      val result = controller.getFinancialData(idType = "", idNumber = "545678900", regimeType = "", dateRange = dateRange)(fakeRequest)
+      status(result) shouldBe Status.NOT_FOUND
     }
   }
 }
