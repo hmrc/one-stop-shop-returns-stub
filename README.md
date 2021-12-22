@@ -24,6 +24,26 @@ and
 sbt 'run 10206'
 ```
 
+Unit Tests
+------------
+
+To run the unit tests you will need to open an sbt session on the browser.
+
+To run all tests, run the following command in your sbt session:
+```
+test
+```
+
+To run a single test, run the following command in your sbt session:
+```
+testOnly <package>.<SpecName>
+```
+
+An asterisk can be used as a wildcard character without having to enter the package, as per the example below:
+```
+testOnly *FinancialDataControllerSpec
+```
+
 Requirements
 ------------
 
