@@ -18,6 +18,7 @@ package uk.gov.hmrc.onestopshopreturnsstub.controllers
 
 import play.api.libs.json.JsValue
 import play.api.mvc._
+import play.api.Logging
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
@@ -27,10 +28,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
 class CoreController  @Inject()(
-                                 cc: ControllerComponents,
-                                 clock: Clock
+                                 cc: ControllerComponents
                                )
-  extends BackendController(cc) {
+  extends BackendController(cc) with Logging {
 
   implicit val ec: ExecutionContext = cc.executionContext
 
@@ -39,6 +39,7 @@ class CoreController  @Inject()(
 
     JsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
       JsonSchemaHelper.applySchemaValidation("/resources/schemas/core_return.json", jsonBody) {
+        logger.info("Successfully submitted vat return")
         Future.successful(Accepted(""))
       }
     }
