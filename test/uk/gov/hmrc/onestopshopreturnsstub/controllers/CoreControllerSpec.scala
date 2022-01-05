@@ -68,10 +68,8 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
             BigDecimal(10)
           )),
           List(CoreMsestSupply(
-            CoreEuTraderId(
-              "41",
-              "DE"
-            ),
+            Some("DE"),
+            None,
             List(CoreSupply(
               "GOODS",
               BigDecimal(10),
