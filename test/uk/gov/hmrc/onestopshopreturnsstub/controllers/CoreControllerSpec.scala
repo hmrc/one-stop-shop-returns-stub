@@ -19,20 +19,23 @@ package uk.gov.hmrc.onestopshopreturnsstub.controllers
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.http.Status
-import play.api.libs.json.{Json, JsSuccess}
+import play.api.libs.json.Json
 import play.api.test.{FakeRequest, Helpers}
 import play.api.test.Helpers._
-import uk.gov.hmrc.onestopshopreturnsstub.models.core.{CoreCorrection, CoreErrorResponse, CoreEuTraderId, CoreMsconSupply, CoreMsestSupply, CorePeriod, CoreSupply, CoreTraderId, CoreVatReturn}
+import uk.gov.hmrc.onestopshopreturnsstub.models.core._
 import uk.gov.hmrc.onestopshopreturnsstub.models.Period
 import uk.gov.hmrc.onestopshopreturnsstub.models.Quarter._
+import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 
-import java.time.Instant
+import java.time.{Clock, Instant, LocalDate, ZoneId}
 
 class CoreControllerSpec extends AnyFreeSpec with Matchers {
 
 
   private val fakeRequest = FakeRequest(POST, routes.CoreController.submitVatReturn().url)
-  private val controller = new CoreController(Helpers.stubControllerComponents())
+  private val stubClock: Clock = Clock.fixed(LocalDate.now.atStartOfDay(ZoneId.systemDefault).toInstant, ZoneId.systemDefault)
+  private val jsonSchemaHelper = new JsonSchemaHelper(stubClock)
+  private val controller = new CoreController(Helpers.stubControllerComponents(), jsonSchemaHelper)
 
   "POST /oss/returns/v1/return" - {
     "Return ok when valid payload" in {

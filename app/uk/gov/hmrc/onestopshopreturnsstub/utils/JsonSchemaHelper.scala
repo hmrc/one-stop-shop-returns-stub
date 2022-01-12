@@ -32,34 +32,31 @@
 
 package uk.gov.hmrc.onestopshopreturnsstub.utils
 
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.{JsonNode, ObjectMapper}
 import com.github.fge.jsonschema.core.report.ProcessingReport
 import com.github.fge.jsonschema.main.{JsonSchema, JsonSchemaFactory}
 import play.api.libs.json.{Json, JsValue}
-import com.fasterxml.jackson.databind.{JsonNode, ObjectMapper}
-import com.fasterxml.jackson.core.JsonParser
-
-import scala.concurrent.Future
 import play.api.Logging
 import play.api.mvc._
 import play.api.mvc.Results._
-
-import scala.util.{Failure, Success, Try}
-import scala.io.Source
-import play.api.libs.json._
 import uk.gov.hmrc.onestopshopreturnsstub.models.core.CoreErrorResponse
 
-import java.time.Instant
+import java.time.{Clock, Instant}
 import java.util.UUID
+import javax.inject.Inject
 import scala.concurrent._
+import scala.io.Source
+import scala.util.{Failure, Success, Try}
 
-object JsonSchemaHelper extends Logging {
+class JsonSchemaHelper @Inject()(clock: Clock) extends Logging {
 
   private final lazy val jsonMapper = new ObjectMapper()
   private final lazy val jsonFactory = jsonMapper.getFactory
 
   private final lazy val correlationIdRegex = "^[0-9a-fA-F]{8}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{12}$"
 
-  def loadRequestSchema(requestSchema: JsValue): JsonSchema = {
+  private def loadRequestSchema(requestSchema: JsValue): JsonSchema = {
     val schemaMapper = new ObjectMapper()
     val factory = schemaMapper.getFactory
     val schemaParser: JsonParser = factory.createParser(requestSchema.toString)
@@ -67,26 +64,25 @@ object JsonSchemaHelper extends Logging {
     JsonSchemaFactory.byDefault().getJsonSchema(schemaJson)
   }
 
-  def validRequest(jsonSchema: JsValue, json: Option[JsValue]): Option[ProcessingReport] = {
+  private def validRequest(jsonSchema: JsValue, json: Option[JsValue]): Option[ProcessingReport] = {
     json.map { response =>
       val jsonParser = jsonFactory.createParser(response.toString)
       val jsonNode: JsonNode = jsonMapper.readTree(jsonParser)
-      val result: ProcessingReport = loadRequestSchema(jsonSchema).validate(jsonNode)
-      result
+      loadRequestSchema(jsonSchema).validate(jsonNode)
     }
   }
 
   def applySchemaValidation(schemaPath: String, jsonBody: Option[JsValue])(f: => Future[Result]): Future[Result] = {
     retrieveJsonSchema(schemaPath) match {
       case Success(schema) =>
-        val validationResult = JsonSchemaHelper.validRequest(schema, jsonBody)
+        val validationResult = validRequest(schema, jsonBody)
         validationResult match {
             case Some(res) if res.isSuccess => f
             case Some(res) =>
-              logger.info(s"validation error ${res.toString}")
-              Future.successful(BadRequest(Json.toJson(CoreErrorResponse(Instant.now(), UUID.randomUUID(), "OSS_400", "Bad Request"))))
+              logger.info(s"Validation error ${res.toString}")
+              Future.successful(BadRequest(Json.toJson(CoreErrorResponse(Instant.now(clock), None, "OSS_400", "Bad Request"))))
             case _ =>
-              Future.successful(BadRequest(Json.toJson(CoreErrorResponse(Instant.now(), UUID.randomUUID(), "OSS_400", "Missing Payload"))))
+              Future.successful(BadRequest(Json.toJson(CoreErrorResponse(Instant.now(clock), None, "OSS_400", "Missing Payload"))))
         }
       case Failure(e) =>
         logger.error(s"Error: ${e.getMessage}", e)
@@ -94,7 +90,7 @@ object JsonSchemaHelper extends Logging {
     }
   }
 
-  def retrieveJsonSchema(schemaPath: String): Try[JsValue] = {
+  private def retrieveJsonSchema(schemaPath: String): Try[JsValue] = {
     val jsonSchema = Try(Source.fromInputStream(getClass.getResourceAsStream(schemaPath)).mkString)
     jsonSchema.map(Json.parse)
   }
@@ -104,13 +100,11 @@ object JsonSchemaHelper extends Logging {
 
     maybeCorrelationId match {
       case Some(correlationId) if isValidCorrelationId(correlationId) => f.map(_.withHeaders("X-Correlation-ID" -> correlationId))
-      case Some(_) => Future.successful(BadRequest(Json.toJson(CoreErrorResponse(Instant.now(), UUID.randomUUID(), "OSS_400", "Bad Request - invalid correlationId"))))
+      case Some(_) => Future.successful(BadRequest(Json.toJson(CoreErrorResponse(Instant.now(), Some(UUID.randomUUID()), "OSS_400", "Bad Request - invalid correlationId"))))
       case _ => f
     }
-
-
   }
 
-  def isValidCorrelationId(correlationId: String): Boolean =
+  private def isValidCorrelationId(correlationId: String): Boolean =
     correlationId.matches(correlationIdRegex)
 }

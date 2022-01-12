@@ -28,7 +28,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
 class CoreController  @Inject()(
-                                 cc: ControllerComponents
+                                 cc: ControllerComponents,
+                                 jsonSchemaHelper: JsonSchemaHelper
                                )
   extends BackendController(cc) with Logging {
 
@@ -37,8 +38,8 @@ class CoreController  @Inject()(
   def submitVatReturn(): Action[AnyContent] = Action.async { implicit request =>
     val jsonBody: Option[JsValue] = request.body.asJson
 
-    JsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
-      JsonSchemaHelper.applySchemaValidation("/resources/schemas/core_return.json", jsonBody) {
+    jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
+      jsonSchemaHelper.applySchemaValidation("/resources/schemas/core_return.json", jsonBody) {
         logger.info("Successfully submitted vat return")
         Future.successful(Accepted(""))
       }
