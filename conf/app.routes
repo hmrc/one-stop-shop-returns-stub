@@ -2,4 +2,4 @@
 
 GET         /enterprise/financial-data/:idType/:idNumber/:regimeType        uk.gov.hmrc.onestopshopreturnsstub.controllers.FinancialDataController.getFinancialData(idType: String, idNumber: String, regimeType: String, dateRange: DateRange)
 
-POST        /oss/returns/v1/return                                          uk.gov.hmrc.onestopshopreturnsstub.controllers.CoreController.submitVatReturn()
+POST        /vec/submitossvatreturn/submitossvatreturnrequest/v1            uk.gov.hmrc.onestopshopreturnsstub.controllers.CoreController.submitVatReturn()
