@@ -16,20 +16,22 @@
 
 package uk.gov.hmrc.onestopshopreturnsstub.controllers
 
-import play.api.libs.json.JsValue
-import play.api.mvc._
 import play.api.Logging
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc._
+import uk.gov.hmrc.onestopshopreturnsstub.models.core.CoreErrorResponse
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
-import java.time.Clock
+import java.time.{Clock, Instant}
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
 class CoreController  @Inject()(
                                  cc: ControllerComponents,
-                                 jsonSchemaHelper: JsonSchemaHelper
+                                 jsonSchemaHelper: JsonSchemaHelper,
+                                 clock: Clock
                                )
   extends BackendController(cc) with Logging {
 
@@ -37,11 +39,18 @@ class CoreController  @Inject()(
 
   def submitVatReturn(): Action[AnyContent] = Action.async { implicit request =>
     val jsonBody: Option[JsValue] = request.body.asJson
-
     jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
       jsonSchemaHelper.applySchemaValidation("/resources/schemas/core_return.json", jsonBody) {
-        logger.info("Successfully submitted vat return")
-        Future.successful(Accepted(""))
+
+        val rawValue = jsonBody.map(body => (body \ "vatReturnReferenceNumber").as[String])
+        if(rawValue.exists(_.contains("222222222"))) {
+          logger.info("Resource not found: Registration")
+          Future.successful(BadRequest(Json.toJson(CoreErrorResponse(Instant.now(clock), None, "OSS_009", "Resource not found: Registration"))))
+        }else{
+          logger.info("Successfully submitted vat return")
+          Future.successful(Accepted(""))
+        }
+
       }
     }
   }
