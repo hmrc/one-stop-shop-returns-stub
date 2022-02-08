@@ -35,7 +35,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
   private val fakeRequest = FakeRequest(POST, routes.CoreController.submitVatReturn().url)
   private val stubClock: Clock = Clock.fixed(LocalDate.now.atStartOfDay(ZoneId.systemDefault).toInstant, ZoneId.systemDefault)
   private val jsonSchemaHelper = new JsonSchemaHelper(stubClock)
-  private val controller = new CoreController(Helpers.stubControllerComponents(), jsonSchemaHelper)
+  private val controller = new CoreController(Helpers.stubControllerComponents(), jsonSchemaHelper, stubClock)
 
   "POST /oss/returns/v1/return" - {
     "Return ok when valid payload" in {
@@ -93,6 +93,63 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
       val result = controller.submitVatReturn()(fakeRequestWithBody)
 
       status(result) shouldBe Status.ACCEPTED
+    }
+
+    "Return missing registration error for vrn 222222222" in {
+
+      val now = Instant.now()
+      val period = Period(2021, Q3)
+      val coreVatReturn = CoreVatReturn(
+        "XI/XI222222222/Q4.2021",
+        now.toString,
+        CoreTraderId(
+          "123456789AAA",
+          "XI"
+        ),
+        CorePeriod(
+          2021,
+          3
+        ),
+        period.firstDay,
+        period.lastDay,
+        now,
+        BigDecimal(5000),
+        List(CoreMsconSupply(
+          "DE",
+          BigDecimal(5000),
+          BigDecimal(1000),
+          BigDecimal(1000),
+          BigDecimal(1000),
+          List(CoreSupply(
+            "GOODS",
+            BigDecimal(10),
+            "STANDARD",
+            BigDecimal(10),
+            BigDecimal(10)
+          )),
+          List(CoreMsestSupply(
+            Some("DE"),
+            None,
+            List(CoreSupply(
+              "GOODS",
+              BigDecimal(10),
+              "STANDARD",
+              BigDecimal(10),
+              BigDecimal(100)
+            ))
+          )),
+          List(CoreCorrection(
+            CorePeriod(2021, 2),
+            BigDecimal(100)
+          ))
+        ))
+      )
+
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn))
+
+      val result = controller.submitVatReturn()(fakeRequestWithBody)
+
+      status(result) shouldBe Status.BAD_REQUEST
     }
 
     "Return error when invalid payload" in {
