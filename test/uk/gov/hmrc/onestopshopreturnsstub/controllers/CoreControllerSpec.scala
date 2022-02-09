@@ -27,7 +27,7 @@ import uk.gov.hmrc.onestopshopreturnsstub.models.Period
 import uk.gov.hmrc.onestopshopreturnsstub.models.Quarter._
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 
-import java.time.{Clock, Instant, LocalDate, ZoneId}
+import java.time.{Clock, Instant, LocalDate, LocalDateTime, ZoneId}
 
 class CoreControllerSpec extends AnyFreeSpec with Matchers {
 
@@ -161,6 +161,37 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
       val result = controller.submitVatReturn()(fakeRequestWithBody)
 
       status(result) shouldBe Status.BAD_REQUEST
+    }
+  }
+
+  "POST /oss/referencedata/v1/exchangerate must" - {
+    val timestamp = LocalDateTime.of(2022, 1, 1, 1, 1)
+    val base = "EUR"
+    val target = "GBP"
+    val rate = CoreRate(timestamp.toLocalDate, BigDecimal(10))
+    val exchangeRateRequest = CoreExchangeRateRequest(base, target, timestamp, Seq(rate))
+    "return ok for a valid json" in {
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(exchangeRateRequest))
+
+      val result = controller.submitRates()(fakeRequestWithBody)
+
+      status(result) shouldBe Status.OK
+    }
+
+    "return bad request for a invalid json" in {
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson("invalid json"))
+
+      val result = controller.submitRates()(fakeRequestWithBody)
+
+      status(result) shouldBe Status.BAD_REQUEST
+    }
+
+    "return Conflict for the 20th of the month" in {
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(exchangeRateRequest.copy(timestamp = LocalDateTime.of(2022, 1, 20, 1, 1))))
+
+      val result = controller.submitRates()(fakeRequestWithBody)
+
+      status(result) shouldBe Status.CONFLICT
     }
   }
 
