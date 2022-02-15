@@ -46,7 +46,10 @@ class CoreController  @Inject()(
         if(rawValue.exists(_.contains("222222222"))) {
           logger.info("Resource not found: Registration")
           Future.successful(BadRequest(Json.toJson(CoreErrorResponse(Instant.now(clock), None, "OSS_009", "Resource not found: Registration"))))
-        }else{
+        } else if(rawValue.exists(_.contains("222222223"))) {
+          logger.info("Error received from Core")
+          Future.successful(Forbidden(Json.toJson(CoreErrorResponse(Instant.now(clock), None, "OSS_123", "Error received from Core"))))
+        } else {
           logger.info("Successfully submitted vat return")
           Future.successful(Accepted(""))
         }
