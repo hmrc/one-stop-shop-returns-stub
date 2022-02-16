@@ -17,13 +17,13 @@
 package uk.gov.hmrc.onestopshopreturnsstub.controllers
 
 import play.api.Logging
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import play.api.mvc._
-import uk.gov.hmrc.onestopshopreturnsstub.models.core.CoreErrorResponse
+import uk.gov.hmrc.onestopshopreturnsstub.models.core.{CoreErrorResponse, CoreExchangeRateRequest}
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
-import java.time.{Clock, Instant}
+import java.time.{Clock, Instant, LocalDate, LocalDateTime}
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -56,6 +56,21 @@ class CoreController  @Inject()(
 
       }
     }
+  }
+
+  def submitRates(): Action[AnyContent] = Action.async {
+    implicit request =>
+      val jsonBody: Option[JsValue] = request.body.asJson
+      val validationResult = request.body.asJson.get.validateOpt[CoreExchangeRateRequest]
+
+      validationResult match {
+        case JsError(_) => Future.successful(BadRequest)
+        case JsSuccess(Some(value), _) if(value.timestamp.getDayOfMonth == 20) => Future.successful(Conflict)
+        case _ => Future.successful(Ok)
+      }
+
+
+
   }
 
 }
