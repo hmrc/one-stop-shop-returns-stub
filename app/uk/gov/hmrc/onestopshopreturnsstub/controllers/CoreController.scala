@@ -17,9 +17,9 @@
 package uk.gov.hmrc.onestopshopreturnsstub.controllers
 
 import play.api.Logging
-import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
+import play.api.libs.json.{JsError, Json, JsSuccess, JsValue}
 import play.api.mvc._
-import uk.gov.hmrc.onestopshopreturnsstub.models.core.{CoreErrorResponse, CoreExchangeRateRequest}
+import uk.gov.hmrc.onestopshopreturnsstub.models.core.{CoreErrorResponse, CoreExchangeRateRequest, EisErrorResponse}
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
@@ -45,10 +45,10 @@ class CoreController  @Inject()(
         val rawValue = jsonBody.map(body => (body \ "vatReturnReferenceNumber").as[String])
         if(rawValue.exists(_.contains("222222222"))) {
           logger.info("Resource not found: Registration")
-          Future.successful(BadRequest(Json.toJson(CoreErrorResponse(Instant.now(clock), None, "OSS_009", "Resource not found: Registration"))))
+          Future.successful(BadRequest(Json.toJson(EisErrorResponse(CoreErrorResponse(Instant.now(clock), None, "OSS_009", "Resource not found: Registration")))))
         } else if(rawValue.exists(_.contains("222222223"))) {
           logger.info("Error received from Core")
-          Future.successful(Forbidden(Json.toJson(CoreErrorResponse(Instant.now(clock), None, "OSS_123", "Error received from Core"))))
+          Future.successful(Forbidden(Json.toJson(EisErrorResponse(CoreErrorResponse(Instant.now(clock), None, "OSS_123", "Error received from Core")))))
         } else {
           logger.info("Successfully submitted vat return")
           Future.successful(Accepted(""))

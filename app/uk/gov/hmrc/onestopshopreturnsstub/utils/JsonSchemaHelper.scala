@@ -40,7 +40,7 @@ import play.api.libs.json.{Json, JsValue}
 import play.api.Logging
 import play.api.mvc._
 import play.api.mvc.Results._
-import uk.gov.hmrc.onestopshopreturnsstub.models.core.CoreErrorResponse
+import uk.gov.hmrc.onestopshopreturnsstub.models.core.{CoreErrorResponse, EisErrorResponse}
 
 import java.time.{Clock, Instant}
 import java.util.UUID
@@ -80,9 +80,9 @@ class JsonSchemaHelper @Inject()(clock: Clock) extends Logging {
             case Some(res) if res.isSuccess => f
             case Some(res) =>
               logger.info(s"Validation error ${res.toString}")
-              Future.successful(BadRequest(Json.toJson(CoreErrorResponse(Instant.now(clock), None, "OSS_400", "Bad Request"))))
+              Future.successful(BadRequest(Json.toJson(EisErrorResponse(CoreErrorResponse(Instant.now(clock), None, "OSS_400", "Bad Request")))))
             case _ =>
-              Future.successful(BadRequest(Json.toJson(CoreErrorResponse(Instant.now(clock), None, "OSS_400", "Missing Payload"))))
+              Future.successful(BadRequest(Json.toJson(EisErrorResponse(CoreErrorResponse(Instant.now(clock), None, "OSS_400", "Missing Payload")))))
         }
       case Failure(e) =>
         logger.error(s"Error: ${e.getMessage}", e)
@@ -100,7 +100,7 @@ class JsonSchemaHelper @Inject()(clock: Clock) extends Logging {
 
     maybeCorrelationId match {
       case Some(correlationId) if isValidCorrelationId(correlationId) => f.map(_.withHeaders("X-Correlation-ID" -> correlationId))
-      case Some(_) => Future.successful(BadRequest(Json.toJson(CoreErrorResponse(Instant.now(), Some(UUID.randomUUID()), "OSS_400", "Bad Request - invalid correlationId"))))
+      case Some(_) => Future.successful(BadRequest(Json.toJson(EisErrorResponse(CoreErrorResponse(Instant.now(), Some(UUID.randomUUID()), "OSS_400", "Bad Request - invalid correlationId")))))
       case _ => f
     }
   }
