@@ -22,7 +22,7 @@ import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.Json
 import play.api.mvc.Results.{Accepted, BadRequest}
 import play.api.test.Helpers._
-import uk.gov.hmrc.onestopshopreturnsstub.models.core.{CoreCorrection, CoreErrorResponse, CoreMsconSupply, CoreMsestSupply, CorePeriod, CoreSupply, CoreTraderId, CoreVatReturn}
+import uk.gov.hmrc.onestopshopreturnsstub.models.core.{CoreCorrection, CoreErrorResponse, CoreMsconSupply, CoreMsestSupply, CorePeriod, CoreSupply, CoreTraderId, CoreVatReturn, EisErrorResponse}
 import uk.gov.hmrc.onestopshopreturnsstub.models.Period
 import uk.gov.hmrc.onestopshopreturnsstub.models.Quarter.Q3
 
@@ -109,7 +109,7 @@ class JsonSchemaHelperSpec extends AnyFreeSpec with ScalaFutures with Matchers {
         }
 
         status(result) shouldBe BAD_REQUEST
-        contentAsJson(result) shouldBe Json.toJson(CoreErrorResponse(Instant.now(stubClock), None, "OSS_400", "Bad Request"))
+        contentAsJson(result) shouldBe Json.toJson(EisErrorResponse(CoreErrorResponse(Instant.now(stubClock), None, "OSS_400", "Bad Request")))
       }
 
       "when no json is passed" in {
@@ -118,7 +118,7 @@ class JsonSchemaHelperSpec extends AnyFreeSpec with ScalaFutures with Matchers {
         }
 
         status(result) shouldBe BAD_REQUEST
-        contentAsJson(result) shouldBe Json.toJson(CoreErrorResponse(Instant.now(stubClock), None, "OSS_400", "Missing Payload"))
+        contentAsJson(result) shouldBe Json.toJson(EisErrorResponse(CoreErrorResponse(Instant.now(stubClock), None, "OSS_400", "Missing Payload")))
       }
 
       "when schema doesn't exist" in {

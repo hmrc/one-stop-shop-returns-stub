@@ -112,3 +112,11 @@ case class CoreErrorResponse(
 object CoreErrorResponse {
   implicit val format: OFormat[CoreErrorResponse] = Json.format[CoreErrorResponse]
 }
+
+case class EisErrorResponse(
+                              errorDetail: CoreErrorResponse
+                            )
+
+object EisErrorResponse {
+  implicit val format: OFormat[EisErrorResponse] = Json.format[EisErrorResponse]
+}
