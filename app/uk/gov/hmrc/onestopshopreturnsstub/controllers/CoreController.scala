@@ -31,6 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CoreController  @Inject()(
                                  cc: ControllerComponents,
                                  jsonSchemaHelper: JsonSchemaHelper,
+                                 headerHelper: CoreVatReturnHeaderHelper,
                                  clock: Clock
                                )
   extends BackendController(cc) with Logging {
@@ -38,9 +39,12 @@ class CoreController  @Inject()(
   implicit val ec: ExecutionContext = cc.executionContext
 
   def submitVatReturn(): Action[AnyContent] = Action.async { implicit request =>
+
+    logger.info(s"Here's the request: ${request} ${request.headers} ${request.body}")
     val jsonBody: Option[JsValue] = request.body.asJson
     jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
       jsonSchemaHelper.applySchemaValidation("/resources/schemas/core_return.json", jsonBody) {
+
 
         val rawValue = jsonBody.map(body => (body \ "vatReturnReferenceNumber").as[String])
         if(rawValue.exists(_.contains("222222222"))) {
