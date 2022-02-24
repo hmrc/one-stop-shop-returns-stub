@@ -25,7 +25,7 @@ import java.util.Locale
 
 case object CoreVatReturnHeaderHelper {
   type HeaderValidationResult = Either[HeaderError, Unit]
-  private val X_CORRELATION_ID = "X-Correlation-ID"
+  private val X_CORRELATION_ID = "X-Correlation-Id"
   private final lazy val correlationIdRegex = "^[0-9a-fA-F]{8}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{12}$"
   private val dateTimeFormatter = DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss z")
     .withLocale(Locale.UK)

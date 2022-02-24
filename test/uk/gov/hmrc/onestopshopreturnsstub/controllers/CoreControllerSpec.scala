@@ -45,7 +45,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
   private val validHeaders: Seq[(String, String)] = Seq(
     (AUTHORIZATION, ""),
     (ACCEPT, MimeTypes.JSON),
-    ("X-Correlation-ID", UUID.randomUUID().toString),
+    ("X-Correlation-Id", UUID.randomUUID().toString),
     ("X-Forwarded-Host", ""),
     (CONTENT_TYPE, MimeTypes.JSON),
     (DATE, dateTimeFormatter.format(LocalDateTime.now())))

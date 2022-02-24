@@ -39,7 +39,7 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
       val headers: Seq[(String, String)] = Seq(
         (AUTHORIZATION, ""),
         (ACCEPT, MimeTypes.JSON),
-        ("X-Correlation-ID", UUID.randomUUID().toString),
+        ("X-Correlation-Id", UUID.randomUUID().toString),
         ("X-Forwarded-Host", ""),
         (CONTENT_TYPE, MimeTypes.JSON),
         (DATE, dateTimeFormatter.format(LocalDateTime.now())))
@@ -52,7 +52,7 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
       val headers: Seq[(String, String)] = Seq(
         (AUTHORIZATION, ""),
         (ACCEPT, MimeTypes.JSON),
-        ("X-Correlation-ID", UUID.randomUUID().toString),
+        ("X-Correlation-Id", UUID.randomUUID().toString),
         ("X-Forwarded-Host", ""),
         (DATE, dateTimeFormatter.format(LocalDateTime.now())))
 
@@ -69,7 +69,7 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
       val headers: Seq[(String, String)] = Seq(
         (AUTHORIZATION, ""),
         (ACCEPT, "something"),
-        ("X-Correlation-ID", UUID.randomUUID().toString),
+        ("X-Correlation-Id", UUID.randomUUID().toString),
         ("X-Forwarded-Host", ""),
         (CONTENT_TYPE, MimeTypes.JSON),
         (DATE, dateTimeFormatter.format(LocalDateTime.now())))
@@ -82,12 +82,12 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
       val headers: Seq[(String, String)] = Seq(
         (AUTHORIZATION, ""),
         (ACCEPT, MimeTypes.JSON),
-        ("X-Correlation-ID", "something"),
+        ("X-Correlation-Id", "something"),
         ("X-Forwarded-Host", ""),
         (CONTENT_TYPE, MimeTypes.JSON),
         (DATE, dateTimeFormatter.format(LocalDateTime.now())))
 
-      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe Left(InvalidHeader("X-Correlation-ID"))
+      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe Left(InvalidHeader("X-Correlation-Id"))
 
     }
 
@@ -95,7 +95,7 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
       val headers: Seq[(String, String)] = Seq(
         (AUTHORIZATION, ""),
         (ACCEPT, MimeTypes.JSON),
-        ("X-Correlation-ID", UUID.randomUUID().toString),
+        ("X-Correlation-Id", UUID.randomUUID().toString),
         ("X-Forwarded-Host", ""),
         (CONTENT_TYPE, "something"),
         (DATE, dateTimeFormatter.format(LocalDateTime.now())))
@@ -108,7 +108,7 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
       val headers: Seq[(String, String)] = Seq(
         (AUTHORIZATION, ""),
         (ACCEPT, MimeTypes.JSON),
-        ("X-Correlation-ID", UUID.randomUUID().toString),
+        ("X-Correlation-Id", UUID.randomUUID().toString),
         ("X-Forwarded-Host", ""),
         (CONTENT_TYPE, MimeTypes.JSON),
         (DATE, "something"))
