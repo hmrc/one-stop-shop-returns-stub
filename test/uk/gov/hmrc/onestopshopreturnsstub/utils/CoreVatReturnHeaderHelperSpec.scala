@@ -35,7 +35,7 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
 
   "CoreVatReturnHeaderHelper#" - {
 
-    "return true if all required headers are present and in the required format" in {
+    "return Right() if all required headers are present and in the required format" in {
       val headers: Seq[(String, String)] = Seq(
         (AUTHORIZATION, ""),
         (ACCEPT, MimeTypes.JSON),
@@ -44,11 +44,11 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
         (CONTENT_TYPE, MimeTypes.JSON),
         (DATE, dateTimeFormatter.format(LocalDateTime.now())))
 
-      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe true
+      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe Right()
 
     }
 
-    "return false if not all required headers are present" in {
+    "return Left(MissingHeader) if not all required headers are present" in {
       val headers: Seq[(String, String)] = Seq(
         (AUTHORIZATION, ""),
         (ACCEPT, MimeTypes.JSON),
@@ -56,16 +56,16 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
         ("X-Forwarded-Host", ""),
         (DATE, dateTimeFormatter.format(LocalDateTime.now())))
 
-      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe false
+      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe Left(MissingHeader(CONTENT_TYPE))
     }
 
-    "return false if no headers are present" in {
+    "return Left(MissingHeader) if no headers are present" in {
       val headers: Seq[(String, String)] = Seq.empty
 
-      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe false
+      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe Left(MissingHeader("X-Forwarded-Host"))
     }
 
-    "return false if accept is not in the required format" in {
+    "return Left(InvalidHeader) if accept is not in the required format" in {
       val headers: Seq[(String, String)] = Seq(
         (AUTHORIZATION, ""),
         (ACCEPT, "something"),
@@ -74,11 +74,11 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
         (CONTENT_TYPE, MimeTypes.JSON),
         (DATE, dateTimeFormatter.format(LocalDateTime.now())))
 
-      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe false
+      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe Left(InvalidHeader(ACCEPT))
 
     }
 
-    "return false if correlation id is not in the required format" in {
+    "return Left(InvalidHeader) if correlation id is not in the required format" in {
       val headers: Seq[(String, String)] = Seq(
         (AUTHORIZATION, ""),
         (ACCEPT, MimeTypes.JSON),
@@ -87,11 +87,11 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
         (CONTENT_TYPE, MimeTypes.JSON),
         (DATE, dateTimeFormatter.format(LocalDateTime.now())))
 
-      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe false
+      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe Left(InvalidHeader("X-Correlation-ID"))
 
     }
 
-    "return false if content type is not in the required format" in {
+    "return Left(InvalidHeader) if content type is not in the required format" in {
       val headers: Seq[(String, String)] = Seq(
         (AUTHORIZATION, ""),
         (ACCEPT, MimeTypes.JSON),
@@ -100,11 +100,11 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
         (CONTENT_TYPE, "something"),
         (DATE, dateTimeFormatter.format(LocalDateTime.now())))
 
-      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe false
+      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe Left(InvalidHeader(CONTENT_TYPE))
 
     }
 
-    "return false if date is not in the required format" in {
+    "return Left(InvalidHeader) if date is not in the required format" in {
       val headers: Seq[(String, String)] = Seq(
         (AUTHORIZATION, ""),
         (ACCEPT, MimeTypes.JSON),
@@ -113,7 +113,7 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
         (CONTENT_TYPE, MimeTypes.JSON),
         (DATE, "something"))
 
-      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe false
+      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe Left(InvalidHeader(DATE))
 
     }
   }

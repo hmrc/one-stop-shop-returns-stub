@@ -18,8 +18,10 @@ package uk.gov.hmrc.onestopshopreturnsstub.controllers
 
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
-import play.api.http.Status
+import play.api.http.HeaderNames.{ACCEPT, AUTHORIZATION, CONTENT_TYPE, DATE}
+import play.api.http.{MimeTypes, Status}
 import play.api.libs.json.Json
+import play.api.mvc.Headers
 import play.api.test.{FakeRequest, Helpers}
 import play.api.test.Helpers._
 import uk.gov.hmrc.onestopshopreturnsstub.models.core._
@@ -27,15 +29,28 @@ import uk.gov.hmrc.onestopshopreturnsstub.models.Period
 import uk.gov.hmrc.onestopshopreturnsstub.models.Quarter._
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 
+import java.time.format.DateTimeFormatter
 import java.time.{Clock, Instant, LocalDate, LocalDateTime, ZoneId}
+import java.util.{Locale, UUID}
 
 class CoreControllerSpec extends AnyFreeSpec with Matchers {
 
-
+  private val dateTimeFormatter = DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss z")
+    .withLocale(Locale.UK)
+    .withZone(ZoneId.of("GMT"))
   private val fakeRequest = FakeRequest(POST, routes.CoreController.submitVatReturn().url)
   private val stubClock: Clock = Clock.fixed(LocalDate.now.atStartOfDay(ZoneId.systemDefault).toInstant, ZoneId.systemDefault)
   private val jsonSchemaHelper = new JsonSchemaHelper(stubClock)
   private val controller = new CoreController(Helpers.stubControllerComponents(), jsonSchemaHelper, stubClock)
+  private val validHeaders: Seq[(String, String)] = Seq(
+    (AUTHORIZATION, ""),
+    (ACCEPT, MimeTypes.JSON),
+    ("X-Correlation-ID", UUID.randomUUID().toString),
+    ("X-Forwarded-Host", ""),
+    (CONTENT_TYPE, MimeTypes.JSON),
+    (DATE, dateTimeFormatter.format(LocalDateTime.now())))
+
+  val validFakeHeaders = new Headers(validHeaders)
 
   "POST /oss/returns/v1/return" - {
     "Return ok when valid payload" in {
@@ -88,7 +103,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
         ))
       )
 
-      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn))
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn)).withHeaders(validFakeHeaders)
 
       val result = controller.submitVatReturn()(fakeRequestWithBody)
 
@@ -146,6 +161,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
       )
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn))
+        .withHeaders(validFakeHeaders)
 
       val result = controller.submitVatReturn()(fakeRequestWithBody)
 
@@ -156,7 +172,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
 
       val coreVatReturn = """{"badJson":"bad"}""""
 
-      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn))
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn)).withHeaders(validFakeHeaders)
 
       val result = controller.submitVatReturn()(fakeRequestWithBody)
 
