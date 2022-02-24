@@ -17,20 +17,63 @@
 package uk.gov.hmrc.onestopshopreturnsstub.utils
 
 import play.api.http.HeaderNames._
+import play.api.http.MimeTypes
+
+import java.time.ZoneId
+import java.time.format.{DateTimeFormatter, DateTimeParseException}
+import java.util.Locale
+import scala.concurrent.{ExecutionContext, Future}
 
 case object CoreVatReturnHeaderHelper {
 
-  def validateHeaders(headers: Seq[(String, String)]): Boolean = {
-    val requiredHeaders = Seq(
-      AUTHORIZATION,
-      ACCEPT,
-      "x-correlation-id",
-      "X-Forwarded-Host",
-      CONTENT_TYPE,
-      DATE
-    )
+  private val X_CORRELATION_ID = "X-Correlation-ID"
+  private final lazy val correlationIdRegex = "^[0-9a-fA-F]{8}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{4}[-][0-9a-fA-F]{12}$"
+  private val dateTimeFormatter = DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss z")
+    .withLocale(Locale.UK)
+    .withZone(ZoneId.of("GMT"))
 
-    requiredHeaders.forall(headers.map(_._1).contains)
+  private def validateCorrelationId(headers: Seq[(String, String)]) = {
+    headers.find(_._1 == X_CORRELATION_ID).exists(_._2.matches(correlationIdRegex))
+  }
+
+  private def validateContentType(headers: Seq[(String, String)]) = {
+    headers.find(_._1 == CONTENT_TYPE).exists(_._2 == MimeTypes.JSON)
+  }
+
+  private def validateAccept(headers: Seq[(String, String)]) = {
+    headers.find(_._1 == ACCEPT).exists(_._2 == MimeTypes.JSON)
+  }
+
+  private def validateDate(headers: Seq[(String, String)]) = {
+    val dateHeader = headers.find(_._1 == DATE)
+    try {
+      if (dateHeader.isDefined) {
+        dateTimeFormatter.parse(dateHeader.get._2)
+        true
+      } else {
+        false
+      }
+    }
+    catch {
+      case _: DateTimeParseException => false
+    }
+  }
+
+  private def validateHost(headers:Seq[(String, String)]) = {
+    headers.exists(_._1 == X_FORWARDED_HOST)
+  }
+
+  private def validateAuthorisation(headers: Seq[(String, String)]) = {
+    headers.exists(_._1 == AUTHORIZATION)
+  }
+
+  def validateHeaders(headers: Seq[(String, String)]): Boolean = {
+    validateHost(headers)&&
+      validateDate(headers) &&
+      validateAccept(headers) &&
+      validateAuthorisation(headers) &&
+      validateContentType(headers) &&
+      validateCorrelationId(headers)
   }
 
 }

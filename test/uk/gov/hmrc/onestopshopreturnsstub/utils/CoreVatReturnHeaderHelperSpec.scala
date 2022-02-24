@@ -21,19 +21,28 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import org.scalatest.matchers.should.Matchers
 import play.api.http.HeaderNames.{ACCEPT, AUTHORIZATION, CONTENT_TYPE, DATE}
+import play.api.http.MimeTypes
 import uk.gov.hmrc.onestopshopreturnsstub.utils.CoreVatReturnHeaderHelper
+
+import java.time.{LocalDate, LocalDateTime, ZoneId}
+import java.time.format.DateTimeFormatter
+import java.util.{Locale, UUID}
 class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with Matchers {
+
+  private val dateTimeFormatter = DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss z")
+    .withLocale(Locale.UK)
+    .withZone(ZoneId.of("GMT"))
 
   "CoreVatReturnHeaderHelper#" - {
 
-    "return true if all required headers are present" in {
+    "return true if all required headers are present and in the required format" in {
       val headers: Seq[(String, String)] = Seq(
         (AUTHORIZATION, ""),
-        (ACCEPT, ""),
-        ("x-correlation-id", ""),
+        (ACCEPT, MimeTypes.JSON),
+        ("X-Correlation-ID", UUID.randomUUID().toString),
         ("X-Forwarded-Host", ""),
-        (CONTENT_TYPE, ""),
-        (DATE, ""))
+        (CONTENT_TYPE, MimeTypes.JSON),
+        (DATE, dateTimeFormatter.format(LocalDateTime.now())))
 
       CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe true
 
@@ -42,10 +51,10 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
     "return false if not all required headers are present" in {
       val headers: Seq[(String, String)] = Seq(
         (AUTHORIZATION, ""),
-        (ACCEPT, ""),
-        ("x-correlation-id", ""),
-        (CONTENT_TYPE, ""),
-        (DATE, ""))
+        (ACCEPT, MimeTypes.JSON),
+        ("X-Correlation-ID", UUID.randomUUID().toString),
+        ("X-Forwarded-Host", ""),
+        (DATE, dateTimeFormatter.format(LocalDateTime.now())))
 
       CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe false
     }
@@ -54,6 +63,58 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
       val headers: Seq[(String, String)] = Seq.empty
 
       CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe false
+    }
+
+    "return false if accept is not in the required format" in {
+      val headers: Seq[(String, String)] = Seq(
+        (AUTHORIZATION, ""),
+        (ACCEPT, "something"),
+        ("X-Correlation-ID", UUID.randomUUID().toString),
+        ("X-Forwarded-Host", ""),
+        (CONTENT_TYPE, MimeTypes.JSON),
+        (DATE, dateTimeFormatter.format(LocalDateTime.now())))
+
+      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe false
+
+    }
+
+    "return false if correlation id is not in the required format" in {
+      val headers: Seq[(String, String)] = Seq(
+        (AUTHORIZATION, ""),
+        (ACCEPT, MimeTypes.JSON),
+        ("X-Correlation-ID", "something"),
+        ("X-Forwarded-Host", ""),
+        (CONTENT_TYPE, MimeTypes.JSON),
+        (DATE, dateTimeFormatter.format(LocalDateTime.now())))
+
+      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe false
+
+    }
+
+    "return false if content type is not in the required format" in {
+      val headers: Seq[(String, String)] = Seq(
+        (AUTHORIZATION, ""),
+        (ACCEPT, MimeTypes.JSON),
+        ("X-Correlation-ID", UUID.randomUUID().toString),
+        ("X-Forwarded-Host", ""),
+        (CONTENT_TYPE, "something"),
+        (DATE, dateTimeFormatter.format(LocalDateTime.now())))
+
+      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe false
+
+    }
+
+    "return false if date is not in the required format" in {
+      val headers: Seq[(String, String)] = Seq(
+        (AUTHORIZATION, ""),
+        (ACCEPT, MimeTypes.JSON),
+        ("X-Correlation-ID", UUID.randomUUID().toString),
+        ("X-Forwarded-Host", ""),
+        (CONTENT_TYPE, MimeTypes.JSON),
+        (DATE, "something"))
+
+      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe false
+
     }
   }
 
