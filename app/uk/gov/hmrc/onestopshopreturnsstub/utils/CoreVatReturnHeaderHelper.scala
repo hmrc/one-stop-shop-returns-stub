@@ -18,7 +18,7 @@ package uk.gov.hmrc.onestopshopreturnsstub.utils
 
 import play.api.http.HeaderNames._
 
-class CoreVatReturnHeaderHelper {
+case object CoreVatReturnHeaderHelper {
 
   def validateHeaders(headers: Seq[(String, String)]): Boolean = {
     val requiredHeaders = Seq(
@@ -30,7 +30,7 @@ class CoreVatReturnHeaderHelper {
       DATE
     )
 
-    headers.map(_._1).forall(requiredHeaders.contains)
+    requiredHeaders.forall(headers.map(_._1).contains)
   }
 
 }

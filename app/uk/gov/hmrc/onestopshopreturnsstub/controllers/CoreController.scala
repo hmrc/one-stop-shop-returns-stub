@@ -17,10 +17,10 @@
 package uk.gov.hmrc.onestopshopreturnsstub.controllers
 
 import play.api.Logging
-import play.api.libs.json.{JsError, Json, JsSuccess, JsValue}
+import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import play.api.mvc._
 import uk.gov.hmrc.onestopshopreturnsstub.models.core.{CoreErrorResponse, CoreExchangeRateRequest, EisErrorResponse}
-import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
+import uk.gov.hmrc.onestopshopreturnsstub.utils.{CoreVatReturnHeaderHelper, JsonSchemaHelper}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import java.time.{Clock, Instant, LocalDate, LocalDateTime}
@@ -31,7 +31,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class CoreController  @Inject()(
                                  cc: ControllerComponents,
                                  jsonSchemaHelper: JsonSchemaHelper,
-                                 headerHelper: CoreVatReturnHeaderHelper,
                                  clock: Clock
                                )
   extends BackendController(cc) with Logging {
