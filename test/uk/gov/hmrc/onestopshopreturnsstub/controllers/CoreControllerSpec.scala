@@ -178,6 +178,63 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
 
       status(result) shouldBe Status.BAD_REQUEST
     }
+
+    "Return bad request when headers are missing" in {
+
+      val now = Instant.now()
+      val period = Period(2021, Q3)
+      val coreVatReturn = CoreVatReturn(
+        "XI/XI123456789/Q4.2021",
+        now.toString,
+        CoreTraderId(
+          "123456789AAA",
+          "XI"
+        ),
+        CorePeriod(
+          2021,
+          3
+        ),
+        period.firstDay,
+        period.lastDay,
+        now,
+        BigDecimal(5000),
+        List(CoreMsconSupply(
+          "DE",
+          BigDecimal(5000),
+          BigDecimal(1000),
+          BigDecimal(1000),
+          BigDecimal(1000),
+          List(CoreSupply(
+            "GOODS",
+            BigDecimal(10),
+            "STANDARD",
+            BigDecimal(10),
+            BigDecimal(10)
+          )),
+          List(CoreMsestSupply(
+            Some("DE"),
+            None,
+            List(CoreSupply(
+              "GOODS",
+              BigDecimal(10),
+              "STANDARD",
+              BigDecimal(10),
+              BigDecimal(100)
+            ))
+          )),
+          List(CoreCorrection(
+            CorePeriod(2021, 2),
+            BigDecimal(100)
+          ))
+        ))
+      )
+
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn))
+
+      val result = controller.submitVatReturn()(fakeRequestWithBody)
+
+      status(result) shouldBe Status.BAD_REQUEST
+    }
   }
 
   "POST /oss/referencedata/v1/exchangerate must" - {
@@ -187,7 +244,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
     val rate = CoreRate(timestamp.toLocalDate, BigDecimal(10))
     val exchangeRateRequest = CoreExchangeRateRequest(base, target, timestamp, Seq(rate))
     "return ok for a valid json" in {
-      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(exchangeRateRequest))
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(exchangeRateRequest)).withHeaders(validFakeHeaders)
 
       val result = controller.submitRates()(fakeRequestWithBody)
 
@@ -195,7 +252,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
     }
 
     "return bad request for a invalid json" in {
-      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson("invalid json"))
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson("invalid json")).withHeaders(validFakeHeaders)
 
       val result = controller.submitRates()(fakeRequestWithBody)
 
@@ -203,11 +260,19 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
     }
 
     "return Conflict for the 20th of the month" in {
-      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(exchangeRateRequest.copy(timestamp = LocalDateTime.of(2022, 1, 20, 1, 1))))
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(exchangeRateRequest.copy(timestamp = LocalDateTime.of(2022, 1, 20, 1, 1)))).withHeaders(validFakeHeaders)
 
       val result = controller.submitRates()(fakeRequestWithBody)
 
       status(result) shouldBe Status.CONFLICT
+    }
+
+    "return bad request for missing headers" in {
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(exchangeRateRequest))
+
+      val result = controller.submitRates()(fakeRequestWithBody)
+
+      status(result) shouldBe Status.BAD_REQUEST
     }
   }
 

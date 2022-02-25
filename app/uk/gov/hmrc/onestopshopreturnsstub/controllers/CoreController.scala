@@ -64,12 +64,14 @@ class CoreController  @Inject()(
   def submitRates(): Action[AnyContent] = Action.async {
     implicit request =>
       val jsonBody: Option[JsValue] = request.body.asJson
-      val validationResult = request.body.asJson.get.validateOpt[CoreExchangeRateRequest]
+      jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
+        val validationResult = jsonBody.get.validateOpt[CoreExchangeRateRequest]
 
-      validationResult match {
-        case JsError(_) => Future.successful(BadRequest)
-        case JsSuccess(Some(value), _) if(value.timestamp.getDayOfMonth == 20) => Future.successful(Conflict)
-        case _ => Future.successful(Ok)
+        validationResult match {
+          case JsError(_) => Future.successful(BadRequest)
+          case JsSuccess(Some(value), _) if (value.timestamp.getDayOfMonth == 20) => Future.successful(Conflict)
+          case _ => Future.successful(Ok)
+        }
       }
 
 
