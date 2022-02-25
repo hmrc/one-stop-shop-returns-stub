@@ -32,7 +32,7 @@ case object CoreVatReturnHeaderHelper {
     .withZone(ZoneId.of("GMT"))
 
   private def validateCorrelationId(headers: Seq[(String, String)]): HeaderValidationResult = {
-    headers.find(_._1 == X_CORRELATION_ID)
+    headers.find(_._1.equalsIgnoreCase(X_CORRELATION_ID))
       .map(correlation =>
         if(correlation._2.matches(correlationIdRegex)) Right()
         else Left(InvalidHeader(X_CORRELATION_ID))
@@ -40,7 +40,7 @@ case object CoreVatReturnHeaderHelper {
   }
 
   private def validateContentType(headers: Seq[(String, String)]): HeaderValidationResult = {
-    headers.find(_._1 == CONTENT_TYPE)
+    headers.find(_._1.equalsIgnoreCase(CONTENT_TYPE))
       .map(content =>
         if(content._2 == MimeTypes.JSON) Right()
         else Left(InvalidHeader(CONTENT_TYPE))
@@ -48,7 +48,7 @@ case object CoreVatReturnHeaderHelper {
   }
 
   private def validateAccept(headers: Seq[(String, String)]): HeaderValidationResult = {
-    headers.find(_._1 == ACCEPT)
+    headers.find(_._1.equalsIgnoreCase(ACCEPT))
       .map(
         accept =>
           if(accept._2 == MimeTypes.JSON) Right()
@@ -57,7 +57,7 @@ case object CoreVatReturnHeaderHelper {
   }
 
   private def validateDate(headers: Seq[(String, String)]): HeaderValidationResult = {
-    val dateHeader = headers.find(_._1 == DATE)
+    val dateHeader = headers.find(_._1.equalsIgnoreCase(DATE))
     try {
       if (dateHeader.isDefined) {
         dateTimeFormatter.parse(dateHeader.get._2)
@@ -72,7 +72,7 @@ case object CoreVatReturnHeaderHelper {
   }
 
   private def validateHost(headers:Seq[(String, String)]): HeaderValidationResult = {
-    if(headers.exists(_._1 == X_FORWARDED_HOST)) Right()
+    if(headers.exists(_._1.equalsIgnoreCase(X_FORWARDED_HOST))) Right()
     else Left(MissingHeader(X_FORWARDED_HOST))
   }
 
