@@ -76,8 +76,15 @@ case object CoreVatReturnHeaderHelper {
     else Left(MissingHeader(X_FORWARDED_HOST))
   }
 
+  private def validateAuthorization(headers: Seq[(String, String)]): HeaderValidationResult = {
+    if(headers.exists(_._1.equalsIgnoreCase(AUTHORIZATION))) Right()
+    else Left(MissingHeader(AUTHORIZATION))
+  }
+
   def validateHeaders(headers: Seq[(String, String)]): Either[HeaderError, Unit] = {
-    val results = Seq(validateHost(headers),
+    val results = Seq(
+      validateAuthorization(headers),
+      validateHost(headers),
       validateDate(headers),
       validateAccept(headers),
       validateContentType(headers),

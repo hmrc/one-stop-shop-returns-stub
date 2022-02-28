@@ -62,7 +62,7 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
     "return Left(MissingHeader) if no headers are present" in {
       val headers: Seq[(String, String)] = Seq.empty
 
-      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe Left(MissingHeader("X-Forwarded-Host"))
+      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe Left(MissingHeader(AUTHORIZATION))
     }
 
     "return Left(InvalidHeader) if accept is not in the required format" in {
