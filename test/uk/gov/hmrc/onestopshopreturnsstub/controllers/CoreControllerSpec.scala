@@ -18,8 +18,10 @@ package uk.gov.hmrc.onestopshopreturnsstub.controllers
 
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
-import play.api.http.Status
+import play.api.http.HeaderNames.{ACCEPT, AUTHORIZATION, CONTENT_TYPE, DATE}
+import play.api.http.{MimeTypes, Status}
 import play.api.libs.json.Json
+import play.api.mvc.Headers
 import play.api.test.{FakeRequest, Helpers}
 import play.api.test.Helpers._
 import uk.gov.hmrc.onestopshopreturnsstub.models.core._
@@ -27,15 +29,28 @@ import uk.gov.hmrc.onestopshopreturnsstub.models.Period
 import uk.gov.hmrc.onestopshopreturnsstub.models.Quarter._
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 
+import java.time.format.DateTimeFormatter
 import java.time.{Clock, Instant, LocalDate, LocalDateTime, ZoneId}
+import java.util.{Locale, UUID}
 
 class CoreControllerSpec extends AnyFreeSpec with Matchers {
 
-
+  private val dateTimeFormatter = DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss z")
+    .withLocale(Locale.UK)
+    .withZone(ZoneId.of("GMT"))
   private val fakeRequest = FakeRequest(POST, routes.CoreController.submitVatReturn().url)
   private val stubClock: Clock = Clock.fixed(LocalDate.now.atStartOfDay(ZoneId.systemDefault).toInstant, ZoneId.systemDefault)
   private val jsonSchemaHelper = new JsonSchemaHelper(stubClock)
   private val controller = new CoreController(Helpers.stubControllerComponents(), jsonSchemaHelper, stubClock)
+  private val validHeaders: Seq[(String, String)] = Seq(
+    (AUTHORIZATION, ""),
+    (ACCEPT, MimeTypes.JSON),
+    ("X-Correlation-Id", UUID.randomUUID().toString),
+    ("X-Forwarded-Host", ""),
+    (CONTENT_TYPE, MimeTypes.JSON),
+    (DATE, dateTimeFormatter.format(LocalDateTime.now())))
+
+  val validFakeHeaders = new Headers(validHeaders)
 
   "POST /oss/returns/v1/return" - {
     "Return ok when valid payload" in {
@@ -88,7 +103,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
         ))
       )
 
-      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn))
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn)).withHeaders(validFakeHeaders)
 
       val result = controller.submitVatReturn()(fakeRequestWithBody)
 
@@ -146,6 +161,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
       )
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn))
+        .withHeaders(validFakeHeaders)
 
       val result = controller.submitVatReturn()(fakeRequestWithBody)
 
@@ -155,6 +171,63 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
     "Return error when invalid payload" in {
 
       val coreVatReturn = """{"badJson":"bad"}""""
+
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn)).withHeaders(validFakeHeaders)
+
+      val result = controller.submitVatReturn()(fakeRequestWithBody)
+
+      status(result) shouldBe Status.BAD_REQUEST
+    }
+
+    "Return bad request when headers are missing" in {
+
+      val now = Instant.now()
+      val period = Period(2021, Q3)
+      val coreVatReturn = CoreVatReturn(
+        "XI/XI123456789/Q4.2021",
+        now.toString,
+        CoreTraderId(
+          "123456789AAA",
+          "XI"
+        ),
+        CorePeriod(
+          2021,
+          3
+        ),
+        period.firstDay,
+        period.lastDay,
+        now,
+        BigDecimal(5000),
+        List(CoreMsconSupply(
+          "DE",
+          BigDecimal(5000),
+          BigDecimal(1000),
+          BigDecimal(1000),
+          BigDecimal(1000),
+          List(CoreSupply(
+            "GOODS",
+            BigDecimal(10),
+            "STANDARD",
+            BigDecimal(10),
+            BigDecimal(10)
+          )),
+          List(CoreMsestSupply(
+            Some("DE"),
+            None,
+            List(CoreSupply(
+              "GOODS",
+              BigDecimal(10),
+              "STANDARD",
+              BigDecimal(10),
+              BigDecimal(100)
+            ))
+          )),
+          List(CoreCorrection(
+            CorePeriod(2021, 2),
+            BigDecimal(100)
+          ))
+        ))
+      )
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn))
 
@@ -171,7 +244,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
     val rate = CoreRate(timestamp.toLocalDate, BigDecimal(10))
     val exchangeRateRequest = CoreExchangeRateRequest(base, target, timestamp, Seq(rate))
     "return ok for a valid json" in {
-      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(exchangeRateRequest))
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(exchangeRateRequest)).withHeaders(validFakeHeaders)
 
       val result = controller.submitRates()(fakeRequestWithBody)
 
@@ -179,7 +252,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
     }
 
     "return bad request for a invalid json" in {
-      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson("invalid json"))
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson("invalid json")).withHeaders(validFakeHeaders)
 
       val result = controller.submitRates()(fakeRequestWithBody)
 
@@ -187,11 +260,19 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
     }
 
     "return Conflict for the 20th of the month" in {
-      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(exchangeRateRequest.copy(timestamp = LocalDateTime.of(2022, 1, 20, 1, 1))))
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(exchangeRateRequest.copy(timestamp = LocalDateTime.of(2022, 1, 20, 1, 1)))).withHeaders(validFakeHeaders)
 
       val result = controller.submitRates()(fakeRequestWithBody)
 
       status(result) shouldBe Status.CONFLICT
+    }
+
+    "return bad request for missing headers" in {
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(exchangeRateRequest))
+
+      val result = controller.submitRates()(fakeRequestWithBody)
+
+      status(result) shouldBe Status.BAD_REQUEST
     }
   }
 

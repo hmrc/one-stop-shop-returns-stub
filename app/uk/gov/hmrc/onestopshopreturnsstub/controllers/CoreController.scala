@@ -17,10 +17,10 @@
 package uk.gov.hmrc.onestopshopreturnsstub.controllers
 
 import play.api.Logging
-import play.api.libs.json.{JsError, Json, JsSuccess, JsValue}
+import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import play.api.mvc._
 import uk.gov.hmrc.onestopshopreturnsstub.models.core.{CoreErrorResponse, CoreExchangeRateRequest, EisErrorResponse}
-import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
+import uk.gov.hmrc.onestopshopreturnsstub.utils.{CoreVatReturnHeaderHelper, JsonSchemaHelper}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import java.time.{Clock, Instant, LocalDate, LocalDateTime}
@@ -38,9 +38,12 @@ class CoreController  @Inject()(
   implicit val ec: ExecutionContext = cc.executionContext
 
   def submitVatReturn(): Action[AnyContent] = Action.async { implicit request =>
+
+    logger.info(s"Here's the request: ${request} ${request.headers} ${request.body}")
     val jsonBody: Option[JsValue] = request.body.asJson
     jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
       jsonSchemaHelper.applySchemaValidation("/resources/schemas/core_return.json", jsonBody) {
+
 
         val rawValue = jsonBody.map(body => (body \ "vatReturnReferenceNumber").as[String])
         if(rawValue.exists(_.contains("222222222"))) {
@@ -61,12 +64,14 @@ class CoreController  @Inject()(
   def submitRates(): Action[AnyContent] = Action.async {
     implicit request =>
       val jsonBody: Option[JsValue] = request.body.asJson
-      val validationResult = request.body.asJson.get.validateOpt[CoreExchangeRateRequest]
+      jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
+        val validationResult = jsonBody.get.validateOpt[CoreExchangeRateRequest]
 
-      validationResult match {
-        case JsError(_) => Future.successful(BadRequest)
-        case JsSuccess(Some(value), _) if(value.timestamp.getDayOfMonth == 20) => Future.successful(Conflict)
-        case _ => Future.successful(Ok)
+        validationResult match {
+          case JsError(_) => Future.successful(BadRequest)
+          case JsSuccess(Some(value), _) if (value.timestamp.getDayOfMonth == 20) => Future.successful(Conflict)
+          case _ => Future.successful(Ok)
+        }
       }
 
 
