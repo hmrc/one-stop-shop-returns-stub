@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter
 import java.util.{Locale, UUID}
 class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with Matchers {
 
-  private val dateTimeFormatter = DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss z")
+  private val dateTimeFormatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z")
     .withLocale(Locale.UK)
     .withZone(ZoneId.of("GMT"))
 
