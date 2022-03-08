@@ -69,7 +69,7 @@ class CoreController  @Inject()(
 
         validationResult match {
           case JsError(_) => Future.successful(BadRequest)
-          case JsSuccess(Some(value), _) if (LocalDateTime.ofInstant(value.timestamp, ZoneId.systemDefault()).getDayOfMonth == 20) => Future.successful(Conflict)
+          case JsSuccess(Some(value), _) if (value.timestamp.getDayOfMonth == 20) => Future.successful(Conflict)
           case _ => Future.successful(Ok)
         }
       }
