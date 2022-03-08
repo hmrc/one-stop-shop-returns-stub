@@ -53,7 +53,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
   val validFakeHeaders = new Headers(validHeaders)
 
   "POST /oss/returns/v1/return" - {
-    "Return ok when valid payload" in {
+    "Return accepted when valid payload" in {
 
       val now = Instant.now()
       val period = Period(2021, Q3)
@@ -320,13 +320,13 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
       timestamp.toInstant(ZoneOffset.of("Z")),
       Seq(rate))
 
-    "return ok for a valid json" in {
+    "return accepted for valid json" in {
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(exchangeRateRequest)).withHeaders(validFakeHeaders)
 
       val result = controller.submitRates()(fakeRequestWithBody)
 
-      status(result) shouldBe Status.OK
+      status(result) shouldBe Status.ACCEPTED
     }
 
     // TODO: Does not fail validation
@@ -386,7 +386,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
                       |  "target" : "GBP",
                       |  "timestamp" : "2022-01-01T01:01:00Z",
                       |  "rates" : [ {
-                      |    "publishedDate" : "12312312313",
+                      |    "publishedDate" : "hello",
                       |    "rate" : 10
                       |  } ]
                       |}""".stripMargin
