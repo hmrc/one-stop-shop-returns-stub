@@ -1,27 +1,19 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$schema": "http://json-schema.org/draft-04/schema#",
   "$id": "exchangeRateResponse",
   "javaType": "ExchangeRateData",
   "title": "Exchange Rate Response",
-  "description": "Exchange rate  response v0.3",
+  "description": "Exchange rate  response ",
   "type": "object",
   "properties": {
     "base": {
-      "description": "Base for the exchange rate",
-      "type": "string",
-      "minLength": 3,
-      "maxLength": 3
+      "$ref": "#/$defs/base"
     },
     "target": {
-      "description": "Target for the exchange rate",
-      "type": "string",
-      "minLength": 3,
-      "maxLength": 3
+      "$ref": "#/$defs/target"
     },
     "timestamp": {
-      "description": "timestamp in format yyyy-mm-ddTHH:MM:SS.sssZ of the exchange rate response",
-      "type": "string",
-      "format": "date-time"
+      "$ref": "#/$defs/timestamp"
     },
     "rates": {
       "description": "Exchange rates for different dates",
@@ -45,7 +37,7 @@
         "publishedDate" : {
           "type" : "string",
           "format" : "date",
-          "customDateTimePattern": "yyyy-MM-dd",
+          "pattern":"([1-9]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))",
           "example" : "2021-06-05"
         },
         "rate" : {
@@ -56,6 +48,23 @@
         "publishedDate",
         "rate"
       ]
+    },
+    "base": {
+      "description": "Base for the exchange rate",
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 3
+    },
+    "target": {
+      "description": "Target for the exchange rate",
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 3
+    },
+    "timestamp": {
+      "description": "timestamp in format yyyy-mm-ddTHH:MM:SS.sssZ of the exchange rate response",
+      "type": "string",
+      "format": "date-time"
     }
   }
 }

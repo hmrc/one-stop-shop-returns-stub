@@ -20,10 +20,10 @@ import play.api.Logging
 import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import play.api.mvc._
 import uk.gov.hmrc.onestopshopreturnsstub.models.core.{CoreErrorResponse, CoreExchangeRateRequest, EisErrorResponse}
-import uk.gov.hmrc.onestopshopreturnsstub.utils.{CoreVatReturnHeaderHelper, JsonSchemaHelper}
+import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
-import java.time.{Clock, Instant, LocalDate, LocalDateTime, ZoneId}
+import java.time.{Clock, Instant, LocalDateTime, ZoneId}
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -65,17 +65,12 @@ class CoreController  @Inject()(
     implicit request =>
       val jsonBody: Option[JsValue] = request.body.asJson
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
-        jsonSchemaHelper.applySchemaValidation("/resources/schemas/forex_rate_schema.json", jsonBody) {
+        val validationResult = jsonBody.get.validateOpt[CoreExchangeRateRequest]
 
-          val validationResult = jsonBody.get.validateOpt[CoreExchangeRateRequest]
-
-          validationResult match {
-            case JsError(e) => {
-              Future.successful(BadRequest)
-            }
-            case JsSuccess(Some(value), _) if (LocalDateTime.ofInstant(value.timestamp, ZoneId.systemDefault()).getDayOfMonth == 20) => Future.successful(Conflict)
-            case _ => Future.successful(Accepted)
-          }
+        validationResult match {
+          case JsError(_) => Future.successful(BadRequest)
+          case JsSuccess(Some(value), _) if (LocalDateTime.ofInstant(value.timestamp, ZoneId.systemDefault()).getDayOfMonth == 20) => Future.successful(Conflict)
+          case _ => Future.successful(Ok)
         }
       }
   }
