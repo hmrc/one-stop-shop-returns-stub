@@ -241,7 +241,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
     val timestamp = LocalDateTime.of(2022, 1, 1, 1, 1)
     val base = "EUR"
     val target = "GBP"
-    val rate = CoreRate(timestamp.toInstant(ZoneOffset.of("Z")), BigDecimal(10))
+    val rate = CoreRate(timestamp.toLocalDate, BigDecimal(10))
     val exchangeRateRequest = CoreExchangeRateRequest(base, target, timestamp.toInstant(ZoneOffset.of("Z")), Seq(rate))
     "return ok for a valid json" in {
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(exchangeRateRequest)).withHeaders(validFakeHeaders)
@@ -250,6 +250,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
 
       status(result) shouldBe Status.OK
     }
+
 
     "return bad request for a invalid json" in {
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson("invalid json")).withHeaders(validFakeHeaders)

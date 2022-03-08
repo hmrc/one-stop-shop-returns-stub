@@ -22,7 +22,7 @@ import java.time.{Instant, LocalDate, LocalDateTime}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 
-case class CoreRate(publishedDate: Instant, rate: BigDecimal)
+case class CoreRate(publishedDate: LocalDate, rate: BigDecimal)
 
 object CoreRate {
 
@@ -31,7 +31,7 @@ object CoreRate {
     import play.api.libs.functional.syntax._
 
     (
-      (__ \ "publishedDate").read[Instant] and
+      (__ \ "publishedDate").read[LocalDate] and
         (__ \ "rate").read[BigDecimal]
       ) (CoreRate.apply _)
   }
@@ -41,7 +41,7 @@ object CoreRate {
     import play.api.libs.functional.syntax._
 
     (
-      (__ \ "publishedDate").write[Instant] and
+      (__ \ "publishedDate").write[LocalDate] and
         (__ \ "rate").write[BigDecimal]
       ) (unlift(CoreRate.unapply))
   }
