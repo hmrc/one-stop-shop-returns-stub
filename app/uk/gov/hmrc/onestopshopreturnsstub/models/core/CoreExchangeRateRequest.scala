@@ -16,13 +16,12 @@
 
 package uk.gov.hmrc.onestopshopreturnsstub.models.core
 
-import play.api.libs.json.{OFormat, OWrites, Reads, __}
-import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import play.api.libs.json.{JsString, JsSuccess, OFormat, OWrites, Reads, Writes, __}
 
-import java.time.LocalDateTime
+import java.time.{Instant, LocalDateTime}
 
 
-case class CoreExchangeRateRequest(base: String, target: String, timestamp: LocalDateTime, rates: Seq[CoreRate])
+case class CoreExchangeRateRequest(base: String, target: String, timestamp: Instant, rates: Seq[CoreRate])
 
 object CoreExchangeRateRequest {
 
@@ -33,7 +32,7 @@ object CoreExchangeRateRequest {
     (
       (__ \ "base").read[String] and
         (__ \ "target").read[String] and
-        (__ \ "timestamp").read(MongoJavatimeFormats.localDateTimeReads) and
+        (__ \ "timestamp").read[Instant] and
         (__ \ "rates").read[Seq[CoreRate]]
       ) (CoreExchangeRateRequest.apply _)
   }
@@ -45,7 +44,7 @@ object CoreExchangeRateRequest {
     (
       (__ \ "base").write[String] and
         (__ \ "target").write[String] and
-        (__ \ "timestamp").write(MongoJavatimeFormats.localDateTimeFormat) and
+        (__ \ "timestamp").write[Instant] and
         (__ \ "rates").write[Seq[CoreRate]]
       ) (unlift(CoreExchangeRateRequest.unapply))
   }

@@ -23,7 +23,7 @@ import uk.gov.hmrc.onestopshopreturnsstub.models.core.{CoreErrorResponse, CoreEx
 import uk.gov.hmrc.onestopshopreturnsstub.utils.{CoreVatReturnHeaderHelper, JsonSchemaHelper}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
-import java.time.{Clock, Instant, LocalDate, LocalDateTime}
+import java.time.{Clock, Instant, LocalDate, LocalDateTime, ZoneId}
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -65,17 +65,18 @@ class CoreController  @Inject()(
     implicit request =>
       val jsonBody: Option[JsValue] = request.body.asJson
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
-        val validationResult = jsonBody.get.validateOpt[CoreExchangeRateRequest]
+        jsonSchemaHelper.applySchemaValidation("/resources/schemas/forex_rate_schema.json", jsonBody) {
 
-        validationResult match {
-          case JsError(_) => Future.successful(BadRequest)
-          case JsSuccess(Some(value), _) if (value.timestamp.getDayOfMonth == 20) => Future.successful(Conflict)
-          case _ => Future.successful(Ok)
+          val validationResult = jsonBody.get.validateOpt[CoreExchangeRateRequest]
+
+          validationResult match {
+            case JsError(e) => {
+              Future.successful(BadRequest)
+            }
+            case JsSuccess(Some(value), _) if (LocalDateTime.ofInstant(value.timestamp, ZoneId.systemDefault()).getDayOfMonth == 20) => Future.successful(Conflict)
+            case _ => Future.successful(Ok)
+          }
         }
       }
-
-
-
   }
-
 }

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "exchangeRateResponse",
+  "javaType": "ExchangeRateData",
+  "title": "Exchange Rate Response",
+  "description": "Exchange rate  response v0.3",
+  "type": "object",
+  "properties": {
+    "base": {
+      "description": "Base for the exchange rate",
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 3
+    },
+    "target": {
+      "description": "Target for the exchange rate",
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 3
+    },
+    "timestamp": {
+      "description": "timestamp in format yyyy-mm-ddTHH:MM:SS.sssZ of the exchange rate response",
+      "type": "string",
+      "format": "date-time"
+    },
+    "rates": {
+      "description": "Exchange rates for different dates",
+      "type": "array",
+      "items": {"$ref" :  "#/$defs/rateForADate"},
+      "minItems": 1,
+      "maxItems": 5
+    }
+  },
+  "required": [
+    "base",
+    "target",
+    "timestamp",
+    "rates"
+  ],
+  "$defs": {
+    "rateForADate" :{
+      "type": "object",
+      "javaType" : "ExchangeRate",
+      "properties" : {
+        "publishedDate" : {
+          "type" : "string",
+          "format" : "date",
+          "customDateTimePattern": "yyyy-MM-dd",
+          "example" : "2021-06-05"
+        },
+        "rate" : {
+          "type" : "number"
+        }
+      },
+      "required": [
+        "publishedDate",
+        "rate"
+      ]
+    }
+  }
+}
