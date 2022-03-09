@@ -16,15 +16,32 @@
 
 package uk.gov.hmrc.onestopshopreturnsstub.models.core
 
-import play.api.libs.json.{OFormat, OWrites, Reads, __}
-import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import play.api.libs.json._
 
-import java.time.LocalDateTime
+import java.time.format.DateTimeFormatterBuilder
+import java.time.{Instant, LocalDateTime}
 
 
 case class CoreExchangeRateRequest(base: String, target: String, timestamp: LocalDateTime, rates: Seq[CoreRate])
 
 object CoreExchangeRateRequest {
+
+  import java.time.ZoneOffset
+
+  private val formatter = new DateTimeFormatterBuilder()
+    .appendPattern("yyyy-MM-dd")
+    .appendLiteral('T')
+    .appendPattern("hh:mm:ss.SSS")
+    .appendLiteral('Z')
+    .toFormatter
+
+  private val dateTimeReadsWithMilliseconds = Reads[LocalDateTime] {
+    case JsString(s) => JsSuccess(LocalDateTime.ofInstant(Instant.parse(s), ZoneOffset.of("Z")))
+    case _ => JsError("Could not parse date")
+  }
+
+  private val dateTimeWritesWithMilliseconds = Writes[LocalDateTime] {
+    localDateTime => JsString(formatter.format(localDateTime)) }
 
   val reads: Reads[CoreExchangeRateRequest] = {
 
@@ -33,7 +50,7 @@ object CoreExchangeRateRequest {
     (
       (__ \ "base").read[String] and
         (__ \ "target").read[String] and
-        (__ \ "timestamp").read(MongoJavatimeFormats.localDateTimeReads) and
+        (__ \ "timestamp").read[LocalDateTime](dateTimeReadsWithMilliseconds) and
         (__ \ "rates").read[Seq[CoreRate]]
       ) (CoreExchangeRateRequest.apply _)
   }
@@ -45,7 +62,7 @@ object CoreExchangeRateRequest {
     (
       (__ \ "base").write[String] and
         (__ \ "target").write[String] and
-        (__ \ "timestamp").write(MongoJavatimeFormats.localDateTimeFormat) and
+        (__ \ "timestamp").write[LocalDateTime](dateTimeWritesWithMilliseconds) and
         (__ \ "rates").write[Seq[CoreRate]]
       ) (unlift(CoreExchangeRateRequest.unapply))
   }

@@ -20,10 +20,10 @@ import play.api.Logging
 import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import play.api.mvc._
 import uk.gov.hmrc.onestopshopreturnsstub.models.core.{CoreErrorResponse, CoreExchangeRateRequest, EisErrorResponse}
-import uk.gov.hmrc.onestopshopreturnsstub.utils.{CoreVatReturnHeaderHelper, JsonSchemaHelper}
+import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
-import java.time.{Clock, Instant, LocalDate, LocalDateTime}
+import java.time.{Clock, Instant, LocalDateTime, ZoneId}
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -73,9 +73,5 @@ class CoreController  @Inject()(
           case _ => Future.successful(Ok)
         }
       }
-
-
-
   }
-
 }

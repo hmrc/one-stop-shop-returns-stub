@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "exchangeRateResponse",
+  "javaType": "ExchangeRateData",
+  "title": "Exchange Rate Response",
+  "description": "Exchange rate  response ",
+  "type": "object",
+  "properties": {
+    "base": {
+      "$ref": "#/$defs/base"
+    },
+    "target": {
+      "$ref": "#/$defs/target"
+    },
+    "timestamp": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "rates": {
+      "description": "Exchange rates for different dates",
+      "type": "array",
+      "items": {"$ref" :  "#/$defs/rateForADate"},
+      "minItems": 1,
+      "maxItems": 5
+    }
+  },
+  "required": [
+    "base",
+    "target",
+    "timestamp",
+    "rates"
+  ],
+  "$defs": {
+    "rateForADate" :{
+      "type": "object",
+      "javaType" : "ExchangeRate",
+      "properties" : {
+        "publishedDate" : {
+          "type" : "string",
+          "format" : "date",
+          "pattern":"([1-9]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))",
+          "example" : "2021-06-05"
+        },
+        "rate" : {
+          "type" : "number"
+        }
+      },
+      "required": [
+        "publishedDate",
+        "rate"
+      ]
+    },
+    "base": {
+      "description": "Base for the exchange rate",
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 3
+    },
+    "target": {
+      "description": "Target for the exchange rate",
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 3
+    },
+    "timestamp": {
+      "description": "timestamp in format yyyy-mm-ddTHH:MM:SS.sssZ of the exchange rate response",
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
