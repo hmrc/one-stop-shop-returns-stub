@@ -16,11 +16,13 @@
 
 package uk.gov.hmrc.onestopshopreturnsstub.models.core
 
+import play.api.libs.json.Reads.{maxLength, minLength}
 import play.api.libs.json._
 
 import java.time.format.DateTimeFormatterBuilder
 import java.time.{Instant, LocalDateTime}
-
+import scala.util.Try
+import uk.gov.hmrc.onestopshopreturnsstub.utils.ValidationUtils._
 
 case class CoreExchangeRateRequest(base: String, target: String, timestamp: LocalDateTime, rates: Seq[CoreRate])
 
@@ -28,45 +30,30 @@ object CoreExchangeRateRequest {
 
   import java.time.ZoneOffset
 
-  private val formatter = new DateTimeFormatterBuilder()
-    .appendPattern("yyyy-MM-dd")
-    .appendLiteral('T')
-    .appendPattern("hh:mm:ss.SSS")
-    .appendLiteral('Z')
-    .toFormatter
-
-  private val dateTimeReadsWithMilliseconds = Reads[LocalDateTime] {
-    case JsString(s) => JsSuccess(LocalDateTime.ofInstant(Instant.parse(s), ZoneOffset.of("Z")))
-    case _ => JsError("Could not parse date")
-  }
-
-  private val dateTimeWritesWithMilliseconds = Writes[LocalDateTime] {
-    localDateTime => JsString(formatter.format(localDateTime)) }
-
   val reads: Reads[CoreExchangeRateRequest] = {
 
     import play.api.libs.functional.syntax._
 
     (
-      (__ \ "base").read[String] and
-        (__ \ "target").read[String] and
-        (__ \ "timestamp").read[LocalDateTime](dateTimeReadsWithMilliseconds) and
-        (__ \ "rates").read[Seq[CoreRate]]
-      ) (CoreExchangeRateRequest.apply _)
+      (__ \ "base").read[String](minLength[String](3) keepAnd maxLength[String](3)) and
+      (__ \ "target").read[String](minLength[String](3) keepAnd maxLength[String](3)) and
+      (__ \ "timestamp").read[LocalDateTime](validatedDateTimeRead)  and
+      (__ \ "rates").read[Seq[CoreRate]](range[Seq[CoreRate]](1, 5) )
+    ) (CoreExchangeRateRequest.apply _)
   }
 
-  val writes: OWrites[CoreExchangeRateRequest] = {
+  val writes: Writes[CoreExchangeRateRequest] = {
 
     import play.api.libs.functional.syntax._
 
     (
       (__ \ "base").write[String] and
-        (__ \ "target").write[String] and
-        (__ \ "timestamp").write[LocalDateTime](dateTimeWritesWithMilliseconds) and
-        (__ \ "rates").write[Seq[CoreRate]]
-      ) (unlift(CoreExchangeRateRequest.unapply))
+      (__ \ "target").write[String] and
+      (__ \ "timestamp").write[LocalDateTime](localDateTimeWrites) and
+      (__ \ "rates").write[Seq[CoreRate]]
+    ) (unlift(CoreExchangeRateRequest.unapply))
   }
 
-  implicit val format: OFormat[CoreExchangeRateRequest] = OFormat(reads, writes)
+  implicit val format: Format[CoreExchangeRateRequest] = Format(reads, writes)
 
 }

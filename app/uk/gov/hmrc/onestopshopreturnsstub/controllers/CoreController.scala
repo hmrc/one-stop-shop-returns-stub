@@ -18,8 +18,9 @@ package uk.gov.hmrc.onestopshopreturnsstub.controllers
 
 import play.api.Logging
 import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
+import play.api.mvc.Results.BadRequest
 import play.api.mvc._
-import uk.gov.hmrc.onestopshopreturnsstub.models.core.{CoreErrorResponse, CoreExchangeRateRequest, EisErrorResponse}
+import uk.gov.hmrc.onestopshopreturnsstub.models.core.{CoreErrorResponse, CoreExchangeRateRequest, CoreVatReturn, EisErrorResponse}
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
@@ -44,7 +45,6 @@ class CoreController  @Inject()(
     jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
       jsonSchemaHelper.applySchemaValidation("/resources/schemas/core_return.json", jsonBody) {
 
-
         val rawValue = jsonBody.map(body => (body \ "vatReturnReferenceNumber").as[String])
         if(rawValue.exists(_.contains("222222222"))) {
           logger.info("Resource not found: Registration")
@@ -53,10 +53,17 @@ class CoreController  @Inject()(
           logger.info("Error received from Core")
           Future.successful(Forbidden(Json.toJson(EisErrorResponse(CoreErrorResponse(Instant.now(clock), None, "OSS_123", "Error received from Core")))))
         } else {
-          logger.info("Successfully submitted vat return")
-          Future.successful(Accepted(""))
+          val validationResult = jsonBody.get.validateOpt[CoreVatReturn]
+          validationResult match {
+            case JsError(errors) =>
+              logger.error(s"Invalid JSON: ${errors.map(_._1.toString()).mkString(", ")}")
+              Future.successful(BadRequest(Json.toJson(EisErrorResponse(CoreErrorResponse(Instant.now(clock), None, "OSS_400", "Bad Request")))))
+            case _ => {
+              logger.info("Successfully submitted vat return")
+              Future.successful(Accepted(""))
+            }
+          }
         }
-
       }
     }
   }
@@ -66,9 +73,10 @@ class CoreController  @Inject()(
       val jsonBody: Option[JsValue] = request.body.asJson
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
         val validationResult = jsonBody.get.validateOpt[CoreExchangeRateRequest]
-
         validationResult match {
-          case JsError(_) => Future.successful(BadRequest)
+          case JsError(errors) =>
+            logger.error(s"Invalid JSON: ${errors.map(_._1.toString()).mkString(", ")}")
+            Future.successful(BadRequest)
           case JsSuccess(Some(value), _) if (value.timestamp.getDayOfMonth == 20) => Future.successful(Conflict)
           case _ => Future.successful(Ok)
         }

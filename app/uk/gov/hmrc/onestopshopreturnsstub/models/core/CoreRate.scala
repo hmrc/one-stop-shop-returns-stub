@@ -16,11 +16,10 @@
 
 package uk.gov.hmrc.onestopshopreturnsstub.models.core
 
-import play.api.libs.json.{OFormat, OWrites, Reads, __}
+import play.api.libs.json.{Format, Reads, Writes, __}
+import uk.gov.hmrc.onestopshopreturnsstub.utils.ValidationUtils._
 
-import java.time.{Instant, LocalDate, LocalDateTime}
-import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
-
+import java.time.LocalDate
 
 case class CoreRate(publishedDate: LocalDate, rate: BigDecimal)
 
@@ -29,23 +28,22 @@ object CoreRate {
   val reads: Reads[CoreRate] = {
 
     import play.api.libs.functional.syntax._
-
     (
-      (__ \ "publishedDate").read[LocalDate] and
-        (__ \ "rate").read[BigDecimal]
-      ) (CoreRate.apply _)
+      (__ \ "publishedDate").read[LocalDate](validatedDateRead) and
+      (__ \ "rate").read[BigDecimal]
+    ) (CoreRate.apply _)
   }
 
-  val writes: OWrites[CoreRate] = {
+  val writes: Writes[CoreRate] = {
 
     import play.api.libs.functional.syntax._
 
     (
       (__ \ "publishedDate").write[LocalDate] and
-        (__ \ "rate").write[BigDecimal]
-      ) (unlift(CoreRate.unapply))
+      (__ \ "rate").write[BigDecimal]
+    ) (unlift(CoreRate.unapply))
   }
 
-  implicit val format: OFormat[CoreRate] = OFormat(reads, writes)
+  implicit val format: Format[CoreRate] = Format(reads, writes)
 
 }
