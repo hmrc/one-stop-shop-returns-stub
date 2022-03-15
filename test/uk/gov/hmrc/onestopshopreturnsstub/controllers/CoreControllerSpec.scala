@@ -22,15 +22,15 @@ import play.api.http.HeaderNames.{ACCEPT, AUTHORIZATION, CONTENT_TYPE, DATE}
 import play.api.http.{MimeTypes, Status}
 import play.api.libs.json.Json
 import play.api.mvc.Headers
-import play.api.test.{FakeRequest, Helpers}
 import play.api.test.Helpers._
-import uk.gov.hmrc.onestopshopreturnsstub.models.core._
+import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.onestopshopreturnsstub.models.Period
 import uk.gov.hmrc.onestopshopreturnsstub.models.Quarter._
+import uk.gov.hmrc.onestopshopreturnsstub.models.core._
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 
 import java.time.format.DateTimeFormatter
-import java.time.{Clock, Instant, LocalDate, LocalDateTime, ZoneId, ZoneOffset}
+import java.time._
 import java.util.{Locale, UUID}
 
 class CoreControllerSpec extends AnyFreeSpec with Matchers {
@@ -53,7 +53,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
   val validFakeHeaders = new Headers(validHeaders)
 
   "POST /oss/returns/v1/return" - {
-    "Return ok when valid payload" in {
+    "Return accepted when valid payload" in {
 
       val now = Instant.now()
       val period = Period(2021, Q3)
@@ -177,6 +177,130 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
       val result = controller.submitVatReturn()(fakeRequestWithBody)
 
       status(result) shouldBe Status.BAD_REQUEST
+
+      val responseBody = contentAsString(result)
+      responseBody.isEmpty shouldBe false
+      val errorResponse = Json.parse(responseBody).validate[EisErrorResponse]
+      errorResponse.isSuccess shouldBe true
+    }
+
+    "Return error when using more than two decimal digits" in {
+
+      val coreVatReturn = """{
+                            |  "vatReturnReferenceNumber" : "XI/XI123456789/Q4.2021",
+                            |  "version" : "2022-03-07T14:58:07.374Z",
+                            |  "traderId" : {
+                            |    "vatNumber" : "123456789AAA",
+                            |    "issuedBy" : "XI"
+                            |  },
+                            |  "period" : {
+                            |    "year" : 2021,
+                            |    "quarter" : 3
+                            |  },
+                            |  "startDate" : "2021-07-01",
+                            |  "endDate" : "2021-09-30",
+                            |  "submissionDateTime" : "2022-03-07T14:58:07.374Z",
+                            |  "totalAmountVatDueGBP" : 5000.123456789,
+                            |  "msconSupplies" : [ {
+                            |    "msconCountryCode" : "DE",
+                            |    "balanceOfVatDueGBP" : 5000.123456789,
+                            |    "grandTotalMsidGoodsGBP" : 1000.123456789,
+                            |    "grandTotalMsestGoodsGBP" : 1000.123456789,
+                            |    "correctionsTotalGBP" : 1000.123456789,
+                            |    "msidSupplies" : [ {
+                            |      "supplyType" : "GOODS",
+                            |      "vatRate" : 10,
+                            |      "vatRateType" : "STANDARD",
+                            |      "taxableAmountGBP" : 10.123456789,
+                            |      "vatAmountGBP" : 10.123456789
+                            |    } ],
+                            |    "msestSupplies" : [ {
+                            |      "countryCode" : "DE",
+                            |      "supplies" : [ {
+                            |        "supplyType" : "GOODS",
+                            |        "vatRate" : 10,
+                            |        "vatRateType" : "STANDARD",
+                            |        "taxableAmountGBP" : 10.123456789,
+                            |        "vatAmountGBP" : 100.123456789
+                            |      } ]
+                            |    } ],
+                            |    "corrections" : [ {
+                            |      "period" : {
+                            |        "year" : 2021,
+                            |        "quarter" : 2
+                            |      },
+                            |      "totalVatAmountCorrectionGBP" : 100.123456789
+                            |    } ]
+                            |  } ]
+                            |}"""".stripMargin
+
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.parse(coreVatReturn)).withHeaders(validFakeHeaders)
+
+      val result = controller.submitVatReturn()(fakeRequestWithBody)
+
+      status(result) shouldBe Status.BAD_REQUEST
+
+      val responseBody = contentAsString(result)
+      responseBody.isEmpty shouldBe false
+      val errorResponse = Json.parse(responseBody).validate[EisErrorResponse]
+      errorResponse.isSuccess shouldBe true
+    }
+
+    "Return error when vat rate is invalid" in {
+
+      val coreVatReturn = """{
+                            |  "vatReturnReferenceNumber" : "XI/XI123456789/Q4.2021",
+                            |  "version" : "2022-03-07T14:58:07.374Z",
+                            |  "traderId" : {
+                            |    "vatNumber" : "123456789AAA",
+                            |    "issuedBy" : "XI"
+                            |  },
+                            |  "period" : {
+                            |    "year" : 2021,
+                            |    "quarter" : 3
+                            |  },
+                            |  "startDate" : "2021-07-01",
+                            |  "endDate" : "2021-09-30",
+                            |  "submissionDateTime" : "2022-03-07T14:58:07.374Z",
+                            |  "totalAmountVatDueGBP" : 5000.12,
+                            |  "msconSupplies" : [ {
+                            |    "msconCountryCode" : "DE",
+                            |    "balanceOfVatDueGBP" : 5000.12,
+                            |    "grandTotalMsidGoodsGBP" : 1000.12,
+                            |    "grandTotalMsestGoodsGBP" : 1000.12,
+                            |    "correctionsTotalGBP" : 1000.12,
+                            |    "msidSupplies" : [ {
+                            |      "supplyType" : "GOODS",
+                            |      "vatRate" : 101,
+                            |      "vatRateType" : "STANDARD",
+                            |      "taxableAmountGBP" : 10.12,
+                            |      "vatAmountGBP" : 10.12
+                            |    } ],
+                            |    "msestSupplies" : [ {
+                            |      "countryCode" : "DE",
+                            |      "supplies" : [ {
+                            |        "supplyType" : "GOODS",
+                            |        "vatRate" : 10.001,
+                            |        "vatRateType" : "STANDARD",
+                            |        "taxableAmountGBP" : 10.12,
+                            |        "vatAmountGBP" : 100.12
+                            |      } ]
+                            |    } ],
+                            |    "corrections" : [ {
+                            |      "period" : {
+                            |        "year" : 2021,
+                            |        "quarter" : 2
+                            |      },
+                            |      "totalVatAmountCorrectionGBP" : 100.12
+                            |    } ]
+                            |  } ]
+                            |}"""".stripMargin
+
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.parse(coreVatReturn)).withHeaders(validFakeHeaders)
+
+      val result = controller.submitVatReturn()(fakeRequestWithBody)
+
+      status(result) shouldBe Status.BAD_REQUEST
     }
 
     "Return bad request when headers are missing" in {
@@ -238,15 +362,84 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
   }
 
   "POST /oss/referencedata/v1/exchangerate must" - {
-    val timestamp = LocalDateTime.of(2022, 1, 1, 1, 1, 1, 123000000)
+    val timestamp = LocalDateTime.of(2022, 1, 1, 1, 1)
     val base = "EUR"
     val target = "GBP"
-    val rate = CoreRate(timestamp.toLocalDate, BigDecimal(10))
-    val exchangeRateRequest = CoreExchangeRateRequest(base, target, timestamp, Seq(rate))
-    "return ok for a valid json" in {
+    val rate = CoreRate(
+      timestamp.toLocalDate,
+      BigDecimal(10))
+
+    val exchangeRateRequest = CoreExchangeRateRequest(
+      base,
+      target,
+      timestamp,
+      Seq(rate))
+
+    "return ok for valid json" in {
+
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(exchangeRateRequest)).withHeaders(validFakeHeaders)
+
       val result = controller.submitRates()(fakeRequestWithBody)
+
       status(result) shouldBe Status.OK
+    }
+
+    "return bad request for a timestamp without milliseconds" in {
+
+      val badJson = """{
+                      |  "base" : "EUR",
+                      |  "target" : "GBP",
+                      |  "timestamp" : "2022-01-01T01:01:00Z",
+                      |  "rates" : [ {
+                      |    "publishedDate" : "2022-01-10",
+                      |    "rate" : 10
+                      |  } ]
+                      |}""".stripMargin
+
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.parse(badJson)).withHeaders(validFakeHeaders)
+
+      val result = controller.submitRates()(fakeRequestWithBody)
+
+      status(result) shouldBe Status.BAD_REQUEST
+    }
+
+    "return bad request for a published date that includes hours, minutes and seconds" in {
+
+      val badJson = """{
+                      |  "base" : "EUR",
+                      |  "target" : "GBP",
+                      |  "timestamp" : "2022-01-01T01:01:00.000Z",
+                      |  "rates" : [ {
+                      |    "publishedDate" : "2022-01-01T01:01:00.000Z",
+                      |    "rate" : 10
+                      |  } ]
+                      |}""".stripMargin
+
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.parse(badJson)).withHeaders(validFakeHeaders)
+
+      val result = controller.submitRates()(fakeRequestWithBody)
+
+      status(result) shouldBe Status.BAD_REQUEST
+    }
+
+    "return bad request for an invalid published date" in {
+
+      val badJson = """{
+                      |  "base" : "EUR",
+                      |  "target" : "GBP",
+                      |  "timestamp" : "2022-01-01T01:01:00.000Z",
+                      |  "rates" : [ {
+                      |    "publishedDate" : "hello",
+                      |    "rate" : 10
+                      |  } ]
+                      |}""".stripMargin
+
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.parse(badJson)).withHeaders(validFakeHeaders)
+
+      val result = controller.submitRates()(fakeRequestWithBody)
+
+      status(result) shouldBe Status.BAD_REQUEST
+
     }
 
 
@@ -256,13 +449,11 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
       val result = controller.submitRates()(fakeRequestWithBody)
 
       status(result) shouldBe Status.BAD_REQUEST
+
     }
 
     "return Conflict for the 20th of the month" in {
-      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(
-        exchangeRateRequest.copy(timestamp =
-          LocalDateTime.of(2022, 1, 20, 1, 1))))
-        .withHeaders(validFakeHeaders)
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(exchangeRateRequest.copy(timestamp = LocalDateTime.of(2022, 1, 20, 1, 1)))).withHeaders(validFakeHeaders)
 
       val result = controller.submitRates()(fakeRequestWithBody)
 
