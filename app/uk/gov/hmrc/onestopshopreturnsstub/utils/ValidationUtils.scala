@@ -53,7 +53,7 @@ object ValidationUtils {
     localDateTime => JsString(dateTimeWithMillisecondsFormatter.format(localDateTime)) }
 
   val currencyRead = implicitly[Reads[BigDecimal]]
-    .filter(JsonValidationError("Value can only have 2 decimal places"))(x => x.toString.matches(currencyRegex))
+//    .filter(JsonValidationError("Value can only have 2 decimal places"))(x => x.toString.matches(currencyRegex))
 
   val vatRateRead = implicitly[Reads[BigDecimal]]
     .filter(JsonValidationError("Value can only have 2 decimal places"))(x => x.toString.matches(vatRateRegex))
