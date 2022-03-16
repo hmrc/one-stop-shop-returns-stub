@@ -184,6 +184,9 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
       errorResponse.isSuccess shouldBe true
     }
 
+    // TODO: Restore, amend or delete when validation rules confirmed
+
+    /*
     "Return error when using more than two decimal digits" in {
 
       val coreVatReturn = """{
@@ -245,6 +248,8 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
       val errorResponse = Json.parse(responseBody).validate[EisErrorResponse]
       errorResponse.isSuccess shouldBe true
     }
+
+     */
 
     "Return error when vat rate is invalid" in {
 
