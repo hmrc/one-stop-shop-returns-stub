@@ -4,4 +4,4 @@ GET         /enterprise/financial-data/:idType/:idNumber/:regimeType        uk.g
 
 POST        /vec/submitossvatreturn/submitossvatreturnrequest/v1            uk.gov.hmrc.onestopshopreturnsstub.controllers.CoreController.submitVatReturn()
 
-POST        /oss/referencedata/v1/exchangerate                              uk.gov.hmrc.onestopshopreturnsstub.controllers.CoreController.submitRates()
+POST        /vec/ecbexchangerate/ecbexchangeraterequest/v1                  uk.gov.hmrc.onestopshopreturnsstub.controllers.CoreController.submitRates()
