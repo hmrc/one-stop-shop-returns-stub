@@ -117,7 +117,7 @@ object CoreCorrection {
   implicit val format: Format[CoreCorrection] = Format.apply[CoreCorrection](
     (
       (__ \ "period").read[CorePeriod] and
-      (__ \ "totalVatAmountCorrectionGBP").read[BigDecimal](currencyRead)
+      (__ \ "totalVatAmountCorrectionGBP").read[BigDecimal](currencyAllowNegativeRead)
     )(CoreCorrection.apply _),
     (
       (__ \ "period").write[CorePeriod] and
@@ -142,10 +142,10 @@ object CoreMsconSupply {
   implicit val format: Format[CoreMsconSupply] = Format.apply[CoreMsconSupply](
     (
       (__ \ "msconCountryCode").read[String] and
-      (__ \ "balanceOfVatDueGBP").read[BigDecimal](currencyRead) and
+      (__ \ "balanceOfVatDueGBP").read[BigDecimal](currencyAllowNegativeRead) and
       (__ \ "grandTotalMsidGoodsGBP").read[BigDecimal](currencyRead) and
       (__ \ "grandTotalMsestGoodsGBP").read[BigDecimal](currencyRead) and
-      (__ \ "correctionsTotalGBP").read[BigDecimal](currencyRead) and
+      (__ \ "correctionsTotalGBP").read[BigDecimal](currencyAllowNegativeRead) and
       (__ \ "msidSupplies").read[ List[CoreSupply]] and
       (__ \ "msestSupplies").read[List[CoreMsestSupply]] and
       (__ \ "corrections").read[List[CoreCorrection]]

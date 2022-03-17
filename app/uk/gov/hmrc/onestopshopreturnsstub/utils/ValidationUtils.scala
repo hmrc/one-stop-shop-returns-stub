@@ -28,6 +28,8 @@ object ValidationUtils {
 
   private val currencyRegex = "^[\\d]+|[\\d]+\\.\\d{1,2}$"
 
+  private val currencyRegexAllowNegative = "^-?[\\d]+|-?[\\d]+\\.\\d{1,2}$"
+
   private val vatRateRegex = "^[\\d]{1,3}(\\.\\d{2})?$"
 
   private val dateTimeWithMillisecondsFormatter = new DateTimeFormatterBuilder()
@@ -53,7 +55,10 @@ object ValidationUtils {
     localDateTime => JsString(dateTimeWithMillisecondsFormatter.format(localDateTime)) }
 
   val currencyRead = implicitly[Reads[BigDecimal]]
-    .filter(JsonValidationError("Value can only have up to 2 decimal places"))(x => x.toString.matches(currencyRegex))
+    .filter(JsonValidationError("Value can only be positive and have up to 2 decimal places"))(x => x.toString.matches(currencyRegex))
+
+  val currencyAllowNegativeRead = implicitly[Reads[BigDecimal]]
+    .filter(JsonValidationError("Value can only have up to 2 decimal places"))(x => x.toString.matches(currencyRegexAllowNegative))
 
   val vatRateRead = implicitly[Reads[BigDecimal]]
     .filter(JsonValidationError("Value can only have 2 decimal places"))(x => x.toString.matches(vatRateRegex))
