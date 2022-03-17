@@ -360,6 +360,48 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
       status(result) shouldBe Status.ACCEPTED
     }
 
+    "Return accepted for negative correction" in {
+
+      val coreVatReturn = """{
+                            |  "vatReturnReferenceNumber" : "XI/XI123456789/Q4.2021",
+                            |  "version" : "2022-03-07T14:58:07.374Z",
+                            |  "traderId" : {
+                            |    "vatNumber" : "123456789AAA",
+                            |    "issuedBy" : "XI"
+                            |  },
+                            |  "period" : {
+                            |    "year" : 2021,
+                            |    "quarter" : 3
+                            |  },
+                            |  "startDate" : "2021-07-01",
+                            |  "endDate" : "2021-09-30",
+                            |  "submissionDateTime" : "2022-03-07T14:58:07.374Z",
+                            |  "totalAmountVatDueGBP" : 0,
+                            |  "msconSupplies" : [ {
+                            |    "msconCountryCode" : "DE",
+                            |    "balanceOfVatDueGBP" : -10,
+                            |    "grandTotalMsidGoodsGBP" : 0,
+                            |    "grandTotalMsestGoodsGBP" : 0,
+                            |    "correctionsTotalGBP" : -10,
+                            |    "msidSupplies" : [],
+                            |    "msestSupplies" : [],
+                            |    "corrections" : [ {
+                            |      "period" : {
+                            |        "year" : 2021,
+                            |        "quarter" : 2
+                            |      },
+                            |      "totalVatAmountCorrectionGBP" : -10
+                            |    } ]
+                            |  } ]
+                            |}"""".stripMargin
+
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.parse(coreVatReturn)).withHeaders(validFakeHeaders)
+
+      val result = controller.submitVatReturn()(fakeRequestWithBody)
+
+      status(result) shouldBe Status.ACCEPTED
+    }
+
     "Return error when vat rate is invalid" in {
 
       val coreVatReturn = """{
