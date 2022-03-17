@@ -184,9 +184,6 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
       errorResponse.isSuccess shouldBe true
     }
 
-    // TODO: Restore, amend or delete when validation rules confirmed
-
-    /*
     "Return error when using more than two decimal digits" in {
 
       val coreVatReturn = """{
@@ -249,7 +246,119 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
       errorResponse.isSuccess shouldBe true
     }
 
-     */
+    "Return accepted when using one decimal digit" in {
+
+      val coreVatReturn = """{
+                            |  "vatReturnReferenceNumber" : "XI/XI123456789/Q4.2021",
+                            |  "version" : "2022-03-07T14:58:07.374Z",
+                            |  "traderId" : {
+                            |    "vatNumber" : "123456789AAA",
+                            |    "issuedBy" : "XI"
+                            |  },
+                            |  "period" : {
+                            |    "year" : 2021,
+                            |    "quarter" : 3
+                            |  },
+                            |  "startDate" : "2021-07-01",
+                            |  "endDate" : "2021-09-30",
+                            |  "submissionDateTime" : "2022-03-07T14:58:07.374Z",
+                            |  "totalAmountVatDueGBP" : 5000.1,
+                            |  "msconSupplies" : [ {
+                            |    "msconCountryCode" : "DE",
+                            |    "balanceOfVatDueGBP" : 5000.1,
+                            |    "grandTotalMsidGoodsGBP" : 1000.1,
+                            |    "grandTotalMsestGoodsGBP" : 1000.1,
+                            |    "correctionsTotalGBP" : 1000.1,
+                            |    "msidSupplies" : [ {
+                            |      "supplyType" : "GOODS",
+                            |      "vatRate" : 10,
+                            |      "vatRateType" : "STANDARD",
+                            |      "taxableAmountGBP" : 10.1,
+                            |      "vatAmountGBP" : 10.1
+                            |    } ],
+                            |    "msestSupplies" : [ {
+                            |      "countryCode" : "DE",
+                            |      "supplies" : [ {
+                            |        "supplyType" : "GOODS",
+                            |        "vatRate" : 10,
+                            |        "vatRateType" : "STANDARD",
+                            |        "taxableAmountGBP" : 10.1,
+                            |        "vatAmountGBP" : 100.1
+                            |      } ]
+                            |    } ],
+                            |    "corrections" : [ {
+                            |      "period" : {
+                            |        "year" : 2021,
+                            |        "quarter" : 2
+                            |      },
+                            |      "totalVatAmountCorrectionGBP" : 100.1
+                            |    } ]
+                            |  } ]
+                            |}"""".stripMargin
+
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.parse(coreVatReturn)).withHeaders(validFakeHeaders)
+
+      val result = controller.submitVatReturn()(fakeRequestWithBody)
+
+      status(result) shouldBe Status.ACCEPTED
+    }
+
+    "Return accepted when using two decimal digits" in {
+
+      val coreVatReturn = """{
+                            |  "vatReturnReferenceNumber" : "XI/XI123456789/Q4.2021",
+                            |  "version" : "2022-03-07T14:58:07.374Z",
+                            |  "traderId" : {
+                            |    "vatNumber" : "123456789AAA",
+                            |    "issuedBy" : "XI"
+                            |  },
+                            |  "period" : {
+                            |    "year" : 2021,
+                            |    "quarter" : 3
+                            |  },
+                            |  "startDate" : "2021-07-01",
+                            |  "endDate" : "2021-09-30",
+                            |  "submissionDateTime" : "2022-03-07T14:58:07.374Z",
+                            |  "totalAmountVatDueGBP" : 5000.10,
+                            |  "msconSupplies" : [ {
+                            |    "msconCountryCode" : "DE",
+                            |    "balanceOfVatDueGBP" : 5000.10,
+                            |    "grandTotalMsidGoodsGBP" : 1000.10,
+                            |    "grandTotalMsestGoodsGBP" : 1000.10,
+                            |    "correctionsTotalGBP" : 1000.10,
+                            |    "msidSupplies" : [ {
+                            |      "supplyType" : "GOODS",
+                            |      "vatRate" : 10,
+                            |      "vatRateType" : "STANDARD",
+                            |      "taxableAmountGBP" : 10.10,
+                            |      "vatAmountGBP" : 10.10
+                            |    } ],
+                            |    "msestSupplies" : [ {
+                            |      "countryCode" : "DE",
+                            |      "supplies" : [ {
+                            |        "supplyType" : "GOODS",
+                            |        "vatRate" : 10,
+                            |        "vatRateType" : "STANDARD",
+                            |        "taxableAmountGBP" : 10.10,
+                            |        "vatAmountGBP" : 100.10
+                            |      } ]
+                            |    } ],
+                            |    "corrections" : [ {
+                            |      "period" : {
+                            |        "year" : 2021,
+                            |        "quarter" : 2
+                            |      },
+                            |      "totalVatAmountCorrectionGBP" : 100.10
+                            |    } ]
+                            |  } ]
+                            |}"""".stripMargin
+
+      val fakeRequestWithBody = fakeRequest.withJsonBody(Json.parse(coreVatReturn)).withHeaders(validFakeHeaders)
+
+      val result = controller.submitVatReturn()(fakeRequestWithBody)
+
+      status(result) shouldBe Status.ACCEPTED
+    }
 
     "Return error when vat rate is invalid" in {
 
