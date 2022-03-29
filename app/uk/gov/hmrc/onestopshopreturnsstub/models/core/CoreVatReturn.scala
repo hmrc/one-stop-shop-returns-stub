@@ -16,15 +16,13 @@
 
 package uk.gov.hmrc.onestopshopreturnsstub.models.core
 
-import play.api.libs.functional.syntax.unlift
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 import play.api.libs.json.Reads._
-import play.api.libs.json.{Format, Json, JsonValidationError, OFormat, OWrites, Reads, Writes, __}
 import uk.gov.hmrc.onestopshopreturnsstub.utils.ValidationUtils._
 
 import java.time.{Instant, LocalDate}
 import java.util.UUID
-
-import play.api.libs.functional.syntax._
 
 case class CoreTraderId(vatNumber: String, issuedBy: String)
 
@@ -33,13 +31,13 @@ object CoreTraderId {
   implicit val format: Format[CoreTraderId] = Format.apply[CoreTraderId](
     (
       (__ \ "vatNumber").read[String](minLength[String](1) keepAnd maxLength[String](12)) and
-      (__ \ "issuedBy").read[String](minLength[String](2) keepAnd maxLength[String](2) keepAnd
-        Reads.pattern("XI".r, "Country code must be XI"))
-    )(CoreTraderId.apply _),
+        (__ \ "issuedBy").read[String](minLength[String](2) keepAnd maxLength[String](2) keepAnd
+          Reads.pattern("XI".r, "Country code must be XI"))
+      ) (CoreTraderId.apply _),
     (
       (__ \ "vatNumber").write[String] and
-      (__ \ "issuedBy").write[String]
-    ) (unlift(CoreTraderId.unapply))
+        (__ \ "issuedBy").write[String]
+      ) (unlift(CoreTraderId.unapply))
   )
 }
 
@@ -52,12 +50,12 @@ object CorePeriod {
       (__ \ "year").read[Int](min(2021) keepAnd
         filter[Int](JsonValidationError("Year should be represented in 4 digits"))(
           ((i: Int) => i.toString.length == 4))) and
-      (__ \ "quarter").read[Int](min(1) keepAnd max(4))
-    )(CorePeriod.apply _),
+        (__ \ "quarter").read[Int](min(1) keepAnd max(4))
+      ) (CorePeriod.apply _),
     (
       (__ \ "year").write[Int] and
-      (__ \ "quarter").write[Int]
-    ) (unlift(CorePeriod.unapply))
+        (__ \ "quarter").write[Int]
+      ) (unlift(CorePeriod.unapply))
   )
 }
 
@@ -74,27 +72,48 @@ object CoreSupply {
   implicit val format: Format[CoreSupply] = Format.apply[CoreSupply](
     (
       (__ \ "supplyType").read[String] and
-      (__ \ "vatRate").read[BigDecimal](vatRateRead) and
-      (__ \ "vatRateType").read[String] and
-      (__ \ "taxableAmountGBP").read[BigDecimal](currencyRead) and
-      (__ \ "vatAmountGBP").read[BigDecimal](currencyRead)
-      )(CoreSupply.apply _),
+        (__ \ "vatRate").read[BigDecimal](vatRateRead) and
+        (__ \ "vatRateType").read[String] and
+        (__ \ "taxableAmountGBP").read[BigDecimal](currencyRead) and
+        (__ \ "vatAmountGBP").read[BigDecimal](currencyRead)
+      ) (CoreSupply.apply _),
     (
       (__ \ "supplyType").write[String] and
-      (__ \ "vatRate").write[BigDecimal] and
-      (__ \ "vatRateType").write[String] and
-      (__ \ "taxableAmountGBP").write[BigDecimal] and
-      (__ \ "vatAmountGBP").write[BigDecimal]
-    ) (unlift(CoreSupply.unapply))
+        (__ \ "vatRate").write[BigDecimal] and
+        (__ \ "vatRateType").write[String] and
+        (__ \ "taxableAmountGBP").write[BigDecimal] and
+        (__ \ "vatAmountGBP").write[BigDecimal]
+      ) (unlift(CoreSupply.unapply))
   )
 
 }
 
-case class CoreEuTraderId(vatIdNumber: String, issuedBy: String)
+trait CoreEuTraderId
 
 object CoreEuTraderId {
-  implicit val format: OFormat[CoreEuTraderId] = Json.format[CoreEuTraderId]
+
+  implicit val reads: Reads[CoreEuTraderId] =
+    CoreEuTraderVatId.format.widen[CoreEuTraderId] orElse
+      CoreEuTraderTaxId.format.widen[CoreEuTraderId]
+
+  implicit val writes: Writes[CoreEuTraderId] = Writes {
+    case vatId: CoreEuTraderVatId => Json.toJson(vatId)(CoreEuTraderVatId.format)
+    case taxId: CoreEuTraderTaxId => Json.toJson(taxId)(CoreEuTraderTaxId.format)
+  }
 }
+
+case class CoreEuTraderVatId(vatIdNumber: String, issuedBy: String) extends CoreEuTraderId
+
+object CoreEuTraderVatId {
+  implicit val format: OFormat[CoreEuTraderVatId] = Json.format[CoreEuTraderVatId]
+}
+
+case class CoreEuTraderTaxId(taxRefNumber: String, issuedBy: String) extends CoreEuTraderId
+
+object CoreEuTraderTaxId {
+  implicit val format: OFormat[CoreEuTraderTaxId] = Json.format[CoreEuTraderTaxId]
+}
+
 
 case class CoreMsestSupply(
                             countryCode: Option[String],
@@ -117,12 +136,12 @@ object CoreCorrection {
   implicit val format: Format[CoreCorrection] = Format.apply[CoreCorrection](
     (
       (__ \ "period").read[CorePeriod] and
-      (__ \ "totalVatAmountCorrectionGBP").read[BigDecimal](currencyAllowNegativeRead)
-    )(CoreCorrection.apply _),
+        (__ \ "totalVatAmountCorrectionGBP").read[BigDecimal](currencyAllowNegativeRead)
+      ) (CoreCorrection.apply _),
     (
       (__ \ "period").write[CorePeriod] and
-      (__ \ "totalVatAmountCorrectionGBP").write[BigDecimal]
-    ) (unlift(CoreCorrection.unapply))
+        (__ \ "totalVatAmountCorrectionGBP").write[BigDecimal]
+      ) (unlift(CoreCorrection.unapply))
   )
 }
 
@@ -142,24 +161,24 @@ object CoreMsconSupply {
   implicit val format: Format[CoreMsconSupply] = Format.apply[CoreMsconSupply](
     (
       (__ \ "msconCountryCode").read[String] and
-      (__ \ "balanceOfVatDueGBP").read[BigDecimal](currencyAllowNegativeRead) and
-      (__ \ "grandTotalMsidGoodsGBP").read[BigDecimal](currencyRead) and
-      (__ \ "grandTotalMsestGoodsGBP").read[BigDecimal](currencyRead) and
-      (__ \ "correctionsTotalGBP").read[BigDecimal](currencyAllowNegativeRead) and
-      (__ \ "msidSupplies").read[ List[CoreSupply]] and
-      (__ \ "msestSupplies").read[List[CoreMsestSupply]] and
-      (__ \ "corrections").read[List[CoreCorrection]]
-    )(CoreMsconSupply.apply _),
+        (__ \ "balanceOfVatDueGBP").read[BigDecimal](currencyAllowNegativeRead) and
+        (__ \ "grandTotalMsidGoodsGBP").read[BigDecimal](currencyRead) and
+        (__ \ "grandTotalMsestGoodsGBP").read[BigDecimal](currencyRead) and
+        (__ \ "correctionsTotalGBP").read[BigDecimal](currencyAllowNegativeRead) and
+        (__ \ "msidSupplies").read[List[CoreSupply]] and
+        (__ \ "msestSupplies").read[List[CoreMsestSupply]] and
+        (__ \ "corrections").read[List[CoreCorrection]]
+      ) (CoreMsconSupply.apply _),
     (
       (__ \ "msconCountryCode").write[String] and
-      (__ \ "balanceOfVatDueGBP").write[BigDecimal] and
-      (__ \ "grandTotalMsidGoodsGBP").write[BigDecimal] and
-      (__ \ "grandTotalMsestGoodsGBP").write[BigDecimal] and
-      (__ \ "correctionsTotalGBP").write[BigDecimal] and
-      (__ \ "msidSupplies").write[ List[CoreSupply]] and
-      (__ \ "msestSupplies").write[List[CoreMsestSupply]] and
-      (__ \ "corrections").write[List[CoreCorrection]]
-    ) (unlift(CoreMsconSupply.unapply))
+        (__ \ "balanceOfVatDueGBP").write[BigDecimal] and
+        (__ \ "grandTotalMsidGoodsGBP").write[BigDecimal] and
+        (__ \ "grandTotalMsestGoodsGBP").write[BigDecimal] and
+        (__ \ "correctionsTotalGBP").write[BigDecimal] and
+        (__ \ "msidSupplies").write[List[CoreSupply]] and
+        (__ \ "msestSupplies").write[List[CoreMsestSupply]] and
+        (__ \ "corrections").write[List[CoreCorrection]]
+      ) (unlift(CoreMsconSupply.unapply))
   )
 }
 
@@ -180,26 +199,26 @@ object CoreVatReturn {
   implicit val format: Format[CoreVatReturn] = Format.apply[CoreVatReturn](
     (
       (__ \ "vatReturnReferenceNumber").read[String] and
-      (__ \ "version").read[String] and
-      (__ \ "traderId").read[CoreTraderId] and
-      (__ \ "period").read[CorePeriod] and
-      (__ \ "startDate").read[LocalDate] and
-      (__ \ "endDate").read[ LocalDate] and
-      (__ \ "submissionDateTime").read[Instant] and
-      (__ \ "totalAmountVatDueGBP").read[BigDecimal](currencyRead) and
-      (__ \ "msconSupplies").read[List[CoreMsconSupply]]
-    )(CoreVatReturn.apply _),
+        (__ \ "version").read[String] and
+        (__ \ "traderId").read[CoreTraderId] and
+        (__ \ "period").read[CorePeriod] and
+        (__ \ "startDate").read[LocalDate] and
+        (__ \ "endDate").read[LocalDate] and
+        (__ \ "submissionDateTime").read[Instant] and
+        (__ \ "totalAmountVatDueGBP").read[BigDecimal](currencyRead) and
+        (__ \ "msconSupplies").read[List[CoreMsconSupply]]
+      ) (CoreVatReturn.apply _),
     (
       (__ \ "vatReturnReferenceNumber").write[String] and
-      (__ \ "version").write[String] and
-      (__ \ "traderId").write[CoreTraderId] and
-      (__ \ "period").write[CorePeriod] and
-      (__ \ "startDate").write[LocalDate] and
-      (__ \ "endDate").write[ LocalDate] and
-      (__ \ "submissionDateTime").write[Instant] and
-      (__ \ "totalAmountVatDueGBP").write[BigDecimal] and
-      (__ \ "msconSupplies").write[List[CoreMsconSupply]]
-    ) (unlift(CoreVatReturn.unapply))
+        (__ \ "version").write[String] and
+        (__ \ "traderId").write[CoreTraderId] and
+        (__ \ "period").write[CorePeriod] and
+        (__ \ "startDate").write[LocalDate] and
+        (__ \ "endDate").write[LocalDate] and
+        (__ \ "submissionDateTime").write[Instant] and
+        (__ \ "totalAmountVatDueGBP").write[BigDecimal] and
+        (__ \ "msconSupplies").write[List[CoreMsconSupply]]
+      ) (unlift(CoreVatReturn.unapply))
   )
 }
 
@@ -215,8 +234,8 @@ object CoreErrorResponse {
 }
 
 case class EisErrorResponse(
-                              errorDetail: CoreErrorResponse
-                            )
+                             errorDetail: CoreErrorResponse
+                           )
 
 object EisErrorResponse {
   implicit val format: OFormat[EisErrorResponse] = Json.format[EisErrorResponse]
