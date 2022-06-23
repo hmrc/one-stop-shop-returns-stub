@@ -36,10 +36,10 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.{JsonNode, ObjectMapper}
 import com.github.fge.jsonschema.core.report.ProcessingReport
 import com.github.fge.jsonschema.main.{JsonSchema, JsonSchemaFactory}
-import play.api.libs.json.{Json, JsValue}
 import play.api.Logging
-import play.api.mvc._
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Results._
+import play.api.mvc._
 import uk.gov.hmrc.onestopshopreturnsstub.models.core.{CoreErrorResponse, EisErrorResponse}
 
 import java.time.{Clock, Instant}
@@ -93,7 +93,7 @@ class JsonSchemaHelper @Inject()(clock: Clock) extends Logging {
     jsonSchema.map(Json.parse)
   }
 
-  def applySchemaHeaderValidation(headers: Headers)(f: => Future[Result])(implicit ec: ExecutionContext): Future[Result] = {
+  def applySchemaHeaderValidation(headers: Headers)(f: => Future[Result]): Future[Result] = {
 
     CoreVatReturnHeaderHelper.validateHeaders(headers.headers) match {
       case Right(_) => f

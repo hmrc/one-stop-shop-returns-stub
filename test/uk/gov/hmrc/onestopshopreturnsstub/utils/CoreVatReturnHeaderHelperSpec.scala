@@ -22,10 +22,9 @@ import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import org.scalatest.matchers.should.Matchers
 import play.api.http.HeaderNames.{ACCEPT, AUTHORIZATION, CONTENT_TYPE, DATE}
 import play.api.http.MimeTypes
-import uk.gov.hmrc.onestopshopreturnsstub.utils.CoreVatReturnHeaderHelper
 
-import java.time.{LocalDate, LocalDateTime, ZoneId}
 import java.time.format.DateTimeFormatter
+import java.time.{LocalDateTime, ZoneId}
 import java.util.{Locale, UUID}
 class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with Matchers {
 
@@ -44,7 +43,7 @@ class CoreVatReturnHeaderHelperSpec extends AnyFreeSpec with ScalaFutures with M
         (CONTENT_TYPE, MimeTypes.JSON),
         (DATE, dateTimeFormatter.format(LocalDateTime.now())))
 
-      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe Right()
+      CoreVatReturnHeaderHelper.validateHeaders(headers) mustBe Right((): Unit)
 
     }
 

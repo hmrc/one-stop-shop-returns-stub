@@ -34,7 +34,7 @@ case object CoreVatReturnHeaderHelper {
   private def validateCorrelationId(headers: Seq[(String, String)]): HeaderValidationResult = {
     headers.find(_._1.equalsIgnoreCase(X_CORRELATION_ID))
       .map(correlation =>
-        if(correlation._2.matches(correlationIdRegex)) Right()
+        if(correlation._2.matches(correlationIdRegex)) Right((): Unit)
         else Left(InvalidHeader(X_CORRELATION_ID))
     ).getOrElse(Left(MissingHeader(X_CORRELATION_ID)))
   }
@@ -42,7 +42,7 @@ case object CoreVatReturnHeaderHelper {
   private def validateContentType(headers: Seq[(String, String)]): HeaderValidationResult = {
     headers.find(_._1.equalsIgnoreCase(CONTENT_TYPE))
       .map(content =>
-        if(content._2 == MimeTypes.JSON) Right()
+        if(content._2 == MimeTypes.JSON) Right((): Unit)
         else Left(InvalidHeader(CONTENT_TYPE))
       ).getOrElse(Left(MissingHeader(CONTENT_TYPE)))
   }
@@ -51,7 +51,7 @@ case object CoreVatReturnHeaderHelper {
     headers.find(_._1.equalsIgnoreCase(ACCEPT))
       .map(
         accept =>
-          if(accept._2 == MimeTypes.JSON) Right()
+          if(accept._2 == MimeTypes.JSON) Right((): Unit)
           else Left(InvalidHeader(ACCEPT))
       ).getOrElse(Left(MissingHeader(ACCEPT)))
   }
@@ -61,7 +61,7 @@ case object CoreVatReturnHeaderHelper {
     try {
       if (dateHeader.isDefined) {
         dateTimeFormatter.parse(dateHeader.get._2)
-        Right()
+        Right((): Unit)
       } else {
         Left(MissingHeader(DATE))
       }
@@ -72,12 +72,12 @@ case object CoreVatReturnHeaderHelper {
   }
 
   private def validateHost(headers:Seq[(String, String)]): HeaderValidationResult = {
-    if(headers.exists(_._1.equalsIgnoreCase(X_FORWARDED_HOST))) Right()
+    if(headers.exists(_._1.equalsIgnoreCase(X_FORWARDED_HOST))) Right((): Unit)
     else Left(MissingHeader(X_FORWARDED_HOST))
   }
 
   private def validateAuthorization(headers: Seq[(String, String)]): HeaderValidationResult = {
-    if(headers.exists(_._1.equalsIgnoreCase(AUTHORIZATION))) Right()
+    if(headers.exists(_._1.equalsIgnoreCase(AUTHORIZATION))) Right((): Unit)
     else Left(MissingHeader(AUTHORIZATION))
   }
 
@@ -90,7 +90,7 @@ case object CoreVatReturnHeaderHelper {
       validateContentType(headers),
       validateCorrelationId(headers))
     val invalidResults = results.filter(_.isLeft)
-    if(invalidResults.isEmpty) Right()
+    if(invalidResults.isEmpty) Right((): Unit)
     else {
       invalidResults.find {
         case Left(MissingHeader(_)) => true

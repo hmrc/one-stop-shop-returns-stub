@@ -20,14 +20,13 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.Json
-import play.api.mvc.Results.{Accepted, BadRequest}
+import play.api.mvc.Results.Accepted
 import play.api.test.Helpers._
-import uk.gov.hmrc.onestopshopreturnsstub.models.core.{CoreCorrection, CoreErrorResponse, CoreMsconSupply, CoreMsestSupply, CorePeriod, CoreSupply, CoreTraderId, CoreVatReturn, EisErrorResponse}
 import uk.gov.hmrc.onestopshopreturnsstub.models.Period
 import uk.gov.hmrc.onestopshopreturnsstub.models.Quarter.Q3
+import uk.gov.hmrc.onestopshopreturnsstub.models.core._
 
 import java.time.{Clock, Instant, LocalDate, ZoneId}
-import java.util.UUID
 import scala.concurrent.Future
 
 class JsonSchemaHelperSpec extends AnyFreeSpec with ScalaFutures with Matchers {
