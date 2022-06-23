@@ -18,17 +18,13 @@ package uk.gov.hmrc.onestopshopreturnsstub.models.core
 
 import play.api.libs.json.Reads.{maxLength, minLength}
 import play.api.libs.json._
-
-import java.time.format.DateTimeFormatterBuilder
-import java.time.{Instant, LocalDateTime}
-import scala.util.Try
 import uk.gov.hmrc.onestopshopreturnsstub.utils.ValidationUtils._
+
+import java.time.LocalDateTime
 
 case class CoreExchangeRateRequest(base: String, target: String, timestamp: LocalDateTime, rates: Seq[CoreRate])
 
 object CoreExchangeRateRequest {
-
-  import java.time.ZoneOffset
 
   val reads: Reads[CoreExchangeRateRequest] = {
 

@@ -41,7 +41,7 @@ class FinancialDataController @Inject()(
     financialTransactions = Some(TestData.financialTransactions)
   )
 
-  def getFinancialData(idType: String, idNumber: String, regimeType: String, dateRange: DateRange): Action[AnyContent] = Action.async { implicit request =>
+  def getFinancialData(idType: String, idNumber: String, regimeType: String, dateRange: DateRange): Action[AnyContent] = Action.async {
 
     val (responseStatus, maybeFinancialTransactions) = idNumber.head match {
       case '1' => (Ok, Some(TestData.allPaidFinancialTransactions))
