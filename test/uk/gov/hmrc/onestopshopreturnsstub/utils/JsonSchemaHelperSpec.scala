@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import uk.gov.hmrc.onestopshopreturnsstub.models.Quarter.Q3
 import uk.gov.hmrc.onestopshopreturnsstub.models.core._
 
 import java.time.{Clock, Instant, LocalDate, ZoneId}
+import java.time.temporal.ChronoUnit
 import scala.concurrent.Future
 
 class JsonSchemaHelperSpec extends AnyFreeSpec with ScalaFutures with Matchers {
@@ -40,7 +41,7 @@ class JsonSchemaHelperSpec extends AnyFreeSpec with ScalaFutures with Matchers {
 
     "return with a successful status" in {
 
-      val now = Instant.now()
+      val now = Instant.now(stubClock).truncatedTo(ChronoUnit.MILLIS)
       val period = Period(2021, Q3)
       val coreVatReturn = CoreVatReturn(
         "XI/XI123456789/Q4.2021",

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ class CoreExchangeRateRequestSpec extends AnyFreeSpec with Matchers  {
       val either = validated.asEither
 
       either.isLeft shouldBe true
-      val error = either.left.get.head
+      val error = either.left.toOption.get.head
 
       error._1 shouldBe JsPath \ ("timestamp")
       error._2 shouldBe Seq(JsonValidationError("Not a valid date-time of format yyyy-MM-ddThh:mm:ss.SSSZ"))
@@ -121,7 +121,7 @@ class CoreExchangeRateRequestSpec extends AnyFreeSpec with Matchers  {
       val either = validated.asEither
 
       either.isLeft shouldBe true
-      val error = either.left.get.head
+      val error = either.left.toOption.get.head
 
       error._1 shouldBe JsPath \ ("base")
       error._2 shouldBe Seq(JsonValidationError("error.minLength", 3))
@@ -153,16 +153,18 @@ class CoreExchangeRateRequestSpec extends AnyFreeSpec with Matchers  {
       val either = validated.asEither
 
       either.isLeft shouldBe true
-      val errors = either.left.get
+      val errors = either.left.toOption.get
+
+      println("Errors:: " +errors)
 
       errors.head._1 shouldBe JsPath \ "target"
       errors.head._2 shouldBe Seq(JsonValidationError("error.minLength", 3))
 
-      errors(1)._1 shouldBe JsPath \ "timestamp"
-      errors(1)._2 shouldBe Seq(JsonValidationError("Not a valid date-time of format yyyy-MM-ddThh:mm:ss.SSSZ"))
+      errors(1)._1 shouldBe JsPath \ "rates" \ 0 \ "publishedDate"
+      errors(1)._2 shouldBe Seq(JsonValidationError("Not a valid date with format yyyy-MM-dd"))
 
-      errors(2)._1 shouldBe JsPath \ "rates" \ 0 \ "publishedDate"
-      errors(2)._2 shouldBe Seq(JsonValidationError("Not a valid date with format yyyy-MM-dd"))
+      errors(2)._1 shouldBe JsPath \ "timestamp"
+      errors(2)._2 shouldBe Seq(JsonValidationError("Not a valid date-time of format yyyy-MM-ddThh:mm:ss.SSSZ"))
     }
   }
 }
