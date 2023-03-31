@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 
 import java.time.format.DateTimeFormatter
 import java.time._
+import java.time.temporal.ChronoUnit
 import java.util.{Locale, UUID}
 
 class CoreControllerSpec extends AnyFreeSpec with Matchers {
@@ -55,7 +56,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
   "POST /oss/returns/v1/return" - {
     "Return accepted when valid payload" in {
 
-      val now = Instant.now()
+      val now = Instant.now(stubClock).truncatedTo(ChronoUnit.MILLIS)
       val period = Period(2021, Q3)
       val coreVatReturn = CoreVatReturn(
         "XI/XI123456789/Q4.2021",
