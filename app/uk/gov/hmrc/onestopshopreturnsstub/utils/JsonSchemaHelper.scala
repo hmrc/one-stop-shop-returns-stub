@@ -77,7 +77,10 @@ class JsonSchemaHelper @Inject()(clock: Clock) extends Logging {
         validationResult match {
             case Some(res) if res.isSuccess => f
             case Some(res) =>
-              logger.info(s"Validation error ${res.toString}")
+              logger.error(s"Failed json schema ${res.getExceptionThreshold}")
+              res.forEach { test =>
+                logger.error(test.getMessage)
+              }
               Future.successful(BadRequest(Json.toJson(EisErrorResponse(CoreErrorResponse(Instant.now(clock), None, "OSS_400", "Bad Request")))))
             case _ =>
               Future.successful(BadRequest(Json.toJson(EisErrorResponse(CoreErrorResponse(Instant.now(clock), None, "OSS_400", "Missing Payload")))))

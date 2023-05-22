@@ -30,7 +30,7 @@ object ValidationUtils {
 
   private val currencyRegexAllowNegative = "^-?[\\d]+|-?[\\d]+\\.\\d{1,2}$"
 
-  private val vatRateRegex = "^[\\d]{1,3}(\\.\\d{2})?$"
+  private val vatRateRegex = "^[\\d]{1,3}(\\.\\d{1,2})?$"
 
   private val dateTimeWithMillisecondsFormatter = new DateTimeFormatterBuilder()
     .appendPattern("yyyy-MM-dd")
