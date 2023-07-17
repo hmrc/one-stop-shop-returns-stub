@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "javaType": "uk.gov.hmrc.oss.returns.input.model.v1.OssNiReturn",
   "title": "Returns",
-  "description": "Returns Request v12.4",
+  "description": "Returns Request v13",
   "type": "object",
   "properties": {
     "vatReturnReferenceNumber": {
@@ -14,6 +14,9 @@
     },
     "traderId": {
       "$ref": "#/definitions/traderIdType"
+    },
+    "changeDate": {
+      "$ref": "#/definitions/date-time"
     },
     "period": {
       "$ref": "#/definitions/periodType"
@@ -42,6 +45,7 @@
     "vatReturnReferenceNumber",
     "version",
     "traderId",
+    "changeDate",
     "period",
     "submissionDateTime",
     "totalAmountVatDueGBP"
@@ -279,7 +283,7 @@
       "fractionalDigits": 2
     },
     "date-time" : {
-      "description": "Datetime format yyyy-mm-ddTHH:MM:SS.sssZ",
+      "description": "Datetime format yyyy-mm-ddTHH:MM:SS[.sss]Z",
       "type": "string",
       "format": "date-time"
     },

@@ -191,7 +191,8 @@ case class CoreVatReturn(
                           endDate: LocalDate,
                           submissionDateTime: Instant,
                           totalAmountVatDueGBP: BigDecimal,
-                          msconSupplies: List[CoreMsconSupply]
+                          msconSupplies: List[CoreMsconSupply],
+                          changeDate: Instant
                         )
 
 object CoreVatReturn {
@@ -206,7 +207,8 @@ object CoreVatReturn {
         (__ \ "endDate").read[LocalDate] and
         (__ \ "submissionDateTime").read[Instant] and
         (__ \ "totalAmountVatDueGBP").read[BigDecimal](currencyRead) and
-        (__ \ "msconSupplies").read[List[CoreMsconSupply]]
+        (__ \ "msconSupplies").read[List[CoreMsconSupply]] and
+        (__ \ "changeDate").read[Instant]
       ) (CoreVatReturn.apply _),
     (
       (__ \ "vatReturnReferenceNumber").write[String] and
@@ -217,7 +219,8 @@ object CoreVatReturn {
         (__ \ "endDate").write[LocalDate] and
         (__ \ "submissionDateTime").write[Instant] and
         (__ \ "totalAmountVatDueGBP").write[BigDecimal] and
-        (__ \ "msconSupplies").write[List[CoreMsconSupply]]
+        (__ \ "msconSupplies").write[List[CoreMsconSupply]] and
+        (__ \ "changeDate").write[Instant]
       ) (unlift(CoreVatReturn.unapply))
   )
 }
