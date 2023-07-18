@@ -101,7 +101,8 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
             CorePeriod(2021, 2),
             BigDecimal(100)
           ))
-        ))
+        )),
+        now
       )
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn)).withHeaders(validFakeHeaders)
@@ -158,7 +159,8 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
             CorePeriod(2021, 2),
             BigDecimal(100)
           ))
-        ))
+        )),
+        now
       )
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn))
@@ -187,7 +189,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
 
     "Return error when using more than two decimal digits" in {
 
-      val coreVatReturn = """{
+      val coreVatReturn = s"""{
                             |  "vatReturnReferenceNumber" : "XI/XI123456789/Q4.2021",
                             |  "version" : "2022-03-07T14:58:07.374Z",
                             |  "traderId" : {
@@ -232,7 +234,8 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
                             |      },
                             |      "totalVatAmountCorrectionGBP" : 100.123456789
                             |    } ]
-                            |  } ]
+                            |  } ],
+                            |  "changeDate" : "${Instant.now(stubClock)}"
                             |}"""".stripMargin
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.parse(coreVatReturn)).withHeaders(validFakeHeaders)
@@ -249,7 +252,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
 
     "Return accepted when using one decimal digit" in {
 
-      val coreVatReturn = """{
+      val coreVatReturn = s"""{
                             |  "vatReturnReferenceNumber" : "XI/XI123456789/Q4.2021",
                             |  "version" : "2022-03-07T14:58:07.374Z",
                             |  "traderId" : {
@@ -294,7 +297,8 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
                             |      },
                             |      "totalVatAmountCorrectionGBP" : 100.1
                             |    } ]
-                            |  } ]
+                            |  } ],
+                            |  "changeDate" : "${Instant.now(stubClock)}"
                             |}"""".stripMargin
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.parse(coreVatReturn)).withHeaders(validFakeHeaders)
@@ -306,7 +310,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
 
     "Return accepted when using two decimal digits" in {
 
-      val coreVatReturn = """{
+      val coreVatReturn = s"""{
                             |  "vatReturnReferenceNumber" : "XI/XI123456789/Q4.2021",
                             |  "version" : "2022-03-07T14:58:07.374Z",
                             |  "traderId" : {
@@ -351,7 +355,8 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
                             |      },
                             |      "totalVatAmountCorrectionGBP" : 100.10
                             |    } ]
-                            |  } ]
+                            |  } ],
+                            |  "changeDate" : "${Instant.now(stubClock)}"
                             |}"""".stripMargin
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.parse(coreVatReturn)).withHeaders(validFakeHeaders)
@@ -363,7 +368,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
 
     "Return accepted for negative correction" in {
 
-      val coreVatReturn = """{
+      val coreVatReturn = s"""{
                             |  "vatReturnReferenceNumber" : "XI/XI123456789/Q4.2021",
                             |  "version" : "2022-03-07T14:58:07.374Z",
                             |  "traderId" : {
@@ -393,7 +398,8 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
                             |      },
                             |      "totalVatAmountCorrectionGBP" : -10
                             |    } ]
-                            |  } ]
+                            |  } ],
+                            |  "changeDate" : "${Instant.now(stubClock)}"
                             |}"""".stripMargin
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.parse(coreVatReturn)).withHeaders(validFakeHeaders)
@@ -405,7 +411,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
 
     "Return error when vat rate is invalid" in {
 
-      val coreVatReturn = """{
+      val coreVatReturn = s"""{
                             |  "vatReturnReferenceNumber" : "XI/XI123456789/Q4.2021",
                             |  "version" : "2022-03-07T14:58:07.374Z",
                             |  "traderId" : {
@@ -450,7 +456,8 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
                             |      },
                             |      "totalVatAmountCorrectionGBP" : 100.12
                             |    } ]
-                            |  } ]
+                            |  } ],
+                            |  "changeDate" : "${Instant.now(stubClock)}"
                             |}"""".stripMargin
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.parse(coreVatReturn)).withHeaders(validFakeHeaders)
@@ -507,7 +514,8 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
             CorePeriod(2021, 2),
             BigDecimal(100)
           ))
-        ))
+        )),
+        now
       )
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn))

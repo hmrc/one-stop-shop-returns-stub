@@ -86,7 +86,8 @@ class JsonSchemaHelperSpec extends AnyFreeSpec with ScalaFutures with Matchers {
             CorePeriod(2021, 2),
             BigDecimal(100)
           ))
-        ))
+        )),
+        now
       )
 
       val validJson = Json.toJson(coreVatReturn)
