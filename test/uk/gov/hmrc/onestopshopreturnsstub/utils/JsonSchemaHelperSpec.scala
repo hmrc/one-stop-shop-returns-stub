@@ -26,7 +26,7 @@ import uk.gov.hmrc.onestopshopreturnsstub.models.Period
 import uk.gov.hmrc.onestopshopreturnsstub.models.Quarter.Q3
 import uk.gov.hmrc.onestopshopreturnsstub.models.core._
 
-import java.time.{Clock, Instant, LocalDate, ZoneId}
+import java.time.{Clock, Instant, LocalDate, LocalDateTime, ZoneId}
 import java.time.temporal.ChronoUnit
 import scala.concurrent.Future
 
@@ -87,7 +87,7 @@ class JsonSchemaHelperSpec extends AnyFreeSpec with ScalaFutures with Matchers {
             BigDecimal(100)
           ))
         )),
-        now
+        LocalDateTime.now(stubClock)
       )
 
       val validJson = Json.toJson(coreVatReturn)

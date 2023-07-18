@@ -102,7 +102,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
             BigDecimal(100)
           ))
         )),
-        now
+        LocalDateTime.now(stubClock)
       )
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn)).withHeaders(validFakeHeaders)
@@ -160,7 +160,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
             BigDecimal(100)
           ))
         )),
-        now
+        LocalDateTime.now(stubClock)
       )
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn))
@@ -235,7 +235,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
                             |      "totalVatAmountCorrectionGBP" : 100.123456789
                             |    } ]
                             |  } ],
-                            |  "changeDate" : "${Instant.now(stubClock)}"
+                            |  "changeDate" : "${LocalDateTime.now(stubClock)}"
                             |}"""".stripMargin
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.parse(coreVatReturn)).withHeaders(validFakeHeaders)
@@ -457,7 +457,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
                             |      "totalVatAmountCorrectionGBP" : 100.12
                             |    } ]
                             |  } ],
-                            |  "changeDate" : "${Instant.now(stubClock)}"
+                            |  "changeDate" : "${LocalDateTime.now(stubClock)}"
                             |}"""".stripMargin
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.parse(coreVatReturn)).withHeaders(validFakeHeaders)
@@ -515,7 +515,7 @@ class CoreControllerSpec extends AnyFreeSpec with Matchers {
             BigDecimal(100)
           ))
         )),
-        now
+        LocalDateTime.now(stubClock)
       )
 
       val fakeRequestWithBody = fakeRequest.withJsonBody(Json.toJson(coreVatReturn))
