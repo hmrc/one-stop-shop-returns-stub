@@ -7,7 +7,7 @@
   "properties": {
     "vatReturnReferenceNumber": {
       "type": "string",
-      "pattern": "XI/XI([a-zA-Z0-9]{1,12})/(Q[1-4])\\.(\\d{4})"
+      "pattern": "XI/(IM|XI)[a-zA-Z0-9]{1,12}/[QM]\\d{1,2}\\.\\d{4}"
     },
     "version": {
       "$ref": "#/definitions/date-time"
@@ -92,10 +92,7 @@
       },
       "required": [
         "msconCountryCode",
-        "balanceOfVatDueGBP",
-        "grandTotalMsidGoodsGBP",
-        "grandTotalMsestGoodsGBP",
-        "correctionsTotalGBP"
+        "balanceOfVatDueGBP"
       ]
     },
     "msestSupplyPerCountry": {
@@ -175,10 +172,18 @@
     },
     "traderIdType": {
       "type": "object",
+      "oneOf": [
+        {"required" : ["vatNumber"]},
+        {"required" : ["IOSSNumber"]}],
       "properties": {
         "vatNumber": {
           "type": "string",
           "minLength": 1,
+          "maxLength": 12
+        },
+        "IOSSNumber": {
+          "type": "string",
+          "minLength": 12,
           "maxLength": 12
         },
         "issuedBy": {
@@ -186,12 +191,14 @@
         }
       },
       "required": [
-        "vatNumber",
         "issuedBy"
       ]
     },
     "periodType": {
       "type": "object",
+      "oneOf": [
+        {"required" : ["quarter"]},
+        {"required" : ["month"]}],
       "properties": {
         "year": {
           "type": "integer",
@@ -208,11 +215,18 @@
           "examples": [
             3
           ]
+        },
+        "month": {
+          "type": "string",
+          "pattern": "^(0[1-9]|1[0-2])$",
+          "description": "Month of the year",
+          "examples": [
+            "01","02","03","12"
+          ]
         }
       },
       "required": [
-        "year",
-        "quarter"
+        "year"
       ]
     },
     "vatIdentificationNumber": {
@@ -260,6 +274,11 @@
           "$ref": "#/definitions/taxReferenceNumber"
         }
       ]
+    },
+    "msconCountryCode": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 2
     },
     "amount" : {
       "description": "Values should only be to 2 decimal places",
