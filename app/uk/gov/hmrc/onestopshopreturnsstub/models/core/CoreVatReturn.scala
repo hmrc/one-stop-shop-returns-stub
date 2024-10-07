@@ -47,10 +47,8 @@ object CorePeriod {
 
   implicit val format: Format[CorePeriod] = Format.apply[CorePeriod](
     (
-      (__ \ "year").read[Int](min(2021) keepAnd
-        filter[Int](JsonValidationError("Year should be represented in 4 digits"))(
-          ((i: Int) => i.toString.length == 4))) and
-        (__ \ "quarter").read[Int](min(1) keepAnd max(4))
+      (__ \ "year").read[Int] and
+        (__ \ "quarter").read[Int]
       ) (CorePeriod.apply _),
     (
       (__ \ "year").write[Int] and
