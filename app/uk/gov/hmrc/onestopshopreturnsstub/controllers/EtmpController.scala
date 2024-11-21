@@ -61,15 +61,15 @@ class EtmpController @Inject()(
             obligationDetails = Seq(
               EtmpObligationDetails(
                 status = EtmpObligationsFulfilmentStatus.Open,
-                periodKey = "23AL"
+                periodKey = "23Q3"
               ),
               EtmpObligationDetails(
                 status = EtmpObligationsFulfilmentStatus.Fulfilled,
-                periodKey = "23AK"
+                periodKey = "23Q2"
               ),
               EtmpObligationDetails(
                 status = EtmpObligationsFulfilmentStatus.Fulfilled,
-                periodKey = "23AJ"
+                periodKey = "23Q1"
               )
             )
           ))
