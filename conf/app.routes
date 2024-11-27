@@ -1,9 +1,11 @@
 # microservice specific routes
 
-GET         /enterprise/financial-data/:idType/:idNumber/:regimeType         uk.gov.hmrc.onestopshopreturnsstub.controllers.FinancialDataController.getFinancialData(idType: String, idNumber: String, regimeType: String, dateRange: DateRange)
+GET         /enterprise/financial-data/:idType/:idNumber/:regimeType        uk.gov.hmrc.onestopshopreturnsstub.controllers.FinancialDataController.getFinancialData(idType: String, idNumber: String, regimeType: String, dateRange: DateRange)
 
-POST        /vec/submitvatreturn/v1/oss                                      uk.gov.hmrc.onestopshopreturnsstub.controllers.CoreController.submitVatReturn()
+POST        /vec/submitvatreturn/v1/oss                                     uk.gov.hmrc.onestopshopreturnsstub.controllers.CoreController.submitVatReturn()
 
 POST        /vec/ecbexchangerate/ecbexchangeraterequest/v1                   uk.gov.hmrc.onestopshopreturnsstub.controllers.CoreController.submitRates()
 
 GET         /vec/ossreturns/returncorrection/v1/:vrn/:country/:period        uk.gov.hmrc.onestopshopreturnsstub.controllers.EtmpController.getReturnCorrection(vrn: String, country: String, period: String)
+
+GET         /enterprise/obligation-data/:idType/:idNumber/:regimeType       uk.gov.hmrc.onestopshopreturnsstub.controllers.EtmpController.getObligations(idType: String, idNumber: String, regimeType: String, dateRange: ObligationsDateRange, status: Option[String])
