@@ -18,6 +18,7 @@ package uk.gov.hmrc.onestopshopreturnsstub.controllers
 
 import uk.gov.hmrc.onestopshopreturnsstub.models.{FinancialTransaction, Item, Period}
 import uk.gov.hmrc.onestopshopreturnsstub.models.Quarter.{Q1, Q2, Q3, Q4}
+import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.{EtmpObligation, EtmpObligationDetails, EtmpObligations, EtmpObligationsFulfilmentStatus}
 
 object TestData {
 
@@ -242,5 +243,27 @@ object TestData {
       items = None
     )
   )
+
+  val obligationDetails: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "22Q1"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "22Q2"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = "22Q3"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = "22Q4"
+      )
+
+    )
+  )))
 
 }
