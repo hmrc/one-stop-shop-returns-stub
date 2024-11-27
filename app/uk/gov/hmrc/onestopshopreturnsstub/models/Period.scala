@@ -30,6 +30,12 @@ case class Period(year: Int, quarter: Quarter) {
   val paymentDeadline: LocalDate = firstDay.plusMonths(4).minusDays(1)
 
   override def toString: String = s"$year-${quarter.toString}"
+
+  def toEtmpPeriodString: String = {
+    val lastYearDigits = year.toString.substring(2)
+
+    s"$lastYearDigits$quarter"
+  }
 }
 
 object Period {
