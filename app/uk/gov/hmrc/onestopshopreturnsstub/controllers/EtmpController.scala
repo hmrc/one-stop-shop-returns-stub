@@ -19,6 +19,9 @@ package uk.gov.hmrc.onestopshopreturnsstub.controllers
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
 import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.EtmpReturnCorrectionValue
+import uk.gov.hmrc.onestopshopreturnsstub.controllers.TestData.obligationDetails
+import uk.gov.hmrc.onestopshopreturnsstub.models.ObligationsDateRange
+import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.{EtmpObligation, EtmpObligationDetails, EtmpObligations, EtmpObligationsFulfilmentStatus}
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 
 import javax.inject._
@@ -47,6 +50,22 @@ class EtmpController @Inject()(
           )
 
         Future.successful(Ok(Json.toJson(etmpReturnCorrectionValueResponse)))
+      }
+  }
+
+  def getObligations(idType: String, idNumber: String, regimeType: String, dateRange: ObligationsDateRange, status: Option[String]): Action[AnyContent] = Action.async {
+    implicit request =>
+
+      jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
+
+        def generateObligations(idNumber: String): EtmpObligations = idNumber match {
+          case _ =>
+            obligationDetails
+        }
+
+        val obligationResponse = generateObligations(idNumber)
+
+        Future.successful(Ok(Json.toJson(obligationResponse)))
       }
   }
 

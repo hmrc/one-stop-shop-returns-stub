@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ import play.api.test.{FakeRequest, Helpers}
 import play.api.test.Helpers._
 import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.EtmpReturnCorrectionValue
 import uk.gov.hmrc.onestopshopreturnsstub.models.{Period, Quarter}
+import uk.gov.hmrc.onestopshopreturnsstub.models.ObligationsDateRange
+import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.{EtmpObligation, EtmpObligationDetails, EtmpObligations, EtmpObligationsFulfilmentStatus}
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 
 import java.time._
@@ -78,6 +80,82 @@ class EtmpControllerSpec extends AnyFreeSpec with Matchers {
       val fakeRequestWithBody = fakeRequest
 
       val result = controller.getReturnCorrection(vrn, country, period.toEtmpPeriodString)(fakeRequestWithBody)
+
+      status(result) shouldBe Status.BAD_REQUEST
+    }
+  }
+
+  "GET /enterprise/obligation-data/{idType}/{idNumber}/{regimeType}" - {
+
+    val idType = "OSS"
+    val regimeType = "OSS"
+    val obligationFulfilmentStatus = "O"
+    val firstDateOfYear = LocalDate.of(2023, 1, 1)
+    val lastDateOfYear = LocalDate.of(2023, 12, 31)
+    val dateRange = ObligationsDateRange(firstDateOfYear, lastDateOfYear)
+
+    val fakeRequest = FakeRequest(
+      GET,
+      routes.EtmpController.getObligations(
+        idType = idType,
+        idNumber = vrn,
+        regimeType = regimeType,
+        dateRange = dateRange,
+        status = Some(obligationFulfilmentStatus)
+      ).url
+    )
+
+
+    "return a successful response" in {
+
+      val successfulObligationsResponse = EtmpObligations(obligations = Seq(EtmpObligation(
+        obligationDetails = Seq(
+          EtmpObligationDetails(
+            status = EtmpObligationsFulfilmentStatus.Fulfilled,
+            periodKey = "22Q1"
+          ),
+          EtmpObligationDetails(
+            status = EtmpObligationsFulfilmentStatus.Fulfilled,
+            periodKey = "22Q2"
+          ),
+          EtmpObligationDetails(
+            status = EtmpObligationsFulfilmentStatus.Open,
+            periodKey = "22Q3"
+          ),
+          EtmpObligationDetails(
+            status = EtmpObligationsFulfilmentStatus.Open,
+            periodKey = "22Q4"
+          )
+        )
+      )))
+
+      val fakeRequestWithBody = fakeRequest.withHeaders(validFakeHeaders)
+
+      val result = controller
+        .getObligations(
+          idType = idType,
+          idNumber = vrn,
+          regimeType = regimeType,
+          dateRange = dateRange,
+          status = Some(obligationFulfilmentStatus)
+        )(fakeRequestWithBody)
+
+      status(result) shouldBe Status.OK
+      contentAsJson(result) shouldBe Json.toJson(successfulObligationsResponse)
+    }
+
+    "return a bad request when headers are missing" in {
+
+      val fakeRequestWihBody = fakeRequest
+
+      val result = controller
+        .getObligations(
+          idType = idType,
+          idNumber = vrn,
+          regimeType = regimeType,
+          dateRange = dateRange,
+          status = Some(obligationFulfilmentStatus)
+        )(fakeRequestWihBody)
 
       status(result) shouldBe Status.BAD_REQUEST
     }
