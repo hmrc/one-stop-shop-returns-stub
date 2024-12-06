@@ -18,15 +18,15 @@ package uk.gov.hmrc.onestopshopreturnsstub.controllers
 
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
+import play.api.http.HeaderNames.{ACCEPT, AUTHORIZATION, CONTENT_TYPE, DATE}
 import play.api.http.{MimeTypes, Status}
 import play.api.libs.json.Json
 import play.api.mvc.Headers
-import play.api.test.{FakeRequest, Helpers}
 import play.api.test.Helpers._
-import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.EtmpReturnCorrectionValue
-import uk.gov.hmrc.onestopshopreturnsstub.models.{Period, Quarter}
-import uk.gov.hmrc.onestopshopreturnsstub.models.ObligationsDateRange
-import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.{EtmpObligation, EtmpObligationDetails, EtmpObligations, EtmpObligationsFulfilmentStatus}
+import play.api.test.{FakeRequest, Helpers}
+import uk.gov.hmrc.onestopshopreturnsstub.controllers.TestData.basicEtmpVatReturn
+import uk.gov.hmrc.onestopshopreturnsstub.models.etmp._
+import uk.gov.hmrc.onestopshopreturnsstub.models.{ObligationsDateRange, Period, Quarter}
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 
 import java.time._
@@ -57,7 +57,7 @@ class EtmpControllerSpec extends AnyFreeSpec with Matchers {
 
   "GET /vec/ossreturns/returncorrection/v1/{VRN}/{MSCON}{PeriodKey}" - {
 
-    val fakeRequest = FakeRequest(POST, routes.EtmpController.getReturnCorrection(vrn, country, period.toEtmpPeriodString).url)
+    val fakeRequest = FakeRequest(GET, routes.EtmpController.getReturnCorrection(vrn, country, period.toEtmpPeriodString).url)
 
     val etmpReturnCorrectionValue: EtmpReturnCorrectionValue =
       EtmpReturnCorrectionValue(
@@ -155,6 +155,50 @@ class EtmpControllerSpec extends AnyFreeSpec with Matchers {
           dateRange = dateRange,
           status = Some(obligationFulfilmentStatus)
         )(fakeRequestWihBody)
+
+      status(result) shouldBe Status.BAD_REQUEST
+    }
+  }
+
+  "GET /vec/ossreturns/viewreturns/v1/{vrn}/{period}" - {
+
+    val fakeRequest = FakeRequest(GET, routes.EtmpController.getEtmpReturn(vrn, period.toEtmpPeriodString).url)
+
+    val fakeRequestWithBody = fakeRequest.withHeaders(validFakeHeaders)
+
+    val reference = s"XI/XI123456789/${period.quarter}.${period.year}"
+
+    // TODO ->
+    //    val etmpVatReturnPayload: EtmpVatReturn = EtmpVatReturn(
+    //      returnReference = reference,
+    //      returnVersion = LocalDateTime.of(period.firstDay, LocalTime.now(stubClock)),
+    //      periodKey = period.toEtmpPeriodString,
+    //      returnPeriodFrom = period.firstDay,
+    //      returnPeriodTo = period.lastDay,
+    //      goodsSupplied = Seq.empty,
+    //      totalVATGoodsSuppliedGBP = BigDecimal(0),
+    //      totalVATAmountPayable = BigDecimal(0),
+    //      totalVATAmountPayableAllSpplied = BigDecimal(0),
+    //      correctionPreviousVATReturn = Seq.empty,
+    //      totalVATAmountFromCorrectionGBP = BigDecimal(0),
+    //      balanceOfVATDueForMS = Seq.empty,
+    //      totalVATAmountDueForAllMSGBP = BigDecimal(0),
+    //      paymentReference = reference
+    //    )
+
+    val etmpVatReturnPayload: EtmpVatReturn = basicEtmpVatReturn(vrn, period.toEtmpPeriodString)
+
+    "must return OK with a successful payload" in {
+
+      val result = controller.getEtmpReturn(vrn, period.toEtmpPeriodString)(fakeRequestWithBody)
+
+      status(result) shouldBe Status.OK
+      contentAsJson(result) shouldBe Json.toJson(etmpVatReturnPayload)
+    }
+
+    "must return BadRequest when headers are missing" in {
+
+      val result = controller.getEtmpReturn(vrn, period.toEtmpPeriodString)(fakeRequest)
 
       status(result) shouldBe Status.BAD_REQUEST
     }
