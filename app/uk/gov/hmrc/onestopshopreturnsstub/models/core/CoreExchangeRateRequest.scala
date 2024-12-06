@@ -47,7 +47,7 @@ object CoreExchangeRateRequest {
       (__ \ "target").write[String] and
       (__ \ "timestamp").write[LocalDateTime](localDateTimeWrites) and
       (__ \ "rates").write[Seq[CoreRate]]
-    ) (unlift(CoreExchangeRateRequest.unapply))
+    ) (coreExchangeRateRequest => Tuple.fromProductTyped(coreExchangeRateRequest))
   }
 
   implicit val format: Format[CoreExchangeRateRequest] = Format(reads, writes)
