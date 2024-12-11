@@ -103,8 +103,6 @@ class JsonSchemaHelper @Inject()(clock: Clock) extends Logging {
       case Left(MissingHeader(header)) => Future.successful(BadRequest(Json.toJson(EisErrorResponse(CoreErrorResponse(Instant.now(), Some(UUID.randomUUID()), "OSS_003", s"Bad Request - missing $header")))))
       case Left(InvalidHeader(header)) => Future.successful(BadRequest(Json.toJson(EisErrorResponse(CoreErrorResponse(Instant.now(), Some(UUID.randomUUID()), "OSS_002", s"Bad Request - invalid $header")))))
       case _ => Future.successful(BadRequest(Json.toJson(EisErrorResponse(CoreErrorResponse(Instant.now(), Some(UUID.randomUUID()), "OSS_000", s"Bad Request - unknown error")))))
-
     }
   }
-
 }
