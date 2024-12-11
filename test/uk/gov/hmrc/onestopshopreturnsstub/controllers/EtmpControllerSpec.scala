@@ -166,26 +166,6 @@ class EtmpControllerSpec extends AnyFreeSpec with Matchers {
 
     val fakeRequestWithBody = fakeRequest.withHeaders(validFakeHeaders)
 
-    val reference = s"XI/XI123456789/${period.quarter}.${period.year}"
-
-    // TODO ->
-    //    val etmpVatReturnPayload: EtmpVatReturn = EtmpVatReturn(
-    //      returnReference = reference,
-    //      returnVersion = LocalDateTime.of(period.firstDay, LocalTime.now(stubClock)),
-    //      periodKey = period.toEtmpPeriodString,
-    //      returnPeriodFrom = period.firstDay,
-    //      returnPeriodTo = period.lastDay,
-    //      goodsSupplied = Seq.empty,
-    //      totalVATGoodsSuppliedGBP = BigDecimal(0),
-    //      totalVATAmountPayable = BigDecimal(0),
-    //      totalVATAmountPayableAllSpplied = BigDecimal(0),
-    //      correctionPreviousVATReturn = Seq.empty,
-    //      totalVATAmountFromCorrectionGBP = BigDecimal(0),
-    //      balanceOfVATDueForMS = Seq.empty,
-    //      totalVATAmountDueForAllMSGBP = BigDecimal(0),
-    //      paymentReference = reference
-    //    )
-
     val etmpVatReturnPayload: EtmpVatReturn = basicEtmpVatReturn(vrn, period.toEtmpPeriodString)
 
     "must return OK with a successful payload" in {
