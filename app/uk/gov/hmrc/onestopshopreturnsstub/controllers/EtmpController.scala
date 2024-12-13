@@ -21,7 +21,7 @@ import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
 import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.EtmpReturnCorrectionValue
 import uk.gov.hmrc.onestopshopreturnsstub.controllers.TestData.obligationDetails
 import uk.gov.hmrc.onestopshopreturnsstub.models.ObligationsDateRange
-import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.{EtmpObligation, EtmpObligationDetails, EtmpObligations, EtmpObligationsFulfilmentStatus}
+import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.EtmpObligations
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 
 import javax.inject._
