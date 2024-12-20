@@ -41,7 +41,7 @@ object CoreRate {
     (
       (__ \ "publishedDate").write[LocalDate] and
       (__ \ "rate").write[BigDecimal]
-    ) (unlift(CoreRate.unapply))
+    ) (coreRate => Tuple.fromProductTyped(coreRate))
   }
 
   implicit val format: Format[CoreRate] = Format(reads, writes)
