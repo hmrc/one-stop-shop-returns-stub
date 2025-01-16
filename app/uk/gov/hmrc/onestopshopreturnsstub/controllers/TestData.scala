@@ -264,7 +264,15 @@ object TestData {
         status = EtmpObligationsFulfilmentStatus.Open,
         periodKey = "22Q4"
       )
+    )
+  )))
 
+  val oneFulfilledObligationDetails: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "21Q3"
+      )
     )
   )))
 
@@ -315,14 +323,122 @@ object TestData {
     )
   }
 
+  def etmpVatReturnWithCorrections(vrn: String, period: String): EtmpVatReturn = {
+
+    EtmpVatReturn(
+      returnReference = generateReference(vrn, period),
+      returnVersion = LocalDateTime.of(2024, 1, 2, 0, 0, 0),
+      periodKey = period,
+      returnPeriodFrom = LocalDate.of(2023, 12, 1),
+      returnPeriodTo = LocalDate.of(2023, 12, 31),
+      goodsSupplied = Seq(
+        EtmpVatReturnGoodsSupplied(
+          msOfConsumption = "DE",
+          msOfEstablishment = "MT",
+          vatRateType = EtmpVatRateType.StandardVatRate,
+          taxableAmountGBP = BigDecimal(12345.67),
+          vatAmountGBP = BigDecimal(1000.00)
+        ),
+        EtmpVatReturnGoodsSupplied(
+          msOfConsumption = "FR",
+          msOfEstablishment = "XI",
+          vatRateType = EtmpVatRateType.StandardVatRate,
+          taxableAmountGBP = BigDecimal(12345.67),
+          vatAmountGBP = BigDecimal(1000.00)
+        ),
+        EtmpVatReturnGoodsSupplied(
+          msOfConsumption = "ES",
+          msOfEstablishment = "XI",
+          vatRateType = EtmpVatRateType.ReducedVatRate,
+          taxableAmountGBP = BigDecimal(23973.03),
+          vatAmountGBP = BigDecimal(1000.00)
+        ),
+        EtmpVatReturnGoodsSupplied(
+          msOfConsumption = "DE",
+          msOfEstablishment = "AT",
+          vatRateType = EtmpVatRateType.ReducedVatRate,
+          taxableAmountGBP = BigDecimal(5231.03),
+          vatAmountGBP = BigDecimal(1565.46)
+        ),
+        EtmpVatReturnGoodsSupplied(
+          msOfConsumption = "LT",
+          msOfEstablishment = "LV",
+          vatRateType = EtmpVatRateType.ReducedVatRate,
+          taxableAmountGBP = BigDecimal(5231.03),
+          vatAmountGBP = BigDecimal(1565.46)
+        )
+      ),
+      totalVATGoodsSuppliedGBP = BigDecimal(2000.00),
+      totalVATAmountPayable = BigDecimal(2000.00),
+      totalVATAmountPayableAllSpplied = BigDecimal(2000.00),
+      correctionPreviousVATReturn = Seq(
+        EtmpVatReturnCorrection(
+          periodKey = "21Q3",
+          periodFrom = LocalDate.of(2021, 7, 1).toString,
+          periodTo = LocalDate.of(2021, 9, 30).toString,
+          msOfConsumption = "DE",
+          totalVATAmountCorrectionGBP = BigDecimal(-1500.00),
+          totalVATAmountCorrectionEUR = BigDecimal(-1500.00)
+        ),
+        EtmpVatReturnCorrection(
+          periodKey = "21Q3",
+          periodFrom = LocalDate.of(2021, 7, 1).toString,
+          periodTo = LocalDate.of(2021, 9, 30).toString,
+          msOfConsumption = "FR",
+          totalVATAmountCorrectionGBP = BigDecimal(-3500.00),
+          totalVATAmountCorrectionEUR = BigDecimal(-3500.00)
+        ),
+        EtmpVatReturnCorrection(
+          periodKey = "21Q4",
+          periodFrom = LocalDate.of(2021, 10, 1).toString,
+          periodTo = LocalDate.of(2021, 12, 31).toString,
+          msOfConsumption = "ES",
+          totalVATAmountCorrectionGBP = BigDecimal(-2500.00),
+          totalVATAmountCorrectionEUR = BigDecimal(-2500.00)
+        ),
+        EtmpVatReturnCorrection(
+          periodKey = "21Q4",
+          periodFrom = LocalDate.of(2021, 10, 1).toString,
+          periodTo = LocalDate.of(2021, 12, 31).toString,
+          msOfConsumption = "LV",
+          totalVATAmountCorrectionGBP = BigDecimal(-1800.00),
+          totalVATAmountCorrectionEUR = BigDecimal(-1800.00)
+        ),
+        EtmpVatReturnCorrection(
+          periodKey = "22Q1",
+          periodFrom = LocalDate.of(2022, 1, 1).toString,
+          periodTo = LocalDate.of(2021, 3, 31).toString,
+          msOfConsumption = "LT",
+          totalVATAmountCorrectionGBP = BigDecimal(-1800.00),
+          totalVATAmountCorrectionEUR = BigDecimal(-1800.00)
+        )
+      ),
+      totalVATAmountFromCorrectionGBP = BigDecimal(0.00),
+      balanceOfVATDueForMS = Seq(
+        EtmpVatReturnBalanceOfVatDue(
+          msOfConsumption = "DE",
+          totalVATDueGBP = BigDecimal(1000.00),
+          totalVATEUR = BigDecimal(1000.00)
+        ),
+        EtmpVatReturnBalanceOfVatDue(
+          msOfConsumption = "FR",
+          totalVATDueGBP = BigDecimal(1000.00),
+          totalVATEUR = BigDecimal(1000.00)
+        )
+      ),
+      totalVATAmountDueForAllMSGBP = BigDecimal(2000.00),
+      paymentReference = generateReference(vrn, period)
+    )
+  }
+
   def nilEtmpVatReturn(vrn: String, period: String): EtmpVatReturn = {
 
     EtmpVatReturn(
       returnReference = generateReference(vrn, period),
       returnVersion = LocalDateTime.of(2024, 1, 2, 0, 0, 0),
-      periodKey = "22Q4",
-      returnPeriodFrom = LocalDate.of(2023, 10, 1),
-      returnPeriodTo = LocalDate.of(2023, 12, 31),
+      periodKey = "21Q3",
+      returnPeriodFrom = LocalDate.of(2021, 7, 1),
+      returnPeriodTo = LocalDate.of(2021, 9, 30),
       goodsSupplied = Seq.empty,
       totalVATGoodsSuppliedGBP = BigDecimal(0),
       totalVATAmountPayable = BigDecimal(0),
