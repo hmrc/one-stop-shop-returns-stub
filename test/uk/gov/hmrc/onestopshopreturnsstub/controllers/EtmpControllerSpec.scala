@@ -22,14 +22,14 @@ import play.api.http.HeaderNames.{ACCEPT, AUTHORIZATION, CONTENT_TYPE, DATE}
 import play.api.http.{MimeTypes, Status}
 import play.api.libs.json.Json
 import play.api.mvc.Headers
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.onestopshopreturnsstub.controllers.TestData.basicEtmpVatReturn
-import uk.gov.hmrc.onestopshopreturnsstub.models.etmp._
+import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.*
 import uk.gov.hmrc.onestopshopreturnsstub.models.{ObligationsDateRange, Period, Quarter}
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 
-import java.time._
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.{Locale, UUID}
 
