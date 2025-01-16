@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.onestopshopreturnsstub.controllers
 
+import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
-import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.EtmpReturnCorrectionValue
-import uk.gov.hmrc.onestopshopreturnsstub.controllers.TestData.obligationDetails
+import uk.gov.hmrc.onestopshopreturnsstub.controllers.TestData._
 import uk.gov.hmrc.onestopshopreturnsstub.models.ObligationsDateRange
-import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.EtmpObligations
+import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.{EtmpObligations, EtmpReturnCorrectionValue}
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 
 import javax.inject._
@@ -32,7 +32,7 @@ class EtmpController @Inject()(
                                 cc: ControllerComponents,
                                 jsonSchemaHelper: JsonSchemaHelper
                               )
-  extends BaseController {
+  extends BaseController with Logging {
 
   override protected def controllerComponents: ControllerComponents = cc
 
@@ -59,6 +59,8 @@ class EtmpController @Inject()(
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
 
         def generateObligations(idNumber: String): EtmpObligations = idNumber match {
+          case "100000001" =>
+            oneFulfilledObligationDetails
           case _ =>
             obligationDetails
         }
@@ -69,4 +71,20 @@ class EtmpController @Inject()(
       }
   }
 
+  def getEtmpReturn(vrn: String, period: String): Action[AnyContent] = Action.async {
+    implicit request =>
+
+      logger.info(s"Here's the request: ${request} ${request.headers} ${request.body}")
+
+      jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
+
+        val etmpVatReturn = (vrn, period) match {
+          case ("100000001", _) => etmpVatReturnWithCorrections(vrn, period)
+          case ("100000002", _) => nilEtmpVatReturn(vrn, period)
+          case _ => basicEtmpVatReturn(vrn, period)
+        }
+
+        Future.successful(Ok(Json.toJson(etmpVatReturn)))
+      }
+  }
 }
