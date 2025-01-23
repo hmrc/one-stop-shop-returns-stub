@@ -59,7 +59,7 @@ class EtmpController @Inject()(
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
 
         def generateObligations(idNumber: String): EtmpObligations = idNumber match {
-          case "100000001" =>
+          case "100000003" =>
             oneFulfilledObligationDetails
           case _ =>
             obligationDetails
@@ -79,7 +79,7 @@ class EtmpController @Inject()(
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
 
         val etmpVatReturn = (vrn, period) match {
-          case ("100000001", _) => etmpVatReturnWithCorrections(vrn, period)
+          case ("100000003", _) => etmpVatReturnWithCorrections(vrn, period)
           case ("100000002", _) => nilEtmpVatReturn(vrn, period)
           case _ => basicEtmpVatReturn(vrn, period)
         }
