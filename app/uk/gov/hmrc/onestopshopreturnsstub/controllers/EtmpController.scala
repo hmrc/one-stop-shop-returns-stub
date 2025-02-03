@@ -41,10 +41,12 @@ class EtmpController @Inject()(
 
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
         val accumulativeCorrectionAmount = (vrn, country, period) match {
-          case ("100000003", "DE", "21Q3") => BigDecimal(1469.13)
-          case ("100000003", "FR", "21Q3") => BigDecimal(2469.13)
-          case ("100000003", "AT", "21Q3") => BigDecimal(1469.13)
-          case ("100000003", "LT", "21Q3") => BigDecimal(1469.13)
+          case ("100000003", "HR", "21Q3") => BigDecimal(7469.13)
+          case ("100000003", "FR", "21Q3") => BigDecimal(1234.00)
+//          case ("100000003", "DE", "21Q3") => BigDecimal(1469.13)
+//          case ("100000003", "FR", "21Q3") => BigDecimal(2469.13)
+//          case ("100000003", "AT", "21Q3") => BigDecimal(1469.13)
+//          case ("100000003", "LT", "21Q3") => BigDecimal(1469.13)
           case _ => BigDecimal(0)
         }
 
@@ -63,8 +65,12 @@ class EtmpController @Inject()(
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
 
         def generateObligations(idNumber: String): EtmpObligations = idNumber match {
+          case "100000004" =>
+            twoFulfilledObligationDetails
           case "100000003" =>
             oneFulfilledObligationDetails
+          case "100000002" | "100000006" =>
+            firstPeriodNoCorrections
           case _ =>
             obligationDetails
         }
@@ -83,7 +89,8 @@ class EtmpController @Inject()(
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
 
         val etmpVatReturn = (vrn, period) match {
-          case ("100000003", _) => etmpVatReturnWithCorrections(vrn, period)
+//          case ("100000003", _) => etmpVatReturnWithCorrections(vrn, period)
+          case ("100000003", _) => etmpVatReturnWithoutCorrections(vrn, period)
           case ("100000002", _) => nilEtmpVatReturn(vrn, period)
           case _ => basicEtmpVatReturn(vrn, period)
         }

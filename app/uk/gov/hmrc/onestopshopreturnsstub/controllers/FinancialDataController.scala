@@ -43,14 +43,19 @@ class FinancialDataController @Inject()(
 
   def getFinancialData(idType: String, idNumber: String, regimeType: String, dateRange: DateRange): Action[AnyContent] = Action.async {
 
-    val (responseStatus, maybeFinancialTransactions) = idNumber.head match {
-      case '1' => (Ok, Some(TestData.allPaidFinancialTransactions))
-      case '2' => (Ok, Some(TestData.somePaidFinancialTransactions))
-      case '3' => (Ok, Some(TestData.notPaidFinancialTransactions))
-      case '4' => (Ok, Some(TestData.multipleItemsNotPaidFinancialTransactions))
-      case '5' => (NotFound, None)
+    val (responseStatus, maybeFinancialTransactions) = idNumber match {
+      case "100000003" => (Ok, Some(TestData.singleOutstandingPayment))
       case _ => (Ok, successfulResponse.financialTransactions)
     }
+
+//    val (responseStatus, maybeFinancialTransactions) = idNumber.head match {
+//      case '1' => (Ok, Some(TestData.allPaidFinancialTransactions))
+//      case '2' => (Ok, Some(TestData.somePaidFinancialTransactions))
+//      case '3' => (Ok, Some(TestData.notPaidFinancialTransactions))
+//      case '4' => (Ok, Some(TestData.multipleItemsNotPaidFinancialTransactions))
+//      case '5' => (NotFound, None)
+//      case _ => (Ok, successfulResponse.financialTransactions)
+//    }
 
     val filteredFinancialTransactions = maybeFinancialTransactions.map { financialTransactions =>
       val requestedYear = dateRange.toDate.getYear
