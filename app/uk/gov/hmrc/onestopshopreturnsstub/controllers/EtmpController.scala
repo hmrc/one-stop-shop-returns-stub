@@ -65,6 +65,28 @@ class EtmpController @Inject()(
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
 
         def generateObligations(idNumber: String): EtmpObligations = idNumber match {
+          case "600000011" =>
+            twoOpenObligationsExcluded
+          case "600000012" =>
+            oneOpenObligationExcluded
+          case "600000013" =>
+            multipleOpenObligationsExcluded
+          case "600000014" =>
+            oneOpenObligationQuarantined
+          case "600000018" =>
+            oneOpenObligationExcludedFuture
+          case "600000019" | "100000026" =>
+            oneFulfilledObligationExcluded2024
+          case "600000020" | "100000025" =>
+            oneOpenObligationExcluded2024
+          case "600000021" =>
+            twoFulfilledObligationDetails2022
+          case "600001212" =>
+            oneFulfilledObligationExcluded
+          case "444444444" =>
+            twoFulfilledObligationDetails2023
+          case "166666666" =>
+            fulfilledObligationOver6YearsAgo
           case "100000004" =>
             twoFulfilledObligationDetails
           case "100000003" =>

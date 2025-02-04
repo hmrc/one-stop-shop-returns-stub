@@ -53,6 +53,52 @@ object TestData {
     )
   )
 
+  val oneOutstandingPaymentOnePaid = Seq(
+    FinancialTransaction(
+      chargeType = Some("G Ret FR EU-OMS"),
+      mainType = None,
+      taxPeriodFrom = Some(period.firstDay),
+      taxPeriodTo = Some(period.lastDay),
+      originalAmount = Some(BigDecimal(8703.13)),
+      outstandingAmount = Some(BigDecimal(0)),
+      clearedAmount = Some(BigDecimal(8703.13)),
+      items = Some(items)
+    ),
+    FinancialTransaction(
+      chargeType = Some("G Ret FR EU-OMS"),
+      mainType = None,
+      taxPeriodFrom = Some(period2.firstDay),
+      taxPeriodTo = Some(period2.lastDay),
+      originalAmount = Some(BigDecimal(5500.50)),
+      outstandingAmount = Some(BigDecimal(5500.50)),
+      clearedAmount = Some(BigDecimal(0)),
+      items = Some(items)
+    )
+  )
+
+  val twoOutstandingPayments = Seq(
+    FinancialTransaction(
+      chargeType = Some("G Ret FR EU-OMS"),
+      mainType = None,
+      taxPeriodFrom = Some(Period(2023, Q1).firstDay),
+      taxPeriodTo = Some(Period(2023, Q1).lastDay),
+      originalAmount = Some(BigDecimal(8703.13)),
+      outstandingAmount = Some(BigDecimal(8703.13)),
+      clearedAmount = Some(BigDecimal(0)),
+      items = Some(items)
+    ),
+    FinancialTransaction(
+      chargeType = Some("G Ret FR EU-OMS"),
+      mainType = None,
+      taxPeriodFrom = Some(Period(2023, Q2).firstDay),
+      taxPeriodTo = Some(Period(2023, Q2).lastDay),
+      originalAmount = Some(BigDecimal(5500.50)),
+      outstandingAmount = Some(BigDecimal(5500.50)),
+      clearedAmount = Some(BigDecimal(0)),
+      items = Some(items)
+    )
+  )
+
   val financialTransactions = Seq(
     FinancialTransaction(
       chargeType = Some("G Ret FR EU-OMS"),
@@ -302,12 +348,185 @@ object TestData {
     )
   )))
 
+  val twoFulfilledObligationDetails2023: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "23Q1"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "23Q2"
+      )
+    )
+  )))
+
+  val twoFulfilledObligationDetails2022: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "22Q1"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "22Q2"
+      )
+    )
+  )))
+
+  val twoOpenObligationsExcluded2023: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = "23Q1"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = "23Q2"
+      )
+    )
+  )))
+
+  val twoOpenObligationsExcluded: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = "22Q1"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = "22Q2"
+      )
+    )
+  )))
+
+  val oneOpenObligationExcluded: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = "22Q1"
+      )
+    )
+  )))
+
+  val oneOpenObligationExcludedFuture: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = "24Q1"
+      )
+    )
+  )))
+
+  val oneOpenObligationQuarantined: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = "22Q3"
+      )
+    )
+  )))
+
+  val multipleOpenObligationsExcluded: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = "21Q4"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = "22Q1"
+      )
+    )
+  )))
+
+  val oneFulfilledObligationExcluded: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "22Q1"
+      )
+    )
+  )))
+
+  val oneFulfilledObligationExcluded2024: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "24Q1"
+      )
+    )
+  )))
+
+  val oneOpenObligationExcluded2024: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = "24Q1"
+      )
+    )
+  )))
+
   val firstPeriodNoCorrections: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
         periodKey = "21Q3"
       )
+    )
+  )))
+
+  val fulfilledObligationOver6YearsAgo: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "18Q1"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "18Q2"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "18Q3"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "18Q4"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "19Q1"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "19Q2"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "19Q3"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "19Q4"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "20Q1"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "20Q2"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "20Q3"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "20Q4"
+      ),
+
     )
   )))
 
@@ -497,7 +716,7 @@ object TestData {
       totalVATAmountFromCorrectionGBP = BigDecimal(0.00),
       balanceOfVATDueForMS = Seq(
         EtmpVatReturnBalanceOfVatDue(
-          msOfConsumption = "DE",
+          msOfConsumption = "HR",
           totalVATDueGBP = BigDecimal(7469.13),
           totalVATEUR = BigDecimal(7469.13)
         ),
@@ -533,9 +752,9 @@ object TestData {
   }
 
   private def generateReference(vrn: String, etmpPeriod: String): String = {
-    val etmpYear = etmpPeriod.substring(0, 2)
-    val etmpQuarter = etmpPeriod.substring(2, 4)
+    val etmpYear = etmpPeriod.substring(0, 4)
+    val etmpQuarter = etmpPeriod.substring(5, 7)
 
-    s"XI/XI$vrn/${etmpQuarter}.20${etmpYear}"
+    s"XI/XI$vrn/${etmpQuarter}.${etmpYear}"
   }
 }
