@@ -43,10 +43,6 @@ class EtmpController @Inject()(
         val accumulativeCorrectionAmount = (vrn, country, period) match {
           case ("100000003", "HR", "21Q3") => BigDecimal(7469.13)
           case ("100000003", "FR", "21Q3") => BigDecimal(1234.00)
-//          case ("100000003", "DE", "21Q3") => BigDecimal(1469.13)
-//          case ("100000003", "FR", "21Q3") => BigDecimal(2469.13)
-//          case ("100000003", "AT", "21Q3") => BigDecimal(1469.13)
-//          case ("100000003", "LT", "21Q3") => BigDecimal(1469.13)
           case _ => BigDecimal(0)
         }
 
@@ -65,6 +61,8 @@ class EtmpController @Inject()(
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
 
         def generateObligations(idNumber: String): EtmpObligations = idNumber match {
+          case "600000006" =>
+            openObligationsOverThreeYearsAgoExpiredVRN
           case "600000011" =>
             twoOpenObligationsExcluded
           case "600000012" =>
@@ -75,11 +73,11 @@ class EtmpController @Inject()(
             oneOpenObligationQuarantined
           case "600000018" =>
             oneOpenObligationExcludedFuture
-          case "600000019" | "100000026" =>
+          case "600000019" | "100000026" | "600000003" | "600000005" =>
             oneFulfilledObligationExcluded2024
-          case "600000020" | "100000025" =>
+          case "600000020" | "100000025" | "600000002" | "600000004" =>
             oneOpenObligationExcluded2024
-          case "600000021" =>
+          case "600000021" | "777777771" =>
             twoFulfilledObligationDetails2022
           case "600001212" =>
             oneFulfilledObligationExcluded
