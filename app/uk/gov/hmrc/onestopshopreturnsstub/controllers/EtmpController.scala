@@ -113,7 +113,8 @@ class EtmpController @Inject()(
           case ("100000004", "2021-Q3") => etmpVatReturnQ1(vrn, period)
           case ("100000004", "2021-Q4") => etmpVatReturnQ2(vrn, period)
           case ("100000004", "2022-Q1") => etmpVatReturnQ3(vrn, period)
-          case ("600000019", _) | ("100000026", _) | ("600000003", _) | ("600000005", _) =>
+          case ("600000019", _) | ("100000026", _) | ("600000003", _) | ("600000005", _) |
+               ("600000021", _) | ("777777771", _) | ("600001212", _) =>
             nilEtmpVatReturn(vrn, period)
           case _ => basicEtmpVatReturn(vrn, period)
         }

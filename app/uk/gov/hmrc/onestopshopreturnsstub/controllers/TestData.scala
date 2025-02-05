@@ -92,8 +92,8 @@ object TestData {
       mainType = None,
       taxPeriodFrom = Some(Period(2023, Q1).firstDay),
       taxPeriodTo = Some(Period(2023, Q1).lastDay),
-      originalAmount = Some(BigDecimal(8703.13)),
-      outstandingAmount = Some(BigDecimal(8703.13)),
+      originalAmount = Some(BigDecimal(2525.25)),
+      outstandingAmount = Some(BigDecimal(2525.25)),
       clearedAmount = Some(BigDecimal(0)),
       items = Some(items)
     ),
@@ -102,8 +102,8 @@ object TestData {
       mainType = None,
       taxPeriodFrom = Some(Period(2023, Q2).firstDay),
       taxPeriodTo = Some(Period(2023, Q2).lastDay),
-      originalAmount = Some(BigDecimal(5500.50)),
-      outstandingAmount = Some(BigDecimal(5500.50)),
+      originalAmount = Some(BigDecimal(6000.50)),
+      outstandingAmount = Some(BigDecimal(6000.50)),
       clearedAmount = Some(BigDecimal(0)),
       items = Some(items)
     )
