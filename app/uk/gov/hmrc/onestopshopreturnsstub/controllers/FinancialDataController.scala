@@ -45,7 +45,7 @@ class FinancialDataController @Inject()(
 
     val (responseStatus, maybeFinancialTransactions) = idNumber match {
       case "100000003" => (Ok, Some(TestData.singleOutstandingPayment))
-      case "100000004" => (Ok, Some(TestData.oneOutstandingPaymentOnePaid))
+      case "100000004" => (Ok, Some(TestData.onePaidOnePartialOneOutstanding))
       case "444444444" => (Ok, Some(TestData.twoOutstandingPayments))
       case _ => (Ok, successfulResponse.financialTransactions)
     }

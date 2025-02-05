@@ -86,7 +86,7 @@ class EtmpController @Inject()(
           case "166666666" =>
             fulfilledObligationOver6YearsAgo
           case "100000004" =>
-            twoFulfilledObligationDetails
+            threeFulfilledObligationDetails
           case "100000003" =>
             oneFulfilledObligationDetails
           case "100000002" | "100000006" =>
@@ -109,9 +109,12 @@ class EtmpController @Inject()(
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
 
         val etmpVatReturn = (vrn, period) match {
-//          case ("100000003", _) => etmpVatReturnWithCorrections(vrn, period)
           case ("100000003", _) => etmpVatReturnWithoutCorrections(vrn, period)
-          case ("100000002", _) => nilEtmpVatReturn(vrn, period)
+          case ("100000004", "2021-Q3") => etmpVatReturnQ1(vrn, period)
+          case ("100000004", "2021-Q4") => etmpVatReturnQ2(vrn, period)
+          case ("100000004", "2022-Q1") => etmpVatReturnQ3(vrn, period)
+          case ("600000019", _) | ("100000026", _) | ("600000003", _) | ("600000005", _) =>
+            nilEtmpVatReturn(vrn, period)
           case _ => basicEtmpVatReturn(vrn, period)
         }
 
