@@ -19,12 +19,13 @@ package uk.gov.hmrc.onestopshopreturnsstub.controllers
 import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
-import uk.gov.hmrc.onestopshopreturnsstub.controllers.TestData._
+import uk.gov.hmrc.onestopshopreturnsstub.controllers.TestData.*
 import uk.gov.hmrc.onestopshopreturnsstub.models.ObligationsDateRange
 import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.{EtmpObligations, EtmpReturnCorrectionValue}
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 
-import javax.inject._
+import java.time.LocalDate
+import javax.inject.*
 import scala.concurrent.Future
 
 @Singleton
@@ -99,6 +100,12 @@ class EtmpController @Inject()(
             oneFulfilledObligationDetails
           case "100000002" | "100000006" =>
             firstPeriodNoCorrections
+          case "100000007" | "600000015" =>
+            firstPeriodNoCorrections2023
+          case "100000077" | "600001515" =>
+            secondOpenPeriodPartialReturns2023
+          case "600151515" =>
+            fulfilledPeriodsPartialReturns2023
           case _ =>
             obligationDetails
         }
@@ -121,6 +128,8 @@ class EtmpController @Inject()(
           case ("100000004", "2021-Q3") => etmpVatReturnQ1(vrn, period)
           case ("100000004", "2021-Q4") => etmpVatReturnQ2(vrn, period)
           case ("100000004", "2022-Q1") => etmpVatReturnQ3(vrn, period)
+          case ("100000077", "2023-Q2") => etmpVatReturnPartialDates(vrn, period, LocalDate.of(2023, 6, 9), LocalDate.of(2023, 6, 30))
+          case ("600151515", "2023-Q3") => etmpVatReturnPartialDates(vrn, period, LocalDate.of(2023, 7, 1), LocalDate.of(2023, 9, 8))
           case ("600000019", _) | ("100000026", _) | ("600000003", _) | ("600000005", _) |
                ("600000021", _) | ("777777771", _) | ("600001212", _) =>
             nilEtmpVatReturn(vrn, period)

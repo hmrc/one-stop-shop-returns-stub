@@ -515,6 +515,42 @@ object TestData {
     )
   )))
 
+  val firstPeriodNoCorrections2023: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = "23Q2"
+      )
+    )
+  )))
+
+  val secondOpenPeriodPartialReturns2023: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "23Q2"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = "23Q3"
+      )
+    )
+  )))
+
+  val fulfilledPeriodsPartialReturns2023: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "23Q2"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = "23Q3"
+      )
+    )
+  )))
+
+
   val fulfilledObligationOver6YearsAgo: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
     obligationDetails = Seq(
       EtmpObligationDetails(
@@ -576,7 +612,7 @@ object TestData {
       returnReference = generateReference(vrn, period),
       returnVersion = LocalDateTime.of(2024, 1, 2, 0, 0, 0),
       periodKey = period,
-      returnPeriodFrom = LocalDate.of(2023, 12, 1),
+      returnPeriodFrom = LocalDate.of(2023, 4, 1),
       returnPeriodTo = LocalDate.of(2023, 12, 31),
       goodsSupplied = Seq(
         EtmpVatReturnGoodsSupplied(
@@ -943,6 +979,52 @@ object TestData {
       periodKey = period,
       returnPeriodFrom = LocalDate.of(2021, 10, 1),
       returnPeriodTo = LocalDate.of(2021, 12, 31),
+      goodsSupplied = Seq(
+        EtmpVatReturnGoodsSupplied(
+          msOfConsumption = "HR",
+          msOfEstablishment = "MT",
+          vatRateType = EtmpVatRateType.StandardVatRate,
+          taxableAmountGBP = BigDecimal(12345.67),
+          vatAmountGBP = BigDecimal(7469.13)
+        ),
+        EtmpVatReturnGoodsSupplied(
+          msOfConsumption = "FR",
+          msOfEstablishment = "XI",
+          vatRateType = EtmpVatRateType.StandardVatRate,
+          taxableAmountGBP = BigDecimal(12345.67),
+          vatAmountGBP = BigDecimal(1234.00)
+        )
+      ),
+      totalVATGoodsSuppliedGBP = BigDecimal(8703.13),
+      totalVATAmountPayable = BigDecimal(8703.13),
+      totalVATAmountPayableAllSpplied = BigDecimal(8703.13),
+      correctionPreviousVATReturn = Seq.empty,
+      totalVATAmountFromCorrectionGBP = BigDecimal(0.00),
+      balanceOfVATDueForMS = Seq(
+        EtmpVatReturnBalanceOfVatDue(
+          msOfConsumption = "HR",
+          totalVATDueGBP = BigDecimal(7469.13),
+          totalVATEUR = BigDecimal(7469.13)
+        ),
+        EtmpVatReturnBalanceOfVatDue(
+          msOfConsumption = "FR",
+          totalVATDueGBP = BigDecimal(1234.00),
+          totalVATEUR = BigDecimal(1234.00)
+        )
+      ),
+      totalVATAmountDueForAllMSGBP = BigDecimal(8703.13),
+      paymentReference = generateReference(vrn, period)
+    )
+  }
+
+  def etmpVatReturnPartialDates(vrn: String, period: String, returnStartDate: LocalDate, returnEndDate: LocalDate): EtmpVatReturn = {
+
+    EtmpVatReturn(
+      returnReference = generateReference(vrn, period),
+      returnVersion = LocalDateTime.of(2024, 1, 2, 0, 0, 0),
+      periodKey = period,
+      returnPeriodFrom = returnStartDate,
+      returnPeriodTo = returnEndDate,
       goodsSupplied = Seq(
         EtmpVatReturnGoodsSupplied(
           msOfConsumption = "HR",
