@@ -43,6 +43,14 @@ class EtmpController @Inject()(
         val accumulativeCorrectionAmount = (vrn, country, period) match {
           case ("100000003", "HR", "21Q3") => BigDecimal(7469.13)
           case ("100000003", "FR", "21Q3") => BigDecimal(1234.00)
+          case ("100000004", "FR", "21Q3") => BigDecimal(5000.00)
+          case ("100000004", "DK", "21Q3") => BigDecimal(3271.20)
+          case ("100000004", "HR", "21Q4") => BigDecimal(750.00)
+          case ("100000004", "FR", "21Q4") => BigDecimal(1000.00)
+          case ("100000004", "AT", "21Q4") => BigDecimal(1000.00)
+          case ("100000004", "BE", "22Q1") => BigDecimal(2500.00)
+          case ("100000004", "PL", "22Q1") => BigDecimal(123.45)
+          case ("100000004", "IE", "22Q1") => BigDecimal(987.65)
           case _ => BigDecimal(0)
         }
 
