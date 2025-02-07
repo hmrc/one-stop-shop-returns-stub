@@ -46,8 +46,8 @@ object TestData {
       mainType = None,
       taxPeriodFrom = Some(period.firstDay),
       taxPeriodTo = Some(period.lastDay),
-      originalAmount = Some(BigDecimal(8703.13)),
-      outstandingAmount = Some(BigDecimal(8703.13)),
+      originalAmount = Some(BigDecimal(9703.13)),
+      outstandingAmount = Some(BigDecimal(9703.13)),
       clearedAmount = Some(BigDecimal(0)),
       items = Some(items)
     )
@@ -993,11 +993,18 @@ object TestData {
           vatRateType = EtmpVatRateType.StandardVatRate,
           taxableAmountGBP = BigDecimal(12345.67),
           vatAmountGBP = BigDecimal(1234.00)
+        ),
+        EtmpVatReturnGoodsSupplied(
+          msOfConsumption = "ES",
+          msOfEstablishment = "XI",
+          vatRateType = EtmpVatRateType.StandardVatRate,
+          taxableAmountGBP = BigDecimal(12345.67),
+          vatAmountGBP = BigDecimal(1000.00)
         )
       ),
-      totalVATGoodsSuppliedGBP = BigDecimal(8703.13),
-      totalVATAmountPayable = BigDecimal(8703.13),
-      totalVATAmountPayableAllSpplied = BigDecimal(8703.13),
+      totalVATGoodsSuppliedGBP = BigDecimal(9703.13),
+      totalVATAmountPayable = BigDecimal(9703.13),
+      totalVATAmountPayableAllSpplied = BigDecimal(9703.13),
       correctionPreviousVATReturn = Seq.empty,
       totalVATAmountFromCorrectionGBP = BigDecimal(0.00),
       balanceOfVATDueForMS = Seq(
@@ -1010,9 +1017,14 @@ object TestData {
           msOfConsumption = "FR",
           totalVATDueGBP = BigDecimal(1234.00),
           totalVATEUR = BigDecimal(1234.00)
+        ),
+        EtmpVatReturnBalanceOfVatDue(
+          msOfConsumption = "ES",
+          totalVATDueGBP = BigDecimal(1000.00),
+          totalVATEUR = BigDecimal(1000.00)
         )
       ),
-      totalVATAmountDueForAllMSGBP = BigDecimal(8703.13),
+      totalVATAmountDueForAllMSGBP = BigDecimal(9703.13),
       paymentReference = generateReference(vrn, period)
     )
   }
