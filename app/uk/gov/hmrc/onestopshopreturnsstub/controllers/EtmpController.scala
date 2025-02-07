@@ -125,8 +125,6 @@ class EtmpController @Inject()(
   def getEtmpReturn(vrn: String, period: String): Action[AnyContent] = Action.async {
     implicit request =>
 
-      println(s"The period is $period")
-
       logger.info(s"Here's the request: ${request} ${request.headers} ${request.body}")
 
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
