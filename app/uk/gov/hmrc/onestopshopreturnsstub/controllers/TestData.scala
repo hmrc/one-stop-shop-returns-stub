@@ -319,19 +319,19 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "22Q1"
+        periodKey = "22C1"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "22Q2"
+        periodKey = "22C2"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "22Q3"
+        periodKey = "22C3"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "21Q3"
+        periodKey = "21C3"
       )
     )
   )))
@@ -340,7 +340,7 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "21Q3"
+        periodKey = "21C3"
       )
     )
   )))
@@ -349,15 +349,15 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "21Q3"
+        periodKey = "21C3"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "21Q4"
+        periodKey = "21C4"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "22Q1"
+        periodKey = "22C1"
       )
     )
   )))
@@ -366,11 +366,11 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "23Q1"
+        periodKey = "23C1"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "23Q2"
+        periodKey = "23C2"
       )
     )
   )))
@@ -379,11 +379,11 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "22Q1"
+        periodKey = "22C1"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "22Q2"
+        periodKey = "22C2"
       )
     )
   )))
@@ -392,11 +392,11 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "23Q1"
+        periodKey = "23C1"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "23Q2"
+        periodKey = "23C2"
       )
     )
   )))
@@ -405,11 +405,11 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "22Q1"
+        periodKey = "22C1"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "22Q2"
+        periodKey = "22C2"
       )
     )
   )))
@@ -418,23 +418,23 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "21Q1"
+        periodKey = "21C1"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "21Q2"
+        periodKey = "21C2"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "21Q3"
+        periodKey = "21C3"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "21Q4"
+        periodKey = "21C4"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "22Q1"
+        periodKey = "22C1"
       )
     )
   )))
@@ -443,7 +443,7 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "22Q1"
+        periodKey = "22C1"
       )
     )
   )))
@@ -452,7 +452,7 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "24Q1"
+        periodKey = "24C1"
       )
     )
   )))
@@ -461,7 +461,7 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "22Q3"
+        periodKey = "22C3"
       )
     )
   )))
@@ -470,11 +470,11 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "21Q4"
+        periodKey = "21C4"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "22Q1"
+        periodKey = "22C1"
       )
     )
   )))
@@ -483,7 +483,7 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "22Q1"
+        periodKey = "22C1"
       )
     )
   )))
@@ -492,7 +492,7 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "24Q1"
+        periodKey = "24C1"
       )
     )
   )))
@@ -501,7 +501,7 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "24Q1"
+        periodKey = "24C1"
       )
     )
   )))
@@ -510,7 +510,7 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "21Q3"
+        periodKey = "21C3"
       )
     )
   )))
@@ -519,7 +519,7 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "23Q2"
+        periodKey = "23C2"
       )
     )
   )))
@@ -528,11 +528,11 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "23Q2"
+        periodKey = "23C2"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "23Q3"
+        periodKey = "23C3"
       )
     )
   )))
@@ -541,11 +541,11 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "23Q2"
+        periodKey = "23C2"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "23Q3"
+        periodKey = "23C3"
       )
     )
   )))
@@ -555,51 +555,51 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "18Q1"
+        periodKey = "18C1"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "18Q2"
+        periodKey = "18C2"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "18Q3"
+        periodKey = "18C3"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "18Q4"
+        periodKey = "18C4"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "19Q1"
+        periodKey = "19C1"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "19Q2"
+        periodKey = "19C2"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "19Q3"
+        periodKey = "19C3"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "19Q4"
+        periodKey = "19C4"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "20Q1"
+        periodKey = "20C1"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "20Q2"
+        periodKey = "20C2"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "20Q3"
+        periodKey = "20C3"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "20Q4"
+        periodKey = "20C4"
       ),
 
     )
@@ -1084,9 +1084,9 @@ object TestData {
   }
 
   private def generateReference(vrn: String, etmpPeriod: String): String = {
-    val etmpYear = etmpPeriod.substring(0, 4)
-    val etmpQuarter = etmpPeriod.substring(5, 7)
+    val etmpYear = etmpPeriod.substring(0, 2)
+    val etmpQuarter = etmpPeriod.substring(2, 4)
 
-    s"XI/XI$vrn/${etmpQuarter}.${etmpYear}"
+    s"XI/XI$vrn/${etmpQuarter}.20${etmpYear}"
   }
 }

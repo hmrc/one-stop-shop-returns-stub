@@ -42,16 +42,16 @@ class EtmpController @Inject()(
 
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
         val accumulativeCorrectionAmount = (vrn, country, period) match {
-          case ("100000003", "HR", "21Q3") => BigDecimal(7469.13)
-          case ("100000003", "FR", "21Q3") => BigDecimal(1234.00)
-          case ("100000004", "FR", "21Q3") => BigDecimal(5000.00)
-          case ("100000004", "DK", "21Q3") => BigDecimal(3271.20)
-          case ("100000004", "HR", "21Q4") => BigDecimal(750.00)
-          case ("100000004", "FR", "21Q4") => BigDecimal(1000.00)
-          case ("100000004", "AT", "21Q4") => BigDecimal(1000.00)
-          case ("100000004", "BE", "22Q1") => BigDecimal(2500.00)
-          case ("100000004", "PL", "22Q1") => BigDecimal(123.45)
-          case ("100000004", "IE", "22Q1") => BigDecimal(987.65)
+          case ("100000003", "HR", "21C3") => BigDecimal(7469.13)
+          case ("100000003", "FR", "21C3") => BigDecimal(1234.00)
+          case ("100000004", "FR", "21C3") => BigDecimal(5000.00)
+          case ("100000004", "DK", "21C3") => BigDecimal(3271.20)
+          case ("100000004", "HR", "21C4") => BigDecimal(750.00)
+          case ("100000004", "FR", "21C4") => BigDecimal(1000.00)
+          case ("100000004", "AT", "21C4") => BigDecimal(1000.00)
+          case ("100000004", "BE", "22C1") => BigDecimal(2500.00)
+          case ("100000004", "PL", "22C1") => BigDecimal(123.45)
+          case ("100000004", "IE", "22C1") => BigDecimal(987.65)
           case _ => BigDecimal(0)
         }
 
@@ -69,46 +69,51 @@ class EtmpController @Inject()(
 
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
 
-        def generateObligations(idNumber: String): EtmpObligations = idNumber match {
-          case "600000006" =>
-            openObligationsOverThreeYearsAgoExpiredVRN
-          case "600000011" =>
-            twoOpenObligationsExcluded
-          case "600000012" =>
-            oneOpenObligationExcluded
-          case "600000013" =>
-            multipleOpenObligationsExcluded
-          case "600000014" =>
-            oneOpenObligationQuarantined
-          case "600000018" =>
-            oneOpenObligationExcludedFuture
-          case "600000019" | "100000026" | "600000003" | "600000005" =>
-            oneFulfilledObligationExcluded2024
-          case "600000020" | "100000025" | "600000002" | "600000004" =>
-            oneOpenObligationExcluded2024
-          case "600000021" | "777777771" =>
-            twoFulfilledObligationDetails2022
-          case "600001212" =>
-            oneFulfilledObligationExcluded
-          case "444444444" =>
-            twoFulfilledObligationDetails2023
-          case "166666666" =>
-            fulfilledObligationOver6YearsAgo
-          case "100000004" =>
-            threeFulfilledObligationDetails
-          case "100000003" =>
+        def generateObligations(idNumber: String): EtmpObligations =
+          if (idNumber.startsWith("2220")) {
             oneFulfilledObligationDetails
-          case "100000002" | "100000006" =>
-            firstPeriodNoCorrections
-          case "100000007" | "600000015" =>
-            firstPeriodNoCorrections2023
-          case "100000077" | "600001515" =>
-            secondOpenPeriodPartialReturns2023
-          case "600151515" =>
-            fulfilledPeriodsPartialReturns2023
-          case _ =>
-            obligationDetails
-        }
+          } else {
+            idNumber match {
+              case "600000006" =>
+                openObligationsOverThreeYearsAgoExpiredVRN
+              case "600000011" =>
+                twoOpenObligationsExcluded
+              case "600000012" =>
+                oneOpenObligationExcluded
+              case "600000013" =>
+                multipleOpenObligationsExcluded
+              case "600000014" =>
+                oneOpenObligationQuarantined
+              case "600000018" =>
+                oneOpenObligationExcludedFuture
+              case "600000019" | "100000026" | "600000003" | "600000005" =>
+                oneFulfilledObligationExcluded2024
+              case "600000020" | "100000025" | "600000002" | "600000004" =>
+                oneOpenObligationExcluded2024
+              case "600000021" | "777777771" =>
+                twoFulfilledObligationDetails2022
+              case "600001212" =>
+                oneFulfilledObligationExcluded
+              case "444444444" =>
+                twoFulfilledObligationDetails2023
+              case "166666666" =>
+                fulfilledObligationOver6YearsAgo
+              case "100000004" =>
+                threeFulfilledObligationDetails
+              case "100000003" =>
+                oneFulfilledObligationDetails
+              case "100000002" | "100000006" =>
+                firstPeriodNoCorrections
+              case "100000007" | "600000015" =>
+                firstPeriodNoCorrections2023
+              case "100000077" | "600001515" =>
+                secondOpenPeriodPartialReturns2023
+              case "600151515" =>
+                fulfilledPeriodsPartialReturns2023
+              case _ =>
+                obligationDetails
+            }
+          }
 
         val obligationResponse = generateObligations(idNumber)
 
@@ -119,17 +124,20 @@ class EtmpController @Inject()(
   def getEtmpReturn(vrn: String, period: String): Action[AnyContent] = Action.async {
     implicit request =>
 
+      println(s"The period is $period")
+
       logger.info(s"Here's the request: ${request} ${request.headers} ${request.body}")
 
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
 
         val etmpVatReturn = (vrn, period) match {
           case ("100000003", _) => etmpVatReturnWithoutCorrections(vrn, period)
-          case ("100000004", "2021-Q3") => etmpVatReturnQ1(vrn, period)
-          case ("100000004", "2021-Q4") => etmpVatReturnQ2(vrn, period)
-          case ("100000004", "2022-Q1") => etmpVatReturnQ3(vrn, period)
-          case ("100000077", "2023-Q2") => etmpVatReturnPartialDates(vrn, period, LocalDate.of(2023, 6, 9), LocalDate.of(2023, 6, 30))
-          case ("600151515", "2023-Q3") => etmpVatReturnPartialDates(vrn, period, LocalDate.of(2023, 7, 1), LocalDate.of(2023, 9, 8))
+          case ("100000004", "21C3") => etmpVatReturnQ1(vrn, period)
+          case ("100000004", "21C4") => etmpVatReturnQ2(vrn, period)
+          case ("100000004", "22C1") => etmpVatReturnQ3(vrn, period)
+          case ("100000077", "23C2") => etmpVatReturnPartialDates(vrn, period, LocalDate.of(2023, 6, 9), LocalDate.of(2023, 6, 30))
+//          these won't load until period issue is fixed - will also need to update all periods to 21C3 etc
+          case ("600151515", "23C3") => etmpVatReturnPartialDates(vrn, period, LocalDate.of(2023, 7, 1), LocalDate.of(2023, 9, 8))
           case ("600000019", _) | ("100000026", _) | ("600000003", _) | ("600000005", _) |
                ("600000021", _) | ("777777771", _) | ("600001212", _) =>
             nilEtmpVatReturn(vrn, period)
