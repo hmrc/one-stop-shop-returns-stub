@@ -111,19 +111,19 @@ class EtmpControllerSpec extends AnyFreeSpec with Matchers {
         obligationDetails = Seq(
           EtmpObligationDetails(
             status = EtmpObligationsFulfilmentStatus.Fulfilled,
-            periodKey = "22Q1"
+            periodKey = "22C1"
           ),
           EtmpObligationDetails(
             status = EtmpObligationsFulfilmentStatus.Fulfilled,
-            periodKey = "22Q2"
+            periodKey = "22C2"
           ),
           EtmpObligationDetails(
             status = EtmpObligationsFulfilmentStatus.Open,
-            periodKey = "22Q3"
+            periodKey = "22C3"
           ),
           EtmpObligationDetails(
             status = EtmpObligationsFulfilmentStatus.Open,
-            periodKey = "22Q4"
+            periodKey = "21C3"
           )
         )
       )))
