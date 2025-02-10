@@ -135,7 +135,6 @@ class EtmpController @Inject()(
           case ("100000004", "21C4") => etmpVatReturnQ2(vrn, period)
           case ("100000004", "22C1") => etmpVatReturnQ3(vrn, period)
           case ("100000077", "23C2") => etmpVatReturnPartialDates(vrn, period, LocalDate.of(2023, 6, 9), LocalDate.of(2023, 6, 30))
-//          these won't load until period issue is fixed - will also need to update all periods to 21C3 etc
           case ("600151515", "23C3") => etmpVatReturnPartialDates(vrn, period, LocalDate.of(2023, 7, 1), LocalDate.of(2023, 9, 8))
           case ("600000019", _) | ("100000026", _) | ("600000003", _) | ("600000005", _) |
                ("600000021", _) | ("777777771", _) | ("600001212", _) =>
