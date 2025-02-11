@@ -43,12 +43,12 @@ class FinancialDataController @Inject()(
 
   def getFinancialData(idType: String, idNumber: String, regimeType: String, dateRange: DateRange): Action[AnyContent] = Action.async {
 
-    val (responseStatus, maybeFinancialTransactions) = idNumber.head match {
-      case '1' => (Ok, Some(TestData.allPaidFinancialTransactions))
-      case '2' => (Ok, Some(TestData.somePaidFinancialTransactions))
-      case '3' => (Ok, Some(TestData.notPaidFinancialTransactions))
-      case '4' => (Ok, Some(TestData.multipleItemsNotPaidFinancialTransactions))
-      case '5' => (NotFound, None)
+    val (responseStatus, maybeFinancialTransactions) = idNumber match {
+      case "100000003" => (Ok, Some(TestData.singleOutstandingPayment))
+      case "100000004" => (Ok, Some(TestData.onePaidOnePartialOneOutstanding))
+      case "444444444" => (Ok, Some(TestData.twoOutstandingPayments))
+      case "500000003" => (NotFound, None)
+      case "500000004" => (ServiceUnavailable, None)
       case _ => (Ok, successfulResponse.financialTransactions)
     }
 

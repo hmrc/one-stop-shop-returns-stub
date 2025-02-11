@@ -58,28 +58,6 @@ class FinancialDataControllerSpec extends AnyWordSpec with Matchers {
       items = Some(items)
     ))
 
-  private val somePaidItems = Seq(
-    Item(
-      amount = Some(BigDecimal(500)),
-      clearingReason = Some("01"),
-      paymentReference = Some("a"),
-      paymentAmount = Some(BigDecimal(500)),
-      paymentMethod = Some("A")
-    )
-  )
-  private val somePaidFinancialTransactions = Seq(
-    FinancialTransaction(
-      chargeType = Some("G Ret FR EU-OMS"),
-      mainType = None,
-      taxPeriodFrom = Some(period.firstDay),
-      taxPeriodTo = Some(period.lastDay),
-      originalAmount = Some(BigDecimal(1500)),
-      outstandingAmount = Some(BigDecimal(1000)),
-      clearedAmount = Some(BigDecimal(500)),
-      items = Some(somePaidItems)
-    )
-  )
-
   private val successfulResponse = FinancialDataResponse(
     idType = None,
     idNumber = None,
@@ -95,79 +73,18 @@ class FinancialDataControllerSpec extends AnyWordSpec with Matchers {
       contentAsJson(result).validate[FinancialDataResponse] shouldBe JsSuccess(successfulResponse)
     }
 
-    "return a all paid when vat number starts with 1" in {
-      val allPaidItems = Seq(
-        Item(
-          amount = Some(BigDecimal(1500)),
-          clearingReason = Some("01"),
-          paymentReference = Some("a"),
-          paymentAmount = Some(BigDecimal(1500)),
-          paymentMethod = Some("A")
-        )
-      )
-      val allPaidFinancialTransactions = Seq(
-        FinancialTransaction(
-          chargeType = Some("G Ret FR EU-OMS"),
-          mainType = None,
-          taxPeriodFrom = Some(period.firstDay),
-          taxPeriodTo = Some(period.lastDay),
-          originalAmount = Some(BigDecimal(1500)),
-          outstandingAmount = Some(BigDecimal(0)),
-          clearedAmount = Some(BigDecimal(1500)),
-          items = Some(allPaidItems)
-        )
-      )
-
-      val result = controller.getFinancialData(idType = "", idNumber = "123456789", regimeType = "", dateRange = dateRange)(fakeRequest)
-      status(result) shouldBe Status.OK
-      contentAsJson(result).validate[FinancialDataResponse] shouldBe
-        JsSuccess(successfulResponse.copy(
-          financialTransactions = Some(allPaidFinancialTransactions)))
-    }
-
-    "return a all paid when vat number starts with 2" in {
-
-      val result = controller.getFinancialData(idType = "", idNumber = "234567890", regimeType = "", dateRange = dateRange)(fakeRequest)
-      status(result) shouldBe Status.OK
-      contentAsJson(result).validate[FinancialDataResponse] shouldBe
-        JsSuccess(successfulResponse.copy(
-          financialTransactions = Some(somePaidFinancialTransactions)))
-    }
-
-    "return a not paid when vat number starts with 3" in {
-
-      val notPaidFinancialTransactions = Seq(
-        FinancialTransaction(
-          chargeType = Some("G Ret FR EU-OMS"),
-          mainType = None,
-          taxPeriodFrom = Some(period.firstDay),
-          taxPeriodTo = Some(period.lastDay),
-          originalAmount = Some(BigDecimal(1500)),
-          outstandingAmount = Some(BigDecimal(1500)),
-          clearedAmount = Some(BigDecimal(0)),
-          items = None
-        )
-      )
-
-      val result = controller.getFinancialData(idType = "", idNumber = "345678900", regimeType = "", dateRange = dateRange)(fakeRequest)
-      status(result) shouldBe Status.OK
-      contentAsJson(result).validate[FinancialDataResponse] shouldBe
-        JsSuccess(successfulResponse.copy(
-          financialTransactions = Some(notPaidFinancialTransactions)))
-    }
-
     "return empty for wrong year" in {
 
-      val result = controller.getFinancialData(idType = "", idNumber = "345678900", regimeType = "", dateRange = DateRange(LocalDate.of(2022, 1, 1), LocalDate.of(2022, 12, 31)))(fakeRequest)
+      val result = controller.getFinancialData(idType = "", idNumber = "100000003", regimeType = "", dateRange = DateRange(LocalDate.of(2022, 1, 1), LocalDate.of(2022, 12, 31)))(fakeRequest)
       status(result) shouldBe Status.OK
       contentAsJson(result).validate[FinancialDataResponse] shouldBe
         JsSuccess(successfulResponse.copy(
           financialTransactions = Some(Seq.empty)))
     }
 
-    "return a no vat owed when vat number starts with 5" in {
+    "return a no vat owed when vat number is 500000003" in {
 
-      val result = controller.getFinancialData(idType = "", idNumber = "545678900", regimeType = "", dateRange = dateRange)(fakeRequest)
+      val result = controller.getFinancialData(idType = "", idNumber = "500000003", regimeType = "", dateRange = dateRange)(fakeRequest)
       status(result) shouldBe Status.NOT_FOUND
     }
   }
