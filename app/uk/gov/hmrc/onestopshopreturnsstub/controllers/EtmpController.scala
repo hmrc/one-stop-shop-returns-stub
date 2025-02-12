@@ -103,7 +103,7 @@ class EtmpController @Inject()(
                 threeFulfilledObligationDetails
               case "100000003" =>
                 oneFulfilledObligationDetails
-              case "100000002" | "100000006" =>
+              case "100000002" | "100000006" | "222222222" | "222222223" =>
                 firstPeriodNoCorrections
               case "100000007" | "600000015" =>
                 firstPeriodNoCorrections2023
