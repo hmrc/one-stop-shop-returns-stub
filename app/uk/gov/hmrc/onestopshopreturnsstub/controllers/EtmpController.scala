@@ -85,6 +85,8 @@ class EtmpController @Inject()(
                 multipleOpenObligationsExcluded
               case "600000014" =>
                 oneOpenObligationQuarantined
+              case "600001414" =>
+                oneFulfilledObligationQuarantinedOverTwoYears
               case "600000018" =>
                 oneOpenObligationExcludedFuture
               case "600000019" | "100000026" | "600000003" | "600000005" | "100000301" | "600000050"
