@@ -141,7 +141,7 @@ Scenario 7 - A nil return with corrections that has been partially paid
 VRN - 125163735
 £0 VAT owed for October-December 2021 return
 Corrections for July-September 2021 return:
-£-18 VAT owed to Republic of Cyprus
+£-18 VAT owed to Cyprus
 £100 VAT owed to Luxembourg
 £50 paid
 ```
