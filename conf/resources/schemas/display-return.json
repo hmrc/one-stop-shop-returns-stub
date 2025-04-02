@@ -1,0 +1,395 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+        "returnReference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "returnVersion": {
+          "description": "The combination of the date and the time of the day as specified in [ISO8601] (i.e.:’YYYY-MM-DD’T’hh:mm:ss.SSS’). Using fractions of second is not mandatory.",
+          "type": "string",
+          "format": "date-time"
+        },
+        "vatRegNumber": {
+          "type": "string",
+          "maxLength": 9
+        },
+        "periodKey": {
+          "$ref": "#/definitions/periodKeyType"
+        },
+        "returnPeriodFrom": {
+          "$ref": "#/definitions/dateType"
+        },
+        "returnPeriodTo": {
+          "$ref": "#/definitions/dateType"
+        },
+        "nilReturn": {
+          "description": "flag for nil return - true if nil return",
+          "type": "boolean"
+        },
+        "goodsSupplied": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 28,
+          "items": {
+            "$ref": "#/definitions/goodsType"
+          }
+        },
+        "totalVatAmtSuppliedGBP": {
+          "$ref": "#/definitions/amountTypeAny"
+        },
+        "goodDispatched": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 28,
+          "items": {
+            "$ref": "#/definitions/goodDispatchedType"
+          }
+        },
+        "totalVatAmtDispatchedGBP1": {
+          "$ref": "#/definitions/amountTypeAny"
+        },
+        "totalVatAmtAllMscGBP": {
+          "$ref": "#/definitions/amountTypeAny"
+        },
+        "correctionPreVatReturn": {
+          "type": "array",
+          "maxItems": 28,
+          "items": {
+            "$ref": "#/definitions/correctionType"
+          }
+        },
+        "correctionsTotalGBP": {
+          "$ref": "#/definitions/amountTypeAny"
+        },
+        "correctionsTotalEUR": {
+          "$ref": "#/definitions/amountTypeAny"
+        },
+        "balanceVatDue": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 28,
+          "items": {
+            "$ref": "#/definitions/balanceVatDueType"
+          }
+        },
+        "totalAmountVatDueGBP": {
+          "description": "Total VAT payable for all MSID/MSEST supplies plus Corrections in GDP (all MSCONs) ignoring any negative MSCON balanceOfVatDue - Would not be sent for nil return",
+          "$ref": "#/definitions/amountTypePositive"
+        },
+        "totalAmountVatDueEUR": {
+          "description": "Total VAT payable for all MSID/MSEST supplies plus Corrections in Euros - Would not be sent for nil return",
+          "$ref": "#/definitions/amountTypePositiveSixDecimal"
+        },
+        "payementReference": {
+          "description": "Return Reference",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 17,
+          "examples": [
+            "XI/XI674947690/Q4.2021"
+          ]
+        },
+        "admin": {
+          "$ref": "#/definitions/adminType"
+        }
+      },
+      "required": [
+        "processingDate",
+        "returnReference",
+        "returnVersion",
+        "vatRegNumber",
+        "periodKey",
+        "returnPeriodFrom",
+        "totalVatAmtSuppliedGBP",
+        "totalVatAmtDispatchedGBP1",
+        "totalVatAmtAllMscGBP",
+        "correctionsTotalGBP",
+        "correctionsTotalEUR",
+        "balanceVatDue",
+        "totalAmountVatDueGBP",
+        "totalAmountVatDueEUR",
+        "payementReference"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "success"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "adminType": {
+      "type": "object",
+      "properties": {
+        "dataOrigin": {
+          "type": "string",
+          "maxLength": 10,
+          "enum": [
+            "Portal"
+          ]
+        },
+        "completedOn": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "completedBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 12
+        }
+      },
+      "required": [
+        "dataOrigin",
+        "completedOn",
+        "completedBy"
+      ],
+      "additionalProperties": false
+    },
+    "amountTypeAny": {
+      "description": "Amount(11 Digits before Decimal and 2 after decimal)",
+      "type": "number",
+      "minimum": -99999999999.99,
+      "maximum": 99999999999.99,
+      "multipleOf": 0.01
+    },
+    "amountTypePositive": {
+      "description": "Amount(11 Digits before Decimal and 2 after decimal)",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 99999999999.99,
+      "multipleOf": 0.01
+    },
+    "amountTypeAnySixDecimal": {
+      "description": "Amount(11 Digits before Decimal and 6 after decimal)",
+      "type": "number",
+      "minimum": -99999999999.999999,
+      "maximum": 99999999999.999999,
+      "multipleOf": 1E-06
+    },
+    "amountTypePositiveSixDecimal": {
+      "description": "Amount(11 Digits before Decimal and 6 after decimal)",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 99999999999.999999,
+      "multipleOf": 1E-06
+    },
+    "balanceVatDueType": {
+      "type": "object",
+      "properties": {
+        "msOfConsumption": {
+          "$ref": "#/definitions/msOfConsumptionType"
+        },
+        "totalAmountVatDueGBP": {
+          "description": "Total VAT payable for all MSID/MSEST supplies plus Corrections in GDP (all MSCONs) ignoring any negative MSCON balanceOfVatDue - Would not be sent for nil return",
+          "$ref": "#/definitions/amountTypePositive"
+        },
+        "totalAmountVatDueEUR": {
+          "description": "Total VAT payable for all MSID/MSEST supplies plus Corrections in Euros - Would not be sent for nil return",
+          "$ref": "#/definitions/amountTypePositiveSixDecimal"
+        }
+      },
+      "additionalProperties": false
+    },
+    "correctionType": {
+      "type": "object",
+      "properties": {
+        "periodKey": {
+          "$ref": "#/definitions/periodKeyType"
+        },
+        "periodFrom": {
+          "$ref": "#/definitions/dateType"
+        },
+        "periodTo": {
+          "$ref": "#/definitions/dateType"
+        },
+        "msOfConsumption": {
+          "$ref": "#/definitions/msOfConsumptionType"
+        }
+      },
+      "required": [
+        "periodKey",
+        "periodFrom",
+        "periodTo",
+        "msOfConsumption"
+      ],
+      "additionalProperties": false
+    },
+    "correction": {
+      "type": "object",
+      "properties": {
+        "period": {
+          "$ref": "#/definitions/periodType"
+        },
+        "correctionExchangeRate": {
+          "description": "exchange Rate",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 7
+        },
+        "totalVatAmountCorrectionGBP": {
+          "description": "Total VAT Amount resulting from corrections of supplies",
+          "$ref": "#/definitions/amountTypeAny"
+        },
+        "totalVatAmountCorrectionEUR": {
+          "description": "Total VAT Amount resulting from corrections of supplies",
+          "$ref": "#/definitions/amountTypeAnySixDecimal"
+        }
+      },
+      "required": [
+        "period",
+        "correctionExchangeRate",
+        "totalVatAmountCorrectionGBP",
+        "totalVatAmountCorrectionEUR"
+      ]
+    },
+    "dateType": {
+      "type": "string",
+      "format": "date"
+    },
+    "goodDispatchedType": {
+      "type": "object",
+      "properties": {
+        "msOfEstablishment": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 2
+        },
+        "vatIdNumber": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 12
+        },
+        "msOfConsumption": {
+          "$ref": "#/definitions/msOfConsumptionType"
+        },
+        "vatRateType": {
+          "description": "STANDARD or REDUCED",
+          "$ref": "#/definitions/vatRateType"
+        },
+        "taxableAmountGBP": {
+          "description": "The total taxable amount of supplies carried out to the MSCON at this VAT rate from the MSEST ",
+          "$ref": "#/definitions/amountTypePositive"
+        },
+        "vatAmountGBP": {
+          "description": "The total VAT amount of supplies carried out to the MSCON at this VAT rate from the MSEST",
+          "$ref": "#/definitions/amountTypePositive"
+        },
+        "vatAmountEUR": {
+          "$ref": "#/definitions/amountTypePositive"
+        }
+      },
+      "required": [
+        "msOfEstablishment",
+        "msOfConsumption",
+        "vatAmountGBP",
+        "vatAmountEUR"
+      ],
+      "additionalProperties": false
+    },
+    "goodsType": {
+      "type": "object",
+      "properties": {
+        "msOfConsumption": {
+          "$ref": "#/definitions/msOfConsumptionType"
+        },
+        "vatRateType": {
+          "description": "STANDARD or REDUCED",
+          "$ref": "#/definitions/vatRateType"
+        },
+        "taxableAmountGBP": {
+          "description": "The total taxable amount of supplies carried out to the MSCON at this VAT rate from the MSEST ",
+          "$ref": "#/definitions/amountTypePositive"
+        },
+        "vatAmountGBP": {
+          "description": "The total VAT amount of supplies carried out to the MSCON at this VAT rate from the MSEST",
+          "$ref": "#/definitions/amountTypePositive"
+        },
+        "vatAmountEUR": {
+          "$ref": "#/definitions/amountTypePositive"
+        }
+      },
+      "required": [
+        "msOfConsumption",
+        "vatAmountGBP",
+        "vatAmountEUR"
+      ]
+    },
+    "msOfConsumptionType": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 2
+    },
+    "periodKeyType": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 4
+    },
+    "periodType": {
+      "type": "object",
+      "properties": {
+        "year": {
+          "description": "Year represented in 4 digits - year cannot be before 2021",
+          "type": "integer",
+          "examples": [
+            2021
+          ]
+        },
+        "month": {
+          "description": "Month of the year represented in 2 digit",
+          "type": "string",
+          "pattern": "0[1-9]|1[012]",
+          "examples": [
+            "09"
+          ]
+        },
+        "quarter": {
+          "description": "Quarter of the year represented in 1 digit",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4,
+          "examples": [
+            3
+          ]
+        }
+      },
+      "required": [
+        "year"
+      ],
+      "additionalProperties": false
+    },
+    "traderIdType": {
+      "type": "object",
+      "properties": {
+        "issuedBy": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 2
+        },
+        "idNumber": {
+          "description": "vatnumber or iossNumber",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 12
+        }
+      },
+      "required": [
+        "issuedBy",
+        "idNumber"
+      ],
+      "additionalProperties": false
+    },
+    "vatRateType": {
+      "description": "vatRateType",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8,
+      "enum": [
+        "STANDARD",
+        "REDUCED"
+      ]
+    }
+  }
