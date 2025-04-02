@@ -21,7 +21,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
 import uk.gov.hmrc.onestopshopreturnsstub.controllers.TestData.*
 import uk.gov.hmrc.onestopshopreturnsstub.models.ObligationsDateRange
-import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.{EtmpObligations, EtmpReturnCorrectionValue}
+import uk.gov.hmrc.onestopshopreturnsstub.models.etmp.{EtmpObligations, EtmpReturnCorrectionValue, EtmpSuccessVatReturn}
 import uk.gov.hmrc.onestopshopreturnsstub.utils.JsonSchemaHelper
 
 import java.time.LocalDate
@@ -145,7 +145,7 @@ class EtmpController @Inject()(
           case _ => basicEtmpVatReturn(vrn, period)
         }
 
-        Future.successful(Ok(Json.toJson(etmpVatReturn)))
+        Future.successful(Ok(Json.toJson(EtmpSuccessVatReturn(etmpVatReturn))))
       }
   }
 }
