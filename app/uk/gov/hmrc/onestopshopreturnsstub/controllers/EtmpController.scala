@@ -42,17 +42,17 @@ class EtmpController @Inject()(
 
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
         val accumulativeCorrectionAmount = (vrn, country, period) match {
-          case ("100000003", "HR", "21C3") => BigDecimal(7469.13)
-          case ("100000003", "FR", "21C3") => BigDecimal(1234.00)
-          case ("100000003", "ES", "21C3") => BigDecimal(1000.00)
-          case ("100000004", "FR", "21C3") => BigDecimal(5000.00)
-          case ("100000004", "DK", "21C3") => BigDecimal(3271.20)
-          case ("100000004", "HR", "21C4") => BigDecimal(750.00)
-          case ("100000004", "FR", "21C4") => BigDecimal(1000.00)
-          case ("100000004", "AT", "21C4") => BigDecimal(1000.00)
-          case ("100000004", "BE", "22C1") => BigDecimal(2500.00)
-          case ("100000004", "PL", "22C1") => BigDecimal(123.45)
-          case ("100000004", "IE", "22C1") => BigDecimal(987.65)
+          case ("100000003", "HR", "21Q3") => BigDecimal(7469.13)
+          case ("100000003", "FR", "21Q3") => BigDecimal(1234.00)
+          case ("100000003", "ES", "21Q3") => BigDecimal(1000.00)
+          case ("100000004", "FR", "21Q3") => BigDecimal(5000.00)
+          case ("100000004", "DK", "21Q3") => BigDecimal(3271.20)
+          case ("100000004", "HR", "21Q4") => BigDecimal(750.00)
+          case ("100000004", "FR", "21Q4") => BigDecimal(1000.00)
+          case ("100000004", "AT", "21Q4") => BigDecimal(1000.00)
+          case ("100000004", "BE", "22Q1") => BigDecimal(2500.00)
+          case ("100000004", "PL", "22Q1") => BigDecimal(123.45)
+          case ("100000004", "IE", "22Q1") => BigDecimal(987.65)
           case _ => BigDecimal(0)
         }
 
@@ -134,11 +134,11 @@ class EtmpController @Inject()(
 
         val etmpVatReturn = (vrn, period) match {
           case ("100000003", _) => etmpVatReturnWithoutCorrections(vrn, period)
-          case ("100000004", "21C3") => etmpVatReturnQ1(vrn, period)
-          case ("100000004", "21C4") => etmpVatReturnQ2(vrn, period)
-          case ("100000004", "22C1") => etmpVatReturnQ3(vrn, period)
-          case ("100000077", "23C2") => etmpVatReturnPartialDates(vrn, period, LocalDate.of(2023, 6, 9), LocalDate.of(2023, 6, 30))
-          case ("600151515", "23C3") => etmpVatReturnPartialDates(vrn, period, LocalDate.of(2023, 7, 1), LocalDate.of(2023, 9, 8))
+          case ("100000004", "21Q3") => etmpVatReturnQ1(vrn, period)
+          case ("100000004", "21Q4") => etmpVatReturnQ2(vrn, period)
+          case ("100000004", "22Q1") => etmpVatReturnQ3(vrn, period)
+          case ("100000077", "23Q2") => etmpVatReturnPartialDates(vrn, period, LocalDate.of(2023, 6, 9), LocalDate.of(2023, 6, 30))
+          case ("600151515", "23Q3") => etmpVatReturnPartialDates(vrn, period, LocalDate.of(2023, 7, 1), LocalDate.of(2023, 9, 8))
           case ("600000019", _) | ("100000026", _) | ("600000003", _) | ("600000005", _) |
                ("600000021", _) | ("777777771", _) | ("600001212", _) =>
             nilEtmpVatReturn(vrn, period)
