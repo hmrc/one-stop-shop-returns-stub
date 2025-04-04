@@ -1108,6 +1108,8 @@ object TestData {
     val etmpYear = etmpPeriod.substring(0, 2)
     val etmpQuarter = etmpPeriod.substring(2, 4)
 
-    s"XI/XI$vrn/${etmpQuarter}.20${etmpYear}"
+    val quarter = etmpQuarter.replace("C", "Q")
+
+    s"XI/XI$vrn/${quarter}.20${etmpYear}"
   }
 }
