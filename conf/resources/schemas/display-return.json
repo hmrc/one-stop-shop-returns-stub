@@ -2,122 +2,126 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
-        "returnReference": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 40
-        },
-        "returnVersion": {
-          "description": "The combination of the date and the time of the day as specified in [ISO8601] (i.e.:’YYYY-MM-DD’T’hh:mm:ss.SSS’). Using fractions of second is not mandatory.",
-          "type": "string",
-          "format": "date-time"
-        },
-        "vatRegNumber": {
-          "type": "string",
-          "maxLength": 9
-        },
-        "periodKey": {
-          "$ref": "#/definitions/periodKeyType"
-        },
-        "returnPeriodFrom": {
-          "$ref": "#/definitions/dateType"
-        },
-        "returnPeriodTo": {
-          "$ref": "#/definitions/dateType"
-        },
-        "nilReturn": {
-          "description": "flag for nil return - true if nil return",
-          "type": "boolean"
-        },
-        "goodsSupplied": {
-          "type": "array",
-          "minItems": 0,
-          "maxItems": 28,
-          "items": {
-            "$ref": "#/definitions/goodsType"
-          }
-        },
-        "totalVatAmtSuppliedGBP": {
-          "$ref": "#/definitions/amountTypeAny"
-        },
-        "goodDispatched": {
-          "type": "array",
-          "minItems": 0,
-          "maxItems": 28,
-          "items": {
-            "$ref": "#/definitions/goodDispatchedType"
-          }
-        },
-        "totalVatAmtDispatchedGBP1": {
-          "$ref": "#/definitions/amountTypeAny"
-        },
-        "totalVatAmtAllMscGBP": {
-          "$ref": "#/definitions/amountTypeAny"
-        },
-        "correctionPreVatReturn": {
-          "type": "array",
-          "maxItems": 28,
-          "items": {
-            "$ref": "#/definitions/correctionType"
-          }
-        },
-        "correctionsTotalGBP": {
-          "$ref": "#/definitions/amountTypeAny"
-        },
-        "correctionsTotalEUR": {
-          "$ref": "#/definitions/amountTypeAny"
-        },
-        "balanceVatDue": {
-          "type": "array",
-          "minItems": 0,
-          "maxItems": 28,
-          "items": {
-            "$ref": "#/definitions/balanceVatDueType"
-          }
-        },
-        "totalAmountVatDueGBP": {
-          "description": "Total VAT payable for all MSID/MSEST supplies plus Corrections in GDP (all MSCONs) ignoring any negative MSCON balanceOfVatDue - Would not be sent for nil return",
-          "$ref": "#/definitions/amountTypePositive"
-        },
-        "totalAmountVatDueEUR": {
-          "description": "Total VAT payable for all MSID/MSEST supplies plus Corrections in Euros - Would not be sent for nil return",
-          "$ref": "#/definitions/amountTypePositiveSixDecimal"
-        },
-        "payementReference": {
-          "description": "Return Reference",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 17,
-          "examples": [
-            "XI/XI674947690/Q4.2021"
-          ]
-        },
-        "admin": {
-          "$ref": "#/definitions/adminType"
-        }
-      },
-      "required": [
-        "processingDate",
-        "returnReference",
-        "returnVersion",
-        "vatRegNumber",
-        "periodKey",
-        "returnPeriodFrom",
-        "totalVatAmtSuppliedGBP",
-        "totalVatAmtDispatchedGBP1",
-        "totalVatAmtAllMscGBP",
-        "correctionsTotalGBP",
-        "correctionsTotalEUR",
-        "balanceVatDue",
-        "totalAmountVatDueGBP",
-        "totalAmountVatDueEUR",
-        "payementReference"
-      ],
-      "additionalProperties": false
+    "returnReference": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40
+    },
+    "returnVersion": {
+      "description": "The combination of the date and the time of the day as specified in [ISO8601] (i.e.:'YYYY-MM-DD'T'hh:mm:ss.SSS'). Using fractions of second is not mandatory.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "vatRegistrationNumber": {
+      "description": "vat Number",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 9
+    },
+    "periodKey": {
+      "description": "Derive from Period from date NNNN (e.g.22C1). 2 digit from year (22) + C (fixed value) + quarter (1)\r\nThe quarter of the tax period represented as an integer between 1 and 4 where: \r\n1 = Jan to March \r\n2 = April to June \r\n3 = July to Sep \r\n4 = October to Dec\r\n",
+      "$ref": "#/definitions/periodKeyType"
+    },
+    "returnPeriodFrom": {
+      "$ref": "#/definitions/dateType"
+    },
+    "returnPeriodTo": {
+      "$ref": "#/definitions/dateType"
+    },
+    "nilReturn": {
+      "description": "T if nil return, else F",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1,
+      "enum": [
+        "F",
+        "T"
+      ]
+    },
+    "goodsSupplied": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 28,
+      "items": {
+        "$ref": "#/definitions/goodsType"
+      }
+    },
+    "totalVATGoodsSuppliedGBP": {
+      "$ref": "#/definitions/amountTypeAny"
+    },
+    "totalVATAmountPayable": {
+      "$ref": "#/definitions/amountTypeAny"
+    },
+    "totalVATAmountPayableAllSpplied": {
+      "$ref": "#/definitions/amountTypeAny"
+    },
+    "goodsDispatched": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 28,
+      "items": {
+        "$ref": "#/definitions/goodDispatchedType"
+      }
+    },
+    "totalVATGoodsDispatchedGBP": {
+      "$ref": "#/definitions/amountTypeAny"
+    },
+    "totalVATAmountPayableAllDispatched": {
+      "$ref": "#/definitions/amountTypeAny"
+    },
+    "correctionPreviousVATReturn": {
+      "type": "array",
+      "maxItems": 28,
+      "items": {
+        "$ref": "#/definitions/correctionType"
+      }
+    },
+    "totalVATAmountFromCorrectionGBP": {
+      "$ref": "#/definitions/amountTypeAny"
+    },
+    "balanceOfVATDueForMS": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 28,
+      "items": {
+        "$ref": "#/definitions/balanceVatDueType"
+      }
+    },
+    "totalVATAmountDueForAllMSGBP": {
+      "description": "Total VAT payable for all MSID/MSEST supplies plus Corrections in GDP (all MSCONs) ignoring any negative MSCON balanceOfVatDue - Would not be sent for nil return",
+      "$ref": "#/definitions/amountTypePositive"
+    },
+    "totalAmountVatDueForAllMSEUR": {
+      "description": "Total VAT payable for all MSID/MSEST supplies plus Corrections in Euros - Would not be sent for nil return",
+      "$ref": "#/definitions/amountTypePositiveSixDecimal"
+    },
+    "paymentReference": {
+      "description": "Return Reference",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 17,
+      "examples": [
+        "XI/XI674947690/Q4.2021"
+      ]
+    },
+    "administration": {
+      "$ref": "#/definitions/adminType"
     }
   },
   "required": [
-    "success"
+    "returnReference",
+    "returnVersion",
+    "vatRegistrationNumber",
+    "periodKey",
+    "returnPeriodFrom",
+    "totalVATGoodsSuppliedGBP",
+    "totalVATAmountPayable",
+    "totalVATGoodsDispatchedGBP",
+    "totalVATAmountPayableAllDispatched",
+    "balanceOfVATDueForMS ",
+    "totalVATAmountDueForAllMSGBP ",
+    "totalAmountVatDueForAllMSEUR",
+    "paymentReference"
   ],
   "additionalProperties": false,
   "definitions": {
@@ -183,11 +187,11 @@
         "msOfConsumption": {
           "$ref": "#/definitions/msOfConsumptionType"
         },
-        "totalAmountVatDueGBP": {
+        "totalVATDueGBP ": {
           "description": "Total VAT payable for all MSID/MSEST supplies plus Corrections in GDP (all MSCONs) ignoring any negative MSCON balanceOfVatDue - Would not be sent for nil return",
           "$ref": "#/definitions/amountTypePositive"
         },
-        "totalAmountVatDueEUR": {
+        "totalVATEUR": {
           "description": "Total VAT payable for all MSID/MSEST supplies plus Corrections in Euros - Would not be sent for nil return",
           "$ref": "#/definitions/amountTypePositiveSixDecimal"
         }
@@ -198,6 +202,7 @@
       "type": "object",
       "properties": {
         "periodKey": {
+          "description": "Derive from Period from date NNNN (e.g.22C1). 2 digit from year (22) + C (fixed value) + quarter (1)\r\nThe quarter of the tax period represented as an integer between 1 and 4 where: \r\n1 = Jan to March \r\n2 = April to June \r\n3 = July to Sep \r\n4 = October to Dec\r\n",
           "$ref": "#/definitions/periodKeyType"
         },
         "periodFrom": {
@@ -208,13 +213,21 @@
         },
         "msOfConsumption": {
           "$ref": "#/definitions/msOfConsumptionType"
+        },
+        "totalVATAmountCorrectionGBP": {
+          "$ref": "#/definitions/amountTypeAny"
+        },
+        "totalVATAmountCorrectionEUR": {
+          "$ref": "#/definitions/amountTypeAnySixDecimal"
         }
       },
       "required": [
         "periodKey",
         "periodFrom",
         "periodTo",
-        "msOfConsumption"
+        "msOfConsumption",
+        "totalVATAmountCorrectionGBP",
+        "totalVATAmountCorrectionEUR"
       ],
       "additionalProperties": false
     },
@@ -279,7 +292,7 @@
           "$ref": "#/definitions/amountTypePositive"
         },
         "vatAmountEUR": {
-          "$ref": "#/definitions/amountTypePositive"
+          "$ref": "#/definitions/amountTypeAnySixDecimal"
         }
       },
       "required": [
@@ -309,14 +322,15 @@
           "$ref": "#/definitions/amountTypePositive"
         },
         "vatAmountEUR": {
-          "$ref": "#/definitions/amountTypePositive"
+          "$ref": "#/definitions/amountTypeAnySixDecimal"
         }
       },
       "required": [
         "msOfConsumption",
         "vatAmountGBP",
         "vatAmountEUR"
-      ]
+      ],
+      "additionalProperties": false
     },
     "msOfConsumptionType": {
       "type": "string",
@@ -361,27 +375,6 @@
       ],
       "additionalProperties": false
     },
-    "traderIdType": {
-      "type": "object",
-      "properties": {
-        "issuedBy": {
-          "type": "string",
-          "minLength": 2,
-          "maxLength": 2
-        },
-        "idNumber": {
-          "description": "vatnumber or iossNumber",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 12
-        }
-      },
-      "required": [
-        "issuedBy",
-        "idNumber"
-      ],
-      "additionalProperties": false
-    },
     "vatRateType": {
       "description": "vatRateType",
       "type": "string",
@@ -393,3 +386,4 @@
       ]
     }
   }
+}

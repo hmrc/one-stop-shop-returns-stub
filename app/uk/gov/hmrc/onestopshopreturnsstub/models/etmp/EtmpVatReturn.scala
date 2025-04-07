@@ -20,14 +20,6 @@ import play.api.libs.json.{Format, Json}
 
 import java.time.{LocalDate, LocalDateTime}
 
-case class EtmpSuccessVatReturn(
-                               success: EtmpVatReturn
-                               )
-
-object EtmpSuccessVatReturn {
-
-  implicit val format: Format[EtmpSuccessVatReturn] = Json.format[EtmpSuccessVatReturn]
-}
 
 case class EtmpVatReturn(
                           returnReference: String,
@@ -38,7 +30,6 @@ case class EtmpVatReturn(
                           goodsSupplied: Seq[EtmpVatReturnGoodsSupplied],
                           totalVATGoodsSuppliedGBP: BigDecimal,
                           goodsDispatched: Seq[EtmpVatReturnGoodsDispatched],
-                          totalVatAmtDispatchedGBP: BigDecimal,
                           totalVATAmountPayable: BigDecimal,
                           totalVATAmountPayableAllSpplied: BigDecimal,
                           correctionPreviousVATReturn: Seq[EtmpVatReturnCorrection],

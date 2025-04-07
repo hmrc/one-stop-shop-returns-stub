@@ -641,7 +641,6 @@ object TestData {
           vatAmountGBP = BigDecimal(1000.00)
         ),
       ),
-      totalVatAmtDispatchedGBP = BigDecimal(2000.00),
       totalVATAmountPayable = BigDecimal(2000.00),
       totalVATAmountPayableAllSpplied = BigDecimal(2000.00),
       correctionPreviousVATReturn = Seq.empty,
@@ -649,13 +648,11 @@ object TestData {
       balanceOfVATDueForMS = Seq(
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "DE",
-          totalVATDueGBP = BigDecimal(1000.00),
-          totalVATEUR = BigDecimal(1000.00)
+          totalVATDueGBP = BigDecimal(1000.00)
         ),
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "FR",
-          totalVATDueGBP = BigDecimal(1000.00),
-          totalVATEUR = BigDecimal(1000.00)
+          totalVATDueGBP = BigDecimal(1000.00)
         )
       ),
       totalVATAmountDueForAllMSGBP = BigDecimal(2000.00),
@@ -709,7 +706,6 @@ object TestData {
           vatAmountGBP = BigDecimal(1565.46)
         )
       ),
-      totalVatAmtDispatchedGBP = BigDecimal(4130.92),
       totalVATAmountPayable = BigDecimal(2000.00),
       totalVATAmountPayableAllSpplied = BigDecimal(2000.00),
       correctionPreviousVATReturn = Seq(
@@ -718,53 +714,46 @@ object TestData {
           periodFrom = LocalDate.of(2021, 7, 1).toString,
           periodTo = LocalDate.of(2021, 9, 30).toString,
           msOfConsumption = "DE",
-          totalVATAmountCorrectionGBP = BigDecimal(-1500.00),
-          totalVATAmountCorrectionEUR = BigDecimal(-1500.00)
+          totalVATAmountCorrectionGBP = BigDecimal(-1500.00)
         ),
         EtmpVatReturnCorrection(
           periodKey = "21Q3",
           periodFrom = LocalDate.of(2021, 7, 1).toString,
           periodTo = LocalDate.of(2021, 9, 30).toString,
           msOfConsumption = "FR",
-          totalVATAmountCorrectionGBP = BigDecimal(-3500.00),
-          totalVATAmountCorrectionEUR = BigDecimal(-3500.00)
+          totalVATAmountCorrectionGBP = BigDecimal(-3500.00)
         ),
         EtmpVatReturnCorrection(
           periodKey = "21Q4",
           periodFrom = LocalDate.of(2021, 10, 1).toString,
           periodTo = LocalDate.of(2021, 12, 31).toString,
           msOfConsumption = "ES",
-          totalVATAmountCorrectionGBP = BigDecimal(-2500.00),
-          totalVATAmountCorrectionEUR = BigDecimal(-2500.00)
+          totalVATAmountCorrectionGBP = BigDecimal(-2500.00)
         ),
         EtmpVatReturnCorrection(
           periodKey = "21Q4",
           periodFrom = LocalDate.of(2021, 10, 1).toString,
           periodTo = LocalDate.of(2021, 12, 31).toString,
           msOfConsumption = "LV",
-          totalVATAmountCorrectionGBP = BigDecimal(-1800.00),
-          totalVATAmountCorrectionEUR = BigDecimal(-1800.00)
+          totalVATAmountCorrectionGBP = BigDecimal(-1800.00)
         ),
         EtmpVatReturnCorrection(
           periodKey = "22Q1",
           periodFrom = LocalDate.of(2022, 1, 1).toString,
           periodTo = LocalDate.of(2021, 3, 31).toString,
           msOfConsumption = "LT",
-          totalVATAmountCorrectionGBP = BigDecimal(-1800.00),
-          totalVATAmountCorrectionEUR = BigDecimal(-1800.00)
+          totalVATAmountCorrectionGBP = BigDecimal(-1800.00)
         )
       ),
       totalVATAmountFromCorrectionGBP = BigDecimal(0.00),
       balanceOfVATDueForMS = Seq(
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "DE",
-          totalVATDueGBP = BigDecimal(1000.00),
-          totalVATEUR = BigDecimal(1000.00)
+          totalVATDueGBP = BigDecimal(1000.00)
         ),
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "FR",
-          totalVATDueGBP = BigDecimal(1000.00),
-          totalVATEUR = BigDecimal(1000.00)
+          totalVATDueGBP = BigDecimal(1000.00)
         )
       ),
       totalVATAmountDueForAllMSGBP = BigDecimal(2000.00),
@@ -798,7 +787,6 @@ object TestData {
           vatAmountGBP = BigDecimal(4521.20)
         )
       ),
-      totalVatAmtDispatchedGBP = BigDecimal(4521.20),
       totalVATAmountPayable = BigDecimal(6021.20),
       totalVATAmountPayableAllSpplied = BigDecimal(6021.20),
       correctionPreviousVATReturn = Seq.empty,
@@ -806,13 +794,11 @@ object TestData {
       balanceOfVATDueForMS = Seq(
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "DK",
-          totalVATDueGBP = BigDecimal(4521.20),
-          totalVATEUR = BigDecimal(4521.20)
+          totalVATDueGBP = BigDecimal(4521.20)
         ),
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "FR",
-          totalVATDueGBP = BigDecimal(1500.00),
-          totalVATEUR = BigDecimal(1500.00)
+          totalVATDueGBP = BigDecimal(1500.00)
         )
       ),
       totalVATAmountDueForAllMSGBP = BigDecimal(8703.13),
@@ -852,7 +838,6 @@ object TestData {
           vatAmountGBP = BigDecimal(1000.00)
         )
       ),
-      totalVatAmtDispatchedGBP = BigDecimal(1000.00),
       totalVATAmountPayable = BigDecimal(3000.00),
       totalVATAmountPayableAllSpplied = BigDecimal(3000.00),
       correctionPreviousVATReturn = Seq(
@@ -861,39 +846,33 @@ object TestData {
           periodFrom = LocalDate.of(2021, 7, 1).toString,
           periodTo = LocalDate.of(2021, 9, 30).toString,
           msOfConsumption = "DK",
-          totalVATAmountCorrectionGBP = BigDecimal(-1500.00),
-          totalVATAmountCorrectionEUR = BigDecimal(-1500.00)
+          totalVATAmountCorrectionGBP = BigDecimal(-1500.00)
         ),
         EtmpVatReturnCorrection(
           periodKey = "21Q3",
           periodFrom = LocalDate.of(2021, 7, 1).toString,
           periodTo = LocalDate.of(2021, 9, 30).toString,
           msOfConsumption = "FR",
-          totalVATAmountCorrectionGBP = BigDecimal(3500.00),
-          totalVATAmountCorrectionEUR = BigDecimal(3500.00)
+          totalVATAmountCorrectionGBP = BigDecimal(3500.00)
         )
       ),
       totalVATAmountFromCorrectionGBP = BigDecimal(2500.00),
       balanceOfVATDueForMS = Seq(
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "DK",
-          totalVATDueGBP = BigDecimal(-1500.00),
-          totalVATEUR = BigDecimal(-1500.00)
+          totalVATDueGBP = BigDecimal(-1500.00)
         ),
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "FR",
-          totalVATDueGBP = BigDecimal(4500.00),
-          totalVATEUR = BigDecimal(4500.00)
+          totalVATDueGBP = BigDecimal(4500.00)
         ),
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "HR",
-          totalVATDueGBP = BigDecimal(1000.00),
-          totalVATEUR = BigDecimal(1000.00)
+          totalVATDueGBP = BigDecimal(1000.00)
         ),
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "AT",
-          totalVATDueGBP = BigDecimal(1000.00),
-          totalVATEUR = BigDecimal(1000.00)
+          totalVATDueGBP = BigDecimal(1000.00)
         )
       ),
       totalVATAmountDueForAllMSGBP = BigDecimal(6500.00),
@@ -933,7 +912,6 @@ object TestData {
           vatAmountGBP = BigDecimal(2500.00)
         ),
       ),
-      totalVatAmtDispatchedGBP = BigDecimal(2500.00),
       totalVATAmountPayable = BigDecimal(3000.00),
       totalVATAmountPayableAllSpplied = BigDecimal(3000.00),
       correctionPreviousVATReturn = Seq(
@@ -942,44 +920,37 @@ object TestData {
           periodFrom = LocalDate.of(2021, 7, 1).toString,
           periodTo = LocalDate.of(2021, 9, 30).toString,
           msOfConsumption = "DK",
-          totalVATAmountCorrectionGBP = BigDecimal(250.00),
-          totalVATAmountCorrectionEUR = BigDecimal(250.00)
+          totalVATAmountCorrectionGBP = BigDecimal(250.00)
         ),
         EtmpVatReturnCorrection(
           periodKey = "21Q4",
           periodFrom = LocalDate.of(2021, 10, 1).toString,
           periodTo = LocalDate.of(2021, 12, 31).toString,
           msOfConsumption = "HR",
-          totalVATAmountCorrectionGBP = BigDecimal(-250.00),
-          totalVATAmountCorrectionEUR = BigDecimal(-250.00)
+          totalVATAmountCorrectionGBP = BigDecimal(-250.00)
         )
       ),
       totalVATAmountFromCorrectionGBP = BigDecimal(0),
       balanceOfVATDueForMS = Seq(
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "DK",
-          totalVATDueGBP = BigDecimal(250.00),
-          totalVATEUR = BigDecimal(250.00)
+          totalVATDueGBP = BigDecimal(250.00)
         ),
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "BE",
-          totalVATDueGBP = BigDecimal(2500.00),
-          totalVATEUR = BigDecimal(2500.00)
+          totalVATDueGBP = BigDecimal(2500.00)
         ),
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "HR",
-          totalVATDueGBP = BigDecimal(-250.00),
-          totalVATEUR = BigDecimal(-250.00)
+          totalVATDueGBP = BigDecimal(-250.00)
         ),
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "PL",
-          totalVATDueGBP = BigDecimal(123.45),
-          totalVATEUR = BigDecimal(123.45)
+          totalVATDueGBP = BigDecimal(123.45)
         ),
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "IE",
-          totalVATDueGBP = BigDecimal(987.65),
-          totalVATEUR = BigDecimal(987.65)
+          totalVATDueGBP = BigDecimal(987.65)
         )
       ),
       totalVATAmountDueForAllMSGBP = BigDecimal(3611.10),
@@ -1019,7 +990,6 @@ object TestData {
           vatAmountGBP = BigDecimal(7469.13)
         )
       ),
-      totalVatAmtDispatchedGBP = BigDecimal(7469.13),
       totalVATAmountPayable = BigDecimal(9703.13),
       totalVATAmountPayableAllSpplied = BigDecimal(9703.13),
       correctionPreviousVATReturn = Seq.empty,
@@ -1027,18 +997,15 @@ object TestData {
       balanceOfVATDueForMS = Seq(
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "HR",
-          totalVATDueGBP = BigDecimal(7469.13),
-          totalVATEUR = BigDecimal(7469.13)
+          totalVATDueGBP = BigDecimal(7469.13)
         ),
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "FR",
-          totalVATDueGBP = BigDecimal(1234.00),
-          totalVATEUR = BigDecimal(1234.00)
+          totalVATDueGBP = BigDecimal(1234.00)
         ),
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "ES",
-          totalVATDueGBP = BigDecimal(1000.00),
-          totalVATEUR = BigDecimal(1000.00)
+          totalVATDueGBP = BigDecimal(1000.00)
         )
       ),
       totalVATAmountDueForAllMSGBP = BigDecimal(9703.13),
@@ -1072,7 +1039,6 @@ object TestData {
           vatAmountGBP = BigDecimal(7469.13)
         )
       ),
-      totalVatAmtDispatchedGBP = BigDecimal(7469.13),
       totalVATAmountPayable = BigDecimal(8703.13),
       totalVATAmountPayableAllSpplied = BigDecimal(8703.13),
       correctionPreviousVATReturn = Seq.empty,
@@ -1080,13 +1046,11 @@ object TestData {
       balanceOfVATDueForMS = Seq(
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "HR",
-          totalVATDueGBP = BigDecimal(7469.13),
-          totalVATEUR = BigDecimal(7469.13)
+          totalVATDueGBP = BigDecimal(7469.13)
         ),
         EtmpVatReturnBalanceOfVatDue(
           msOfConsumption = "FR",
-          totalVATDueGBP = BigDecimal(1234.00),
-          totalVATEUR = BigDecimal(1234.00)
+          totalVATDueGBP = BigDecimal(1234.00)
         )
       ),
       totalVATAmountDueForAllMSGBP = BigDecimal(8703.13),
@@ -1105,7 +1069,6 @@ object TestData {
       goodsSupplied = Seq.empty,
       totalVATGoodsSuppliedGBP = BigDecimal(0),
       goodsDispatched = Seq.empty,
-      totalVatAmtDispatchedGBP = BigDecimal(0),
       totalVATAmountPayable = BigDecimal(0),
       totalVATAmountPayableAllSpplied = BigDecimal(0),
       correctionPreviousVATReturn = Seq.empty,
