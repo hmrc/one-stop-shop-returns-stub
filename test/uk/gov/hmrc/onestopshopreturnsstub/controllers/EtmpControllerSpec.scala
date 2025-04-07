@@ -166,7 +166,7 @@ class EtmpControllerSpec extends AnyFreeSpec with Matchers {
 
     val fakeRequestWithBody = fakeRequest.withHeaders(validFakeHeaders)
 
-    val etmpVatReturnPayload: EtmpSuccessVatReturn = EtmpSuccessVatReturn(basicEtmpVatReturn(vrn, period.toEtmpPeriodString))
+    val etmpVatReturnPayload: EtmpVatReturn = basicEtmpVatReturn(vrn, period.toEtmpPeriodString)
 
     "must return OK with a successful payload" in {
 
