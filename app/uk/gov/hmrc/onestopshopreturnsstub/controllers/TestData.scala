@@ -812,8 +812,8 @@ object TestData {
       returnReference = generateReference(vrn, period),
       returnVersion = LocalDateTime.of(2024, 1, 2, 0, 0, 0),
       periodKey = period,
-      returnPeriodFrom = LocalDate.of(2023, 12, 1),
-      returnPeriodTo = LocalDate.of(2023, 12, 31),
+      returnPeriodFrom = LocalDate.of(2021, 10, 1),
+      returnPeriodTo = LocalDate.of(2021, 12, 31),
       goodsSupplied = Seq(
         EtmpVatReturnGoodsSupplied(
           msOfConsumption = "FR",
@@ -886,8 +886,8 @@ object TestData {
       returnReference = generateReference(vrn, period),
       returnVersion = LocalDateTime.of(2024, 1, 2, 0, 0, 0),
       periodKey = period,
-      returnPeriodFrom = LocalDate.of(2024, 1, 1),
-      returnPeriodTo = LocalDate.of(2024, 3, 31),
+      returnPeriodFrom = LocalDate.of(2022, 1, 1),
+      returnPeriodTo = LocalDate.of(2022, 3, 31),
       goodsSupplied = Seq(
         EtmpVatReturnGoodsSupplied(
           msOfConsumption = "PL",
