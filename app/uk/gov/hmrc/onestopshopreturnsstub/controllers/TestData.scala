@@ -40,6 +40,11 @@ object TestData {
     )
   )
 
+  val lastYear = LocalDate.now().minusYears(1).toString.substring(2, 4)
+  val fourYearsAgo = LocalDate.now().minusYears(4).toString.substring(2, 4)
+  val threeYearsAgo = LocalDate.now().minusYears(3).toString.substring(2, 4)
+  val twoYearsAgo = LocalDate.now().minusYears(2).toString.substring(2, 4)
+
   val singleOutstandingPayment = Seq(
     FinancialTransaction(
       chargeType = Some("G Ret FR EU-OMS"),
@@ -379,11 +384,11 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "22C1"
+        periodKey = s"${lastYear}C1"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "22C2"
+        periodKey = s"${lastYear}C2"
       )
     )
   )))
@@ -405,11 +410,11 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "22C1"
+        periodKey = s"${lastYear}C1"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "22C2"
+        periodKey = s"${lastYear}C2"
       )
     )
   )))
@@ -418,24 +423,44 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "21C1"
+        periodKey = s"${fourYearsAgo}C1"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "21C2"
+        periodKey = s"${fourYearsAgo}C2"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "21C3"
+        periodKey = s"${fourYearsAgo}C3"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "21C4"
+        periodKey = s"${fourYearsAgo}C4"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "22C1"
-      )
+        periodKey = s"${threeYearsAgo}C1"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = s"${threeYearsAgo}C2"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = s"${threeYearsAgo}C3"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = s"${threeYearsAgo}C4"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = s"${twoYearsAgo}C1"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = s"${twoYearsAgo}C2"
+      ),
     )
   )))
 
@@ -443,7 +468,7 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "22C1"
+        periodKey = s"${lastYear}C1"
       )
     )
   )))
@@ -492,7 +517,7 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "22C1"
+        periodKey = s"${lastYear}C1"
       )
     )
   )))
