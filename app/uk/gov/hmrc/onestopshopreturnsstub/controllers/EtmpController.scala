@@ -35,6 +35,9 @@ class EtmpController @Inject()(
                               )
   extends BaseController with Logging {
 
+  val lastYear = LocalDate.now().minusYears(1).toString.substring(2, 4)
+  val twoYearsAgo = LocalDate.now().minusYears(2).toString.substring(2, 4)
+
   override protected def controllerComponents: ControllerComponents = cc
 
   def getReturnCorrection(vrn: String, country: String, period: String): Action[AnyContent] = Action.async {
@@ -42,17 +45,17 @@ class EtmpController @Inject()(
 
       jsonSchemaHelper.applySchemaHeaderValidation(request.headers) {
         val accumulativeCorrectionAmount = (vrn, country, period) match {
-          case ("100000003", "HR", "21C3") => BigDecimal(7469.13)
-          case ("100000003", "FR", "21C3") => BigDecimal(1234.00)
-          case ("100000003", "ES", "21C3") => BigDecimal(1000.00)
-          case ("100000004", "FR", "21C3") => BigDecimal(5000.00)
-          case ("100000004", "DK", "21C3") => BigDecimal(3271.20)
-          case ("100000004", "HR", "21C4") => BigDecimal(750.00)
-          case ("100000004", "FR", "21C4") => BigDecimal(1000.00)
-          case ("100000004", "AT", "21C4") => BigDecimal(1000.00)
-          case ("100000004", "BE", "22C1") => BigDecimal(2500.00)
-          case ("100000004", "PL", "22C1") => BigDecimal(123.45)
-          case ("100000004", "IE", "22C1") => BigDecimal(987.65)
+          case ("100000003", "HR", s"${twoYearsAgo}C3") => BigDecimal(7469.13)
+          case ("100000003", "FR", s"${twoYearsAgo}C3") => BigDecimal(1234.00)
+          case ("100000003", "ES", s"${twoYearsAgo}C3") => BigDecimal(1000.00)
+          case ("100000004", "FR", s"${twoYearsAgo}C3") => BigDecimal(5000.00)
+          case ("100000004", "DK",  s"${twoYearsAgo}C3") => BigDecimal(3271.20)
+          case ("100000004", "HR",  s"${twoYearsAgo}C4") => BigDecimal(750.00)
+          case ("100000004", "FR",  s"${twoYearsAgo}C4") => BigDecimal(1000.00)
+          case ("100000004", "AT",  s"${twoYearsAgo}C4") => BigDecimal(1000.00)
+          case ("100000004", "BE",  s"${lastYear}C1") => BigDecimal(2500.00)
+          case ("100000004", "PL", s"${lastYear}C1") => BigDecimal(123.45)
+          case ("100000004", "IE", s"${lastYear}C1") => BigDecimal(987.65)
           case _ => BigDecimal(0)
         }
 
@@ -77,6 +80,8 @@ class EtmpController @Inject()(
             idNumber match {
               case "600000006" =>
                 openObligationsOverThreeYearsAgoExpiredVRN
+              case "100000008" =>
+                fulfilledObligationsOverThreeYearsAgo
               case "600000011" =>
                 twoOpenObligationsExcluded
               case "600000012" =>
@@ -134,9 +139,9 @@ class EtmpController @Inject()(
 
         val etmpVatReturn = (vrn, period) match {
           case ("100000003", _) => etmpVatReturnWithoutCorrections(vrn, period)
-          case ("100000004", "21C3") => etmpVatReturnQ1(vrn, period)
-          case ("100000004", "21C4") => etmpVatReturnQ2(vrn, period)
-          case ("100000004", "22C1") => etmpVatReturnQ3(vrn, period)
+          case ("100000004", s"${twoYearsAgo}C3") => etmpVatReturnQ1(vrn, period)
+          case ("100000004", s"${twoYearsAgo}C4") => etmpVatReturnQ2(vrn, period)
+          case ("100000004", s"${lastYear}C1") => etmpVatReturnQ3(vrn, period)
           case ("100000077", "23C2") => etmpVatReturnPartialDates(vrn, period, LocalDate.of(2023, 6, 9), LocalDate.of(2023, 6, 30))
           case ("600151515", "23C3") => etmpVatReturnPartialDates(vrn, period, LocalDate.of(2023, 7, 1), LocalDate.of(2023, 9, 8))
           case ("600000019", _) | ("100000026", _) | ("600000003", _) | ("600000005", _) |

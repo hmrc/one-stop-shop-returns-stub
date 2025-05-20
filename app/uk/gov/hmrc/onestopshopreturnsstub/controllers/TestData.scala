@@ -345,7 +345,7 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "21C3"
+        periodKey = s"${twoYearsAgo}C3"
       )
     )
   )))
@@ -354,15 +354,15 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "21C3"
+        periodKey = s"${twoYearsAgo}C3"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "21C4"
+        periodKey = s"${twoYearsAgo}C4"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "22C1"
+        periodKey = s"${lastYear}C1"
       )
     )
   )))
@@ -459,6 +459,51 @@ object TestData {
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = s"${twoYearsAgo}C2"
+      ),
+    )
+  )))
+
+  val fulfilledObligationsOverThreeYearsAgo: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = s"${fourYearsAgo}C1"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = s"${fourYearsAgo}C2"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = s"${fourYearsAgo}C3"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = s"${fourYearsAgo}C4"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = s"${threeYearsAgo}C1"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = s"${threeYearsAgo}C2"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = s"${threeYearsAgo}C3"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = s"${threeYearsAgo}C4"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = s"${twoYearsAgo}C1"
+      ),
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
         periodKey = s"${twoYearsAgo}C2"
       ),
     )
