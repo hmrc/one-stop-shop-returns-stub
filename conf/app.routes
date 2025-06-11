@@ -10,4 +10,4 @@ GET         /vec/ossreturns/returncorrection/v1/:vrn/:country/:period        uk.
 
 GET         /enterprise/obligation-data/:idType/:idNumber/:regimeType        uk.gov.hmrc.onestopshopreturnsstub.controllers.EtmpController.getObligations(idType: String, idNumber: String, regimeType: String, dateRange: ObligationsDateRange, status: Option[String])
 
-GET         /vec/ossreturns/viewreturns/v1/:vrn/:period                      uk.gov.hmrc.onestopshopreturnsstub.controllers.EtmpController.getEtmpReturn(vrn: String, period: String)
+GET         /vec/oss/returns/v1/:vrn/:period                                 uk.gov.hmrc.onestopshopreturnsstub.controllers.EtmpController.getEtmpReturn(vrn: String, period: String)
