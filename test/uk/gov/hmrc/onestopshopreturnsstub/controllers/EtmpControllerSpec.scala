@@ -39,7 +39,9 @@ class EtmpControllerSpec extends AnyFreeSpec with Matchers {
   private val period = Period(2023, Quarter.Q3)
   private val country: String = "DE"
 
-  private val dateTimeFormatter = DateTimeFormatter.RFC_1123_DATE_TIME
+  private val dateTimeFormatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z")
+    .withLocale(Locale.UK)
+    .withZone(ZoneId.of("GMT"))
   private val stubClock: Clock = Clock.fixed(LocalDate.now.atStartOfDay(ZoneId.systemDefault).toInstant, ZoneId.systemDefault)
   private val jsonSchemaHelper = new JsonSchemaHelper(stubClock)
   private val controller = new EtmpController(Helpers.stubControllerComponents(), jsonSchemaHelper)
@@ -49,7 +51,7 @@ class EtmpControllerSpec extends AnyFreeSpec with Matchers {
     ("X-Correlation-Id", UUID.randomUUID().toString),
     ("X-Forwarded-Host", ""),
     (CONTENT_TYPE, MimeTypes.JSON),
-    (DATE, dateTimeFormatter.format(LocalDateTime.now().atOffset(ZoneOffset.UTC))))
+    (DATE, dateTimeFormatter.format(LocalDateTime.now())))
 
   val validFakeHeaders = new Headers(validHeaders)
 
