@@ -94,11 +94,15 @@ class EtmpController @Inject()(
                 oneFulfilledObligationQuarantinedOverTwoYears
               case "600000018" =>
                 oneOpenObligationExcludedFuture
-              case "600000019" | "100000026" | "600000003" | "600000005" | "100000301" | "600000050"
-                   | "500000002" | "333333222" | "333333111" | "333333666" | "333333444" | "333333777" | "333333555" =>
+              case "600000019" | "600000003" | "100000301" | "600000050"
+                   | "500000002" | "333333111" | "333333666" | "333333444" | "333333777" | "333333555" =>
                 oneFulfilledObligationExcluded2024
-              case "600000020" | "100000025" | "600000002" | "600000004" =>
+              case "100000026" | "600000005" | "333333222" =>
+                oneFulfilledObligationExcludedLastYear
+              case "600000020" | "600000002" =>
                 oneOpenObligationExcluded2024
+              case "100000025" | "600000004" =>
+                oneOpenObligationQuarantinedLastYear
               case "600000021" | "777777771" =>
                 twoFulfilledObligationDetails2022
               case "600001212" =>
