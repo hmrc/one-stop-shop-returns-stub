@@ -536,11 +536,11 @@ object TestData {
     )
   )))
 
-  val oneOpenObligationQuarantined: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+  val oneOpenObligationQuarantinedLastYear: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "24C2"
+        periodKey = s"${lastYear}C2"
       )
     )
   )))
@@ -576,7 +576,25 @@ object TestData {
     )
   )))
 
+  val oneFulfilledObligationExcludedLastYear: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Fulfilled,
+        periodKey = s"${lastYear}C1"
+      )
+    )
+  )))
+
   val oneOpenObligationExcluded2024: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+    obligationDetails = Seq(
+      EtmpObligationDetails(
+        status = EtmpObligationsFulfilmentStatus.Open,
+        periodKey = "24C1"
+      )
+    )
+  )))
+
+  val oneOpenObligationQuarantined: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
