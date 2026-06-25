@@ -34,8 +34,7 @@ package uk.gov.hmrc.onestopshopreturnsstub.utils
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.{JsonNode, ObjectMapper}
-import com.github.fge.jsonschema.core.report.ProcessingReport
-import com.github.fge.jsonschema.main.{JsonSchema, JsonSchemaFactory}
+import com.networknt.schema.*
 import play.api.Logging
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Results._
@@ -59,10 +58,11 @@ class JsonSchemaHelper @Inject()(clock: Clock) extends Logging {
     val factory = schemaMapper.getFactory
     val schemaParser: JsonParser = factory.createParser(requestSchema.toString)
     val schemaJson: JsonNode = schemaMapper.readTree(schemaParser)
-    JsonSchemaFactory.byDefault().getJsonSchema(schemaJson)
+    val jsonSchemaFactory = JsonSchemaFactory.getInstance(SpecVersionDetector.detect(schemaJson))
+    jsonSchemaFactory.getSchema(schemaJson)
   }
 
-  private def validRequest(jsonSchema: JsValue, json: Option[JsValue]): Option[ProcessingReport] = {
+  private def validRequest(jsonSchema: JsValue, json: Option[JsValue]): Option[java.util.Set[ValidationMessage]] = {
     json.map { response =>
       val jsonParser = jsonFactory.createParser(response.toString)
       val jsonNode: JsonNode = jsonMapper.readTree(jsonParser)
@@ -75,9 +75,9 @@ class JsonSchemaHelper @Inject()(clock: Clock) extends Logging {
       case Success(schema) =>
         val validationResult = validRequest(schema, jsonBody)
         validationResult match {
-            case Some(res) if res.isSuccess => f
+            case Some(res) if res.isEmpty => f
             case Some(res) =>
-              logger.error(s"Failed json schema ${res.getExceptionThreshold}")
+              logger.error(s"Failed json schema ${res.size} error(s)")
               res.forEach { test =>
                 logger.error(test.getMessage)
               }
