@@ -598,7 +598,7 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "24C1"
+        periodKey = s"${lastYear}C2"
       )
     )
   )))
