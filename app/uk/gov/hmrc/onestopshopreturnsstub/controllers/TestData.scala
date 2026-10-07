@@ -612,11 +612,11 @@ object TestData {
     )
   )))
 
-  val firstPeriodNoCorrections2023: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+  val firstPeriodNoCorrectionsC2: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "23C2"
+        periodKey = s"${twoYearsAgo}C2"
       )
     )
   )))
@@ -625,11 +625,11 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "23C2"
+        periodKey = s"${twoYearsAgo}C2"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Open,
-        periodKey = "23C3"
+        periodKey = s"${twoYearsAgo}C3"
       )
     )
   )))
@@ -638,11 +638,11 @@ object TestData {
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "23C2"
+        periodKey = s"${twoYearsAgo}C2"
       ),
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
-        periodKey = "23C3"
+        periodKey = s"${twoYearsAgo}C3"
       )
     )
   )))
