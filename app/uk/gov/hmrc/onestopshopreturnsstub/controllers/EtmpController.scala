@@ -118,11 +118,11 @@ class EtmpController @Inject()(
               case "100000002" | "100000006" | "222222222" | "222222223" =>
                 firstPeriodNoCorrections
               case "100000007" | "600000015" =>
-                firstPeriodNoCorrections2023
+                firstPeriodNoCorrectionsC2
               case "100000077" | "600001515" =>
-                secondOpenPeriodPartialReturns2023
+                secondOpenPeriodPartialReturns
               case "600151515" =>
-                fulfilledPeriodsPartialReturns2023
+                fulfilledPeriodsPartialReturns
               case _ =>
                 obligationDetails
             }
@@ -146,8 +146,8 @@ class EtmpController @Inject()(
           case ("100000004", s"${twoYearsAgo}C3") => etmpVatReturnQ1(vrn, period)
           case ("100000004", s"${twoYearsAgo}C4") => etmpVatReturnQ2(vrn, period)
           case ("100000004", s"${lastYear}C1") => etmpVatReturnQ3(vrn, period)
-          case ("100000077", "23C2") => etmpVatReturnPartialDates(vrn, period, LocalDate.of(2023, 6, 9), LocalDate.of(2023, 6, 30))
-          case ("600151515", "23C3") => etmpVatReturnPartialDates(vrn, period, LocalDate.of(2023, 7, 1), LocalDate.of(2023, 9, 8))
+          case ("100000077", s"${twoYearsAgo}C2") => etmpVatReturnPartialDates(vrn, period, LocalDate.now().minusYears(2).withDayOfMonth(9).withMonth(6), LocalDate.now().minusYears(2).withDayOfMonth(30).withMonth(6))
+          case ("600151515", s"${twoYearsAgo}C3") => etmpVatReturnPartialDates(vrn, period, LocalDate.now().minusYears(2).withDayOfMonth(1).withMonth(7), LocalDate.now().minusYears(2).withDayOfMonth(8).withMonth(9))
           case ("600000019", _) | ("100000026", _) | ("600000003", _) | ("600000005", _) |
                ("600000021", _) | ("777777771", _) | ("600001212", _) =>
             nilEtmpVatReturn(vrn, period)
