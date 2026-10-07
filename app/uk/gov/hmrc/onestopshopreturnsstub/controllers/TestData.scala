@@ -621,7 +621,7 @@ object TestData {
     )
   )))
 
-  val secondOpenPeriodPartialReturns2023: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+  val secondOpenPeriodPartialReturns: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,
@@ -634,7 +634,7 @@ object TestData {
     )
   )))
 
-  val fulfilledPeriodsPartialReturns2023: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
+  val fulfilledPeriodsPartialReturns: EtmpObligations = EtmpObligations(obligations = Seq(EtmpObligation(
     obligationDetails = Seq(
       EtmpObligationDetails(
         status = EtmpObligationsFulfilmentStatus.Fulfilled,

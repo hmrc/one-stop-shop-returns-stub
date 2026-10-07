@@ -120,9 +120,9 @@ class EtmpController @Inject()(
               case "100000007" | "600000015" =>
                 firstPeriodNoCorrectionsC2
               case "100000077" | "600001515" =>
-                secondOpenPeriodPartialReturns2023
+                secondOpenPeriodPartialReturns
               case "600151515" =>
-                fulfilledPeriodsPartialReturns2023
+                fulfilledPeriodsPartialReturns
               case _ =>
                 obligationDetails
             }
